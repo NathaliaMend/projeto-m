@@ -1,0 +1,188 @@
+@import "tailwindcss";
+
+:root {
+  --background: #ffffff;
+  --foreground: #3c3c3c;
+  --muted: #777777;
+  --border: #e5e5e5;
+
+  --green: #58cc02;
+  --green-dark: #58a700;
+  --green-soft: #d7ffb8;
+  --blue: #1cb0f6;
+  --blue-dark: #1899d6;
+  --blue-soft: #ddf4ff;
+  --red: #ff4b4b;
+  --red-dark: #ea2b2b;
+  --red-soft: #ffdfe0;
+  --yellow: #ffc800;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-green: var(--green);
+  --color-green-dark: var(--green-dark);
+  --color-blue: var(--blue);
+  --color-red: var(--red);
+  --font-sans: var(--font-nunito), ui-sans-serif, system-ui, sans-serif;
+}
+
+html {
+  height: 100%;
+}
+
+body {
+  min-height: 100%;
+  background: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-nunito), ui-sans-serif, system-ui, sans-serif;
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* Botão "3D" estilo Duolingo (borda inferior grossa que some ao pressionar). */
+.btn3d {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  font-weight: 800;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  border-radius: 1rem;
+  padding: 0.85rem 1.25rem;
+  border: none;
+  cursor: pointer;
+  transition: filter 0.1s ease, transform 0.05s ease;
+  user-select: none;
+}
+.btn3d:active {
+  transform: translateY(2px);
+  filter: brightness(0.97);
+}
+.btn3d:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.btn3d-green {
+  background: var(--green);
+  color: white;
+  box-shadow: 0 4px 0 var(--green-dark);
+}
+.btn3d-green:active {
+  box-shadow: 0 2px 0 var(--green-dark);
+}
+.btn3d-blue {
+  background: var(--blue);
+  color: white;
+  box-shadow: 0 4px 0 var(--blue-dark);
+}
+.btn3d-blue:active {
+  box-shadow: 0 2px 0 var(--blue-dark);
+}
+.btn3d-gray {
+  background: #e5e5e5;
+  color: #777;
+  box-shadow: 0 4px 0 #cfcfcf;
+}
+
+/* Cartão de alternativa selecionável. */
+.choice {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  width: 100%;
+  text-align: left;
+  background: white;
+  border: 2px solid var(--border);
+  border-bottom-width: 4px;
+  border-radius: 1rem;
+  padding: 1rem 1.1rem;
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: var(--foreground);
+  cursor: pointer;
+  transition: background 0.1s ease, border-color 0.1s ease, transform 0.05s ease;
+}
+.choice:hover {
+  background: #f7f7f7;
+}
+.choice:active {
+  transform: translateY(1px);
+}
+/* Cores das 4 alternativas (rotativas). */
+.choice.opt-0 {
+  background: var(--blue-soft);
+  border-color: #9ad9fb;
+  color: #10689b;
+}
+.choice.opt-1 {
+  background: var(--green-soft);
+  border-color: #a8e57a;
+  color: #3f7a12;
+}
+.choice.opt-2 {
+  background: #fff3c4;
+  border-color: #ffdd66;
+  color: #8a6100;
+}
+.choice.opt-3 {
+  background: #efe1ff;
+  border-color: #cda6f5;
+  color: #6a34b0;
+}
+
+/* Borda destacada na alternativa selecionada (mantém a cor da opção). */
+.choice.selected {
+  border-color: #3c3c3c;
+  box-shadow: 0 0 0 3px #3c3c3c;
+}
+.choice.correct {
+  background: var(--green-soft);
+  border-color: var(--green);
+  color: var(--green-dark);
+}
+.choice.wrong {
+  background: var(--red-soft);
+  border-color: var(--red);
+  color: var(--red-dark);
+}
+.choice:disabled {
+  cursor: default;
+}
+
+/* Ícone circular de "ouvir" (alto-falante). */
+.speak-btn {
+  flex: 0 0 auto;
+  width: 2.5rem;
+  height: 2.5rem;
+  border-radius: 999px;
+  background: var(--blue-soft);
+  color: var(--blue-dark);
+  border: 2px solid var(--blue);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+.speak-btn:active {
+  transform: scale(0.94);
+}
+.speak-btn.playing {
+  background: var(--blue);
+  color: white;
+}
+
+.progressbar {
+  height: 1rem;
+  border-radius: 999px;
+  background: var(--border);
+  overflow: hidden;
+}
+.progressbar > div {
+  height: 100%;
+  background: var(--green);
+  border-radius: 999px;
+  transition: width 0.3s ease;
+}
