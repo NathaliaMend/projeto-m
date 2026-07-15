@@ -3,8 +3,9 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { useVoice, SpeakButton } from "./speech";
+import { useVoice, useGatedSpeech, SpeakButton } from "./speech";
 import { submitAnswer } from "@/app/tests/actions";
+import { BLANK_SCREEN_MS, FEEDBACK_EMOJIS, speechTimeoutMs } from "@/lib/config";
 import type { Phase } from "@/lib/types";
 
 export interface RunnerOption {
@@ -14,19 +15,35 @@ export interface RunnerOption {
 export interface RunnerStep {
   phase: Phase;
   phaseLabel: string;
-  feedback: boolean; // mostra "acertou/errou" por pergunta
+  feedback: boolean; // Fase B: feedback e novas tentativas
   indexInPhase: number;
   phaseTotal: number;
   question: {
     id: string;
     context: string | null;
+    phrases: string[] | null;
     image_key: string | null;
+    etapa_label: string | null;
     question_text: string;
     options: RunnerOption[];
   };
 }
 
-type Screen = "intro" | "question" | "phaseComplete" | "done";
+/**
+ * Cada tela tem um papel só:
+ *   context   história/frases + imagem (pulada quando o passo não tem contexto)
+ *   question  pergunta e alternativas
+ *   feedback  "Parabéns" / "Tente novamente" (só Fase B)
+ *   blank     respiro entre uma pergunta e outra
+ */
+type Screen =
+  | "intro"
+  | "context"
+  | "question"
+  | "feedback"
+  | "blank"
+  | "phaseComplete"
+  | "done";
 
 const INTRO_SPEECH =
   "Nós vamos brincar de descobrir o que algumas frases significam! " +
@@ -34,7 +51,14 @@ const INTRO_SPEECH =
   "Depois: vamos fazer uma pergunta. " +
   "Lembre-se: você pode usar o botão de som para ouvir quantas vezes quiser!";
 
-const PHASE_EMOJI: Record<Phase, string> = { A: "🌱", B: "🚀", C: "🏆" };
+const PHASE_EMOJI: Record<Phase, string> = {
+  A: "🌱",
+  B1: "🚀",
+  AR1: "🌿",
+  B2: "🚀",
+  AR2: "🌳",
+  C: "🏆",
+};
 
 export interface SubmitFn {
   (input: {
@@ -42,7 +66,13 @@ export interface SubmitFn {
     phase: Phase;
     questionId: string;
     selectedKey: string;
-  }): Promise<{ isCorrect: boolean; completed: boolean }>;
+  }): Promise<{
+    isCorrect: boolean;
+    attempts: number;
+    canRetry: boolean;
+    correctKey: string | null;
+    completed: boolean;
+  }>;
 }
 
 export function Runner({
@@ -79,52 +109,42 @@ export function Runner({
   const showIntro = !beginDone && startIndex === 0 && steps[0]?.phase === "A";
 
   const [cur, setCur] = useState(Math.min(startIndex, Math.max(0, total - 1)));
-  const [screen, setScreen] = useState<Screen>(
-    beginDone ? "done" : showIntro ? "intro" : "question"
-  );
   const [selected, setSelected] = useState<string | null>(null);
-  const [result, setResult] = useState<null | { correct: boolean }>(null);
+  const [result, setResult] = useState<null | {
+    correct: boolean;
+    canRetry: boolean;
+    correctKey: string | null;
+    emoji: string;
+  }>(null);
   const [pending, setPending] = useState(false);
   const [completedPhase, setCompletedPhase] = useState<Phase | null>(null);
 
-  const { play, cancel, ready } = useVoice();
-  const step = steps[cur];
+  const step: RunnerStep | undefined = steps[cur];
+  const firstScreen = (s: RunnerStep | undefined): Screen =>
+    s?.question.context ? "context" : "question";
 
-  // Fala o contexto + a pergunta de um passo.
-  const suppressAutoRef = useRef(false);
-  const stepText = useCallback((idx: number) => {
-    const s = steps[idx];
-    if (!s) return "";
-    return [s.question.context, s.question.question_text]
-      .filter(Boolean)
-      .join(". ");
-  }, [steps]);
-
-  // Fala imediatamente (dentro do gesto de toque) — funciona em tablets/iPad,
-  // onde a reprodução automática por timer é bloqueada.
-  const speakStep = useCallback(
-    (idx: number) => {
-      suppressAutoRef.current = true; // evita o efeito falar de novo
-      play(stepText(idx));
-    },
-    [play, stepText]
+  const [screen, setScreen] = useState<Screen>(
+    beginDone ? "done" : showIntro ? "intro" : firstScreen(steps[startIndex])
   );
 
-  // Reprodução automática ao abrir cada pergunta (aguarda as vozes carregarem).
-  // No desktop toca sozinho; em tablets serve de melhor esforço.
-  useEffect(() => {
-    if (screen !== "question" || !step) return;
-    if (suppressAutoRef.current) {
-      suppressAutoRef.current = false;
-      return;
-    }
-    // Fala assim que as vozes carregarem; se demorarem, tenta mesmo assim.
-    // A limpeza do timeout a cada re-execução evita fala duplicada.
-    const delay = ready ? 250 : 700;
-    const t = window.setTimeout(() => play(stepText(cur)), delay);
-    return () => window.clearTimeout(t);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [cur, screen, ready]);
+  const { play, cancel, ready } = useVoice();
+
+  // A história tem que terminar antes de liberar o "Continuar"...
+  const ctx = useGatedSpeech(
+    play,
+    ready,
+    step?.question.context ?? null,
+    screen === "context",
+    speechTimeoutMs
+  );
+  // ...e a pergunta antes de liberar as alternativas.
+  const qst = useGatedSpeech(
+    play,
+    ready,
+    step?.question.question_text ?? null,
+    screen === "question",
+    speechTimeoutMs
+  );
 
   // Fala automática das instruções ao abrir a tela de intro.
   useEffect(() => {
@@ -135,15 +155,56 @@ export function Runner({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [screen, ready]);
 
+  // A tela em branco avança sozinha depois de BLANK_SCREEN_MS.
+  const nextRef = useRef<() => void>(() => {});
+  useEffect(() => {
+    if (screen !== "blank") return;
+    const t = window.setTimeout(() => nextRef.current(), BLANK_SCREEN_MS);
+    return () => window.clearTimeout(t);
+  }, [screen]);
+
   useEffect(() => () => cancel(), [cancel]);
 
   const optionLetters = ["A", "B", "C", "D"];
 
-  // Sai da intro e lê a primeira pergunta dentro do gesto (toque).
-  function startAssessment() {
-    setScreen("question");
-    speakStep(cur);
-  }
+  /** Abre o passo `idx`, falando dentro do gesto de toque (necessário em tablets). */
+  const openStep = useCallback(
+    (idx: number) => {
+      const s = steps[idx];
+      if (!s) return;
+      setCur(idx);
+      setSelected(null);
+      setResult(null);
+      if (s.question.context) {
+        setScreen("context");
+        ctx.speakNow(s.question.context);
+      } else {
+        setScreen("question");
+        qst.speakNow(s.question.question_text);
+      }
+    },
+    [steps, ctx, qst]
+  );
+
+  /** Fim da pergunta atual: encerra a fase, ou passa pela tela em branco. */
+  const finishQuestion = useCallback(() => {
+    cancel();
+    const isLast = cur + 1 >= total;
+    const phaseChanges = !isLast && steps[cur + 1].phase !== step!.phase;
+
+    if (isLast) {
+      setCompletedPhase(step!.phase);
+      setScreen("done");
+      return;
+    }
+    if (phaseChanges) {
+      setCompletedPhase(step!.phase);
+      setScreen("phaseComplete");
+      return;
+    }
+    nextRef.current = () => openStep(cur + 1);
+    setScreen("blank");
+  }, [cancel, cur, total, steps, step, openStep]);
 
   async function onConfirm() {
     if (selected == null || pending || !step) return;
@@ -156,43 +217,46 @@ export function Runner({
         selectedKey: selected,
       });
       if (step.feedback) {
-        setResult({ correct: res.isCorrect });
+        setResult({
+          correct: res.isCorrect,
+          canRetry: res.canRetry,
+          correctKey: res.correctKey,
+          // Sorteado aqui (handler de evento, não render): um emoji por resposta.
+          emoji:
+            FEEDBACK_EMOJIS[Math.floor(Math.random() * FEEDBACK_EMOJIS.length)],
+        });
+        cancel();
+        setScreen("feedback");
       } else {
-        advance();
+        finishQuestion();
       }
     } finally {
       setPending(false);
     }
   }
 
-  function advance() {
-    cancel();
-    const isLast = cur + 1 >= total;
-    const phaseChanges = !isLast && steps[cur + 1].phase !== step.phase;
-    setSelected(null);
-    setResult(null);
-    if (isLast) {
-      setCompletedPhase(step.phase);
-      setScreen("done");
-    } else if (phaseChanges) {
-      setCompletedPhase(step.phase);
-      setScreen("phaseComplete");
-    } else {
-      setCur(cur + 1);
-      speakStep(cur + 1); // lê a próxima pergunta dentro do gesto (toque)
+  /** Saída da tela de feedback: volta para a pergunta ou segue adiante. */
+  function afterFeedback() {
+    if (result?.canRetry) {
+      setSelected(null);
+      setResult(null);
+      setScreen("question");
+      qst.speakNow(step!.question.question_text);
+      return;
     }
+    finishQuestion();
   }
 
   function goNextPhase() {
-    setCur(cur + 1);
-    setScreen("question");
-    speakStep(cur + 1);
+    openStep(cur + 1);
   }
 
   const progressPct = useMemo(() => {
     if (!step) return 100;
-    return Math.round(((step.indexInPhase + (result ? 1 : 0)) / step.phaseTotal) * 100);
-  }, [step, result]);
+    // Credita a pergunta atual assim que ela se encerra — em qualquer fase.
+    const doneHere = screen === "blank" || screen === "phaseComplete" ? 1 : 0;
+    return Math.round(((step.indexInPhase + doneHere) / step.phaseTotal) * 100);
+  }, [step, screen]);
 
   // ---------- Tela de instruções (início da Fase A) ----------
   if (screen === "intro") {
@@ -247,7 +311,7 @@ export function Runner({
           </ol>
 
           <button
-            onClick={startAssessment}
+            onClick={() => openStep(cur)}
             className="btn3d btn3d-green w-full mt-6"
           >
             Começar
@@ -278,7 +342,7 @@ export function Runner({
       <CenterCard>
         <div className="text-6xl mb-3">{PHASE_EMOJI[completedPhase]}</div>
         <h1 className="text-2xl font-black mb-2">
-          Fase {completedPhase} concluída!
+          {steps[cur]?.phaseLabel ?? `Fase ${completedPhase}`} concluída!
         </h1>
         <p className="text-[var(--muted)] font-semibold mb-6">
           Você foi muito bem! Vamos para a próxima parte.
@@ -290,69 +354,119 @@ export function Runner({
     );
   }
 
+  // ---------- Respiro entre perguntas ----------
+  if (screen === "blank") {
+    return <div className="h-[100dvh] bg-white" aria-hidden />;
+  }
+
   if (!step) return null;
 
-  // ---------- Tela de pergunta ----------
-  return (
-    <div className="h-[100dvh] flex flex-col bg-white">
-      {/* Cabeçalho: progresso da fase */}
-      <div className="shrink-0 px-4 pt-4 pb-2 max-w-2xl w-full mx-auto">
-        <div className="flex items-center gap-3">
-          <Link
-            href={exitHref}
-            className="text-2xl leading-none text-[var(--muted)]"
-            aria-label="Sair"
-            title="Sair"
-          >
-            ✕
-          </Link>
-          <div className="progressbar flex-1">
-            <div style={{ width: `${progressPct}%` }} />
-          </div>
-          <span className="text-sm font-black text-[var(--muted)] whitespace-nowrap">
-            {step.phaseLabel}
-          </span>
+  // ---------- Feedback (só Fase B) ----------
+  if (screen === "feedback" && result) {
+    return <FeedbackScreen result={result} onContinue={afterFeedback} />;
+  }
+
+  const header = (
+    <div className="shrink-0 px-4 pt-4 pb-2 max-w-2xl w-full mx-auto">
+      <div className="flex items-center gap-3">
+        <Link
+          href={exitHref}
+          className="text-2xl leading-none text-[var(--muted)]"
+          aria-label="Sair"
+          title="Sair"
+        >
+          ✕
+        </Link>
+        <div className="progressbar flex-1">
+          <div style={{ width: `${progressPct}%` }} />
         </div>
-        {demoBadge && (
-          <p className="text-center text-xs font-bold text-[var(--muted)] mt-1">
-            {demoBadge}
-          </p>
-        )}
+        <span className="text-sm font-black text-[var(--muted)] whitespace-nowrap">
+          {step.phaseLabel}
+        </span>
       </div>
+      {demoBadge && (
+        <p className="text-center text-xs font-bold text-[var(--muted)] mt-1">
+          {demoBadge}
+        </p>
+      )}
+    </div>
+  );
 
-      {/* Conteúdo (rola apenas esta área) */}
-      <div className="flex-1 min-h-0 overflow-y-auto px-4 py-4 max-w-2xl w-full mx-auto flex flex-col gap-4">
-        {step.question.image_key && (
-          <div className="relative w-full aspect-[16/9] rounded-2xl overflow-hidden bg-[#f0f4f8]">
-            <Image
-              src={`/images/${step.question.image_key}`}
-              alt=""
-              fill
-              sizes="(max-width: 640px) 100vw, 640px"
-              className="object-contain"
-              priority
-            />
-          </div>
-        )}
+  // ---------- Tela da história / frases ----------
+  if (screen === "context" && step.question.context) {
+    const context = step.question.context;
+    return (
+      <div className="h-[100dvh] flex flex-col bg-white">
+        {header}
+        <div className="flex-1 min-h-0 overflow-y-auto px-4 py-4 max-w-2xl w-full mx-auto flex flex-col gap-4">
+          {step.question.image_key && (
+            <div className="relative w-full aspect-[16/9] rounded-2xl overflow-hidden bg-[#f0f4f8]">
+              <Image
+                src={`/images/${step.question.image_key}`}
+                alt=""
+                fill
+                sizes="(max-width: 640px) 100vw, 640px"
+                className="object-contain"
+                priority
+              />
+            </div>
+          )}
 
-        {step.question.context && (
-          <div className="bg-[#f7f9fc] rounded-2xl p-3">
-            <div className="flex items-center gap-2 mb-1.5">
+          <div className="bg-[#f7f9fc] rounded-2xl p-4">
+            <div className="flex items-center gap-2 mb-2">
               <SpeakButton
-                text={step.question.context}
+                text={context}
                 speak={play}
-                label="Ouvir a história"
+                label="Ouvir de novo"
               />
               <span className="text-xs font-black uppercase tracking-wide text-[var(--muted)]">
-                História
+                {step.question.phrases ? "Leia as frases" : "História"}
               </span>
             </div>
-            <p className="font-semibold text-[var(--foreground)] leading-snug">
-              {step.question.context}
-            </p>
+            {step.question.phrases ? (
+              <ol className="flex flex-col gap-2">
+                {step.question.phrases.map((p, i) => (
+                  <li key={i} className="flex items-start gap-2">
+                    <span className="shrink-0 text-xs font-black uppercase text-[var(--muted)] mt-1">
+                      Frase {i + 1}
+                    </span>
+                    <span className="font-semibold leading-snug">{p}</span>
+                  </li>
+                ))}
+              </ol>
+            ) : (
+              <p className="font-semibold text-[var(--foreground)] leading-snug">
+                {context}
+              </p>
+            )}
           </div>
-        )}
+        </div>
 
+        <div className="shrink-0 border-t-2 border-[var(--border)] bg-white">
+          <div className="max-w-2xl w-full mx-auto px-4 py-4 flex items-center justify-end">
+            <button
+              onClick={() => {
+                setScreen("question");
+                qst.speakNow(step.question.question_text);
+              }}
+              disabled={!ctx.done}
+              className="btn3d btn3d-green"
+            >
+              {ctx.done ? "Continuar" : "Ouvindo..."}
+            </button>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  // ---------- Tela da pergunta ----------
+  const locked = pending || !qst.done;
+  return (
+    <div className="h-[100dvh] flex flex-col bg-white">
+      {header}
+
+      <div className="flex-1 min-h-0 overflow-y-auto px-4 py-4 max-w-2xl w-full mx-auto flex flex-col gap-4">
         <div>
           <div className="flex items-center gap-2 mb-1.5">
             <SpeakButton
@@ -361,7 +475,7 @@ export function Runner({
               label="Ouvir a pergunta"
             />
             <span className="text-xs font-black uppercase tracking-wide text-[var(--muted)]">
-              Pergunta
+              {step.question.etapa_label ?? "Pergunta"}
             </span>
           </div>
           <h2 className="text-xl font-black leading-snug">
@@ -372,37 +486,24 @@ export function Runner({
         <div className="flex flex-col gap-3 mt-1">
           {step.question.options.map((opt, i) => {
             const isSel = selected === opt.key;
-            const locked = !!result || pending;
-            let cls = `choice opt-${i % 4}`;
-            if (result) {
-              // Só a Fase B mostra feedback: destaca a escolhida.
-              if (isSel) cls += result.correct ? " correct" : " wrong";
-            } else if (isSel) {
-              cls += " selected";
-            }
-            function select() {
-              if (locked) return;
-              setSelected(opt.key);
-              play(opt.text);
-            }
+            let cls = "choice";
+            if (isSel) cls += " selected";
             return (
-              // Contêiner clicável (div) para poder conter o botão de áudio
-              // sem aninhar <button> dentro de <button>.
-              <div
-                key={opt.key}
-                role="button"
-                tabIndex={locked ? -1 : 0}
-                aria-pressed={isSel}
-                className={cls}
-                onClick={select}
-                onKeyDown={(e) => {
-                  if (e.key === "Enter" || e.key === " ") {
-                    e.preventDefault();
-                    select();
-                  }
-                }}
-              >
-                <span className="flex-1">{opt.text}</span>
+              // O botão de áudio fica FORA da alternativa: assim a alternativa
+              // pode ser um <button> de verdade, sem aninhar botões.
+              <div key={opt.key} className="flex items-center gap-2">
+                <button
+                  type="button"
+                  disabled={locked}
+                  aria-pressed={isSel}
+                  className={cls}
+                  onClick={() => {
+                    setSelected(opt.key);
+                    play(opt.text);
+                  }}
+                >
+                  {opt.text}
+                </button>
                 <SpeakButton
                   text={opt.text}
                   speak={play}
@@ -412,46 +513,78 @@ export function Runner({
             );
           })}
         </div>
+
+        {!qst.done && (
+          <p className="text-center text-sm font-bold text-[var(--muted)]">
+            Ouça a pergunta para escolher a resposta.
+          </p>
+        )}
       </div>
 
-      {/* Rodapé: feedback (Fase B) + botão (sempre visível) */}
-      <div
-        className={`shrink-0 border-t-2 ${
-          result
-            ? result.correct
-              ? "border-[var(--green)] bg-[var(--green-soft)]"
-              : "border-[var(--red)] bg-[var(--red-soft)]"
-            : "border-[var(--border)] bg-white"
-        }`}
-      >
-        <div className="max-w-2xl w-full mx-auto px-4 py-4 flex items-center justify-between gap-3">
-          {result ? (
-            <span
-              className={`font-black text-lg ${
-                result.correct
-                  ? "text-[var(--green-dark)]"
-                  : "text-[var(--red-dark)]"
-              }`}
-            >
-              {result.correct ? "Acertou! 🎉" : "Ops, não foi dessa vez."}
-            </span>
-          ) : (
-            <span />
-          )}
-          {result ? (
-            <button onClick={advance} className="btn3d btn3d-green">
-              Continuar
-            </button>
-          ) : (
-            <button
-              onClick={onConfirm}
-              disabled={selected == null || pending}
-              className="btn3d btn3d-green"
-            >
-              {pending ? "..." : "Confirmar"}
-            </button>
-          )}
+      <div className="shrink-0 border-t-2 border-[var(--border)] bg-white">
+        <div className="max-w-2xl w-full mx-auto px-4 py-4 flex items-center justify-end">
+          <button
+            onClick={onConfirm}
+            disabled={selected == null || locked}
+            className="btn3d btn3d-green"
+          >
+            {pending ? "..." : "Confirmar"}
+          </button>
         </div>
+      </div>
+    </div>
+  );
+}
+
+/** Tela cheia de "Parabéns" / "Tente novamente" (Fase B). */
+function FeedbackScreen({
+  result,
+  onContinue,
+}: {
+  result: {
+    correct: boolean;
+    canRetry: boolean;
+    correctKey: string | null;
+    emoji: string;
+  };
+  onContinue: () => void;
+}) {
+  const emoji = result.emoji;
+
+  if (result.correct) {
+    return (
+      <div className="min-h-[100dvh] flex items-center justify-center px-6 bg-[var(--green-soft)]">
+        <div className="bg-white rounded-3xl p-8 text-center max-w-sm w-full">
+          <div className="text-7xl mb-3">{emoji}</div>
+          <h1 className="text-3xl font-black mb-2 text-[var(--green-dark)]">
+            Parabéns!
+          </h1>
+          <p className="text-[var(--muted)] font-semibold mb-6">
+            Você acertou!
+          </p>
+          <button onClick={onContinue} className="btn3d btn3d-green">
+            Continuar
+          </button>
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div className="min-h-[100dvh] flex items-center justify-center px-6 bg-[var(--red-soft)]">
+      <div className="bg-white rounded-3xl p-8 text-center max-w-sm w-full">
+        <div className="text-7xl mb-3">🤔</div>
+        <h1 className="text-3xl font-black mb-2 text-[var(--red-dark)]">
+          {result.canRetry ? "Tente novamente" : "Não foi dessa vez"}
+        </h1>
+        <p className="text-[var(--muted)] font-semibold mb-6">
+          {result.canRetry
+            ? "Ouça a pergunta com atenção e escolha outra resposta."
+            : "Tudo bem! Vamos para a próxima."}
+        </p>
+        <button onClick={onContinue} className="btn3d btn3d-green">
+          {result.canRetry ? "Voltar para a pergunta" : "Continuar"}
+        </button>
       </div>
     </div>
   );

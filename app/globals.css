@@ -87,69 +87,64 @@ body {
   box-shadow: 0 4px 0 #cfcfcf;
 }
 
-/* Cartão de alternativa selecionável. */
+/*
+ * Cartão de alternativa selecionável.
+ *
+ * Todas as alternativas têm a MESMA cor (cinza escuro), de propósito: quando
+ * cada uma tinha a sua cor, a cor virava um jeito de se referir à resposta
+ * ("a azul") e podia enviesar a escolha. O que muda ao passar o mouse ou
+ * selecionar é a luminosidade E a borda — nunca só a cor, para não depender de
+ * percepção de cor.
+ */
 .choice {
   display: flex;
   align-items: center;
   gap: 0.75rem;
-  width: 100%;
+  flex: 1;
+  min-width: 0;
   text-align: left;
-  background: white;
-  border: 2px solid var(--border);
+  background: #4a4f57;
+  border: 2px solid #3a3e45;
   border-bottom-width: 4px;
   border-radius: 1rem;
   padding: 1rem 1.1rem;
   font-size: 1.05rem;
   font-weight: 700;
-  color: var(--foreground);
+  color: #ffffff;
   cursor: pointer;
   transition: background 0.1s ease, border-color 0.1s ease, transform 0.05s ease;
 }
-.choice:hover {
-  background: #f7f7f7;
+.choice:hover:not(:disabled) {
+  background: #5c626c;
+  border-color: #8f97a3;
 }
-.choice:active {
+.choice:active:not(:disabled) {
   transform: translateY(1px);
 }
-/* Cores das 4 alternativas (rotativas). */
-.choice.opt-0 {
-  background: var(--blue-soft);
-  border-color: #9ad9fb;
-  color: #10689b;
-}
-.choice.opt-1 {
-  background: var(--green-soft);
-  border-color: #a8e57a;
-  color: #3f7a12;
-}
-.choice.opt-2 {
-  background: #fff3c4;
-  border-color: #ffdd66;
-  color: #8a6100;
-}
-.choice.opt-3 {
-  background: #efe1ff;
-  border-color: #cda6f5;
-  color: #6a34b0;
+.choice:focus-visible {
+  outline: 3px solid var(--blue);
+  outline-offset: 2px;
 }
 
-/* Borda destacada na alternativa selecionada (mantém a cor da opção). */
+/* Selecionada: mais clara + anel — visível sem depender de cor. */
 .choice.selected {
-  border-color: #3c3c3c;
+  background: #6b7280;
+  border-color: #ffffff;
   box-shadow: 0 0 0 3px #3c3c3c;
 }
 .choice.correct {
-  background: var(--green-soft);
+  background: var(--green-dark);
   border-color: var(--green);
-  color: var(--green-dark);
+  color: #ffffff;
 }
 .choice.wrong {
-  background: var(--red-soft);
+  background: var(--red-dark);
   border-color: var(--red);
-  color: var(--red-dark);
+  color: #ffffff;
 }
 .choice:disabled {
   cursor: default;
+  opacity: 0.55;
 }
 
 /* Ícone circular de "ouvir" (alto-falante). */

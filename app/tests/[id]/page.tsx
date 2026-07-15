@@ -3,6 +3,7 @@ import { notFound, redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { getBanks } from "@/lib/questions.server";
 import { PHASES, phaseConfig } from "@/lib/phases";
+import { buildSteps } from "@/lib/assessment";
 import type { Answer, Phase, Question, Test } from "@/lib/types";
 
 function formatDate(iso: string | null) {
@@ -40,6 +41,13 @@ export default async function TestDetailsPage({
   ]);
   const answers = (answerData ?? []) as Answer[];
 
+  // Quantos passos cada fase tem. Não é o tamanho do banco: B1/B2 filtram por
+  // metáfora, e A/AR1/AR2 compartilham o mesmo banco.
+  const phaseTotals = new Map<Phase, number>();
+  for (const s of buildSteps(byBank, id)) {
+    phaseTotals.set(s.phase, (phaseTotals.get(s.phase) ?? 0) + 1);
+  }
+
   const questionById = new Map<string, Question>();
   for (const list of Object.values(byBank)) {
     for (const q of list) questionById.set(q.id, q);
@@ -70,19 +78,27 @@ export default async function TestDetailsPage({
                 Nasc.: {formatDate(t.student_birth_date)}
               </p>
             </div>
-            <Link
-              href={`/tests/${t.id}/run`}
-              className="btn3d btn3d-green !py-2 !px-4 text-sm"
-            >
-              {t.status === "completed" ? "Rever" : "Continuar"}
-            </Link>
+            <div className="flex items-center gap-2">
+              <Link
+                href={`/tests/${t.id}/menu`}
+                className="btn3d !py-2 !px-4 text-sm"
+              >
+                Escolher fase
+              </Link>
+              <Link
+                href={`/tests/${t.id}/run`}
+                className="btn3d btn3d-green !py-2 !px-4 text-sm"
+              >
+                {t.status === "completed" ? "Rever" : "Continuar"}
+              </Link>
+            </div>
           </div>
 
-          {/* Pontuação por fase */}
-          <div className="grid grid-cols-3 gap-3 mt-6">
+          {/* Pontuação por fase. `is_correct` = acertou de primeira. */}
+          <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 mt-6">
             {PHASES.map((pc) => {
               const cfg = phaseConfig(pc.phase);
-              const total = (byBank[cfg.bank] ?? []).length;
+              const total = phaseTotals.get(pc.phase) ?? 0;
               const phaseAnswers = answersByPhase.get(pc.phase) ?? [];
               const correct = phaseAnswers.filter((a) => a.is_correct).length;
               return (
@@ -138,11 +154,20 @@ export default async function TestDetailsPage({
                           {q?.question_text ?? "—"}
                         </p>
                         <p className="text-sm font-semibold text-[var(--muted)] mt-1">
-                          Resposta: {selected?.text ?? a.selected_key}
+                          1ª resposta: {selected?.text ?? a.selected_key}
                         </p>
                         {!a.is_correct && correctOpt && (
                           <p className="text-sm font-semibold text-[var(--green-dark)] mt-0.5">
                             Correta: {correctOpt.text}
+                          </p>
+                        )}
+                        {/* Só a Fase B tem retentativa; nas demais attempts é 1. */}
+                        {a.attempts > 1 && (
+                          <p className="text-sm font-semibold text-[var(--muted)] mt-0.5">
+                            {a.attempts} tentativas ·{" "}
+                            {a.solved
+                              ? "acertou depois"
+                              : "não chegou na correta"}
                           </p>
                         )}
                       </div>

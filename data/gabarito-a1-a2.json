@@ -1,0 +1,23 @@
+{
+  "_comment": "Gabarito dos bancos A1 e A2. A planilha 'Perguntas da fase A1 e A2.xlsx' nao marca a resposta correta (ao contrario da planilha da fase B, que usa o prefixo ✔️), entao o gabarito mora aqui. O valor e a COLUNA da planilha onde esta a alternativa correta: F = Alternativa A, G = Alternativa B, H = Alternativa C. Extraido do data/questions.json anterior, cujas alternativas batem texto a texto com a planilha. scripts/build_questions.py le este arquivo.",
+  "A1B01": "F",
+  "A1B02": "F",
+  "A1B03": "G",
+  "A1B04": "F",
+  "A1B05": "F",
+  "A1B06": "F",
+  "A1B07": "F",
+  "A1B08": "F",
+  "A1B09": "F",
+  "A1B10": "F",
+  "A201": "G",
+  "A202": "F",
+  "A203": "F",
+  "A204": "F",
+  "A205": "F",
+  "A206": "F",
+  "A207": "H",
+  "A208": "F",
+  "A209": "F",
+  "A210": "F"
+}

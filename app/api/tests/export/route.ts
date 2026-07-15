@@ -39,12 +39,18 @@ export async function GET() {
     "data_nascimento",
     "status",
     "fase",
+    "item",
     "metafora",
+    "metafora_treinada",
     "etapa",
+    "etapa_nome",
     "pergunta",
-    "resposta_escolhida",
+    "primeira_resposta",
     "resposta_correta",
-    "acertou",
+    "acertou_de_primeira",
+    "tentativas",
+    "chegou_na_correta",
+    "todas_as_escolhas",
     "respondido_em",
   ];
 
@@ -55,21 +61,31 @@ export async function GET() {
       if (!t) return null;
       const selected = q?.options.find((o) => o.key === a.selected_key);
       const correct = q?.options.find((o) => o.is_correct);
+      // O texto de cada escolha, em ordem — na Fase B mostra o caminho até acertar.
+      const chosen = (a.selected_keys ?? [a.selected_key])
+        .map((k) => q?.options.find((o) => o.key === k)?.text ?? k)
+        .join(" | ");
       return [
         t.student_name,
         t.student_birth_date ?? "",
         t.status,
         a.phase,
+        q?.code ?? "",
         q?.metaphor ?? "",
-        q?.step ?? "",
+        q?.parent_metaphor_code ?? "",
+        q?.etapa ?? "",
+        q?.etapa_label ?? "",
         q?.question_text ?? "",
         selected?.text ?? a.selected_key,
         correct?.text ?? "",
         a.is_correct ? "sim" : "nao",
+        a.attempts,
+        a.solved ? "sim" : "nao",
+        chosen,
         new Date(a.answered_at).toLocaleString("pt-BR"),
       ];
     })
-    .filter((r): r is string[] => r !== null);
+    .filter((r): r is (string | number)[] => r !== null);
 
   const csv =
     "﻿" + // BOM para acentos abrirem certo no Excel

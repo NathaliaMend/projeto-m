@@ -1,0 +1,1 @@
+provider=openai voice=coral model=gpt-4o-mini-tts

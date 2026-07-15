@@ -2,7 +2,7 @@ import Link from "next/link";
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { getBanks } from "@/lib/questions.server";
-import { buildSteps } from "@/lib/assessment";
+import { totalSteps as countSteps } from "@/lib/assessment";
 import { TestActions } from "./tests/TestActions";
 import type { Test } from "@/lib/types";
 
@@ -27,7 +27,7 @@ export default async function DashboardPage() {
     supabase.from("answers").select("test_id"),
   ]);
 
-  const totalSteps = buildSteps(byBank).length;
+  const totalSteps = countSteps(byBank);
   const answeredByTest = new Map<string, number>();
   for (const r of answerRows ?? []) {
     answeredByTest.set(r.test_id, (answeredByTest.get(r.test_id) ?? 0) + 1);

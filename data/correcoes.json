@@ -1,0 +1,47 @@
+{
+  "_comment": "Correcoes de erros de digitacao das planilhas, aplicadas por scripts/build_questions.py DEPOIS de ler o .xlsx. As planilhas continuam sendo a fonte de verdade; isto aqui e uma camada fina e revisavel por cima. Importa porque o audio e gerado a partir do texto exato: um erro aqui vira erro falado para a crianca. Cada item troca o trecho 'de' por 'para' no campo indicado. O build FALHA se 'de' nao aparecer exatamente uma vez no campo -- ou seja, quando voce corrigir a planilha, o build avisa que a correcao virou obsoleta e deve ser removida daqui. Campo: context | question_text | option:a..d",
+  "correcoes": [
+    {
+      "code": "A201",
+      "campo": "context",
+      "de": "chorando muito because o seu castelo",
+      "para": "chorando muito porque o seu castelo",
+      "motivo": "palavra em ingles no meio do texto em portugues; o TTS le 'because' em ingles"
+    },
+    {
+      "code": "A1B09",
+      "campo": "question_text",
+      "de": "\"a carinho foi um curativo\"",
+      "para": "\"o carinho foi um curativo\"",
+      "motivo": "concordancia: 'o carinho'. O questions.json anterior ja estava correto; a planilha regrediu"
+    },
+    {
+      "code": "A204",
+      "campo": "context",
+      "de": "fez o corpo dela travar",
+      "para": "fez o corpo dele travar",
+      "motivo": "o personagem e um menino ('ele pensou', 'ele parou de pedalar')"
+    },
+    {
+      "code": "A208",
+      "campo": "option:c",
+      "de": "os passarinhos com binoculo e vendo eles voarem pra longe",
+      "para": "os passarinhos com binóculo e vendo eles voarem para longe.",
+      "motivo": "acento em 'binóculo'; 'pra' -> 'para' e ponto final, para bater com o padrao das outras alternativas"
+    },
+    {
+      "code": "A1B03-E3-M1",
+      "campo": "question_text",
+      "de": "falou que —o estudo é uma escada—?",
+      "para": "falou que \"o estudo é uma escada\"?",
+      "motivo": "travessao no lugar de aspas; o padrao das outras perguntas e aspas"
+    },
+    {
+      "code": "A1B05-E3-M1",
+      "campo": "question_text",
+      "de": "falou que —a pressa da Ana é um furacão—?",
+      "para": "falou que \"a pressa da Ana é um furacão\"?",
+      "motivo": "travessao no lugar de aspas; o padrao das outras perguntas e aspas"
+    }
+  ]
+}

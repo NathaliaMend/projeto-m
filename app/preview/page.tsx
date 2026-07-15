@@ -1,64 +1,68 @@
 import Link from "next/link";
 import questionsData from "@/data/questions.json";
 import { PHASES, phaseConfig } from "@/lib/phases";
-import { shuffleOptions } from "@/lib/shuffle";
-import type { Phase, QuestionOption } from "@/lib/types";
+import { buildSteps, shuffleStep } from "@/lib/assessment";
+import type { Phase, Question } from "@/lib/types";
 import { PreviewRunner } from "./PreviewRunner";
 import type { RunnerStep } from "@/app/tests/[id]/run/Runner";
 
-interface RawQuestion {
-  bank: string;
-  order_index: number;
-  context: string | null;
-  image_key: string | null;
-  question_text: string;
-  options: QuestionOption[];
-}
-
-const banks = questionsData as unknown as Record<string, RawQuestion[]>;
+/**
+ * O JSON não tem `id` (é o Postgres que gera no seed), mas buildSteps/shuffleStep
+ * trabalham com Question. Usamos o `code` como id sintético — é justamente a
+ * chave natural e estável de cada pergunta.
+ */
+const byBank: Record<string, Question[]> = Object.fromEntries(
+  Object.entries(questionsData as Record<string, Omit<Question, "id">[]>).map(
+    ([bank, qs]) => [bank, qs.map((q) => ({ ...q, id: q.code }) as Question)]
+  )
+);
 
 type Selection = Phase | "all";
 
-function isSelection(v: string | undefined): v is Selection {
-  return v === "A" || v === "B" || v === "C" || v === "all";
-}
+const isSelection = (v: string | undefined): v is Selection =>
+  v === "all" || PHASES.some((p) => p.phase === v);
 
-/** ID sintético e estável para a demonstração (o JSON não tem ids). */
-function qid(q: RawQuestion) {
-  return `${q.bank}-${q.order_index}`;
-}
-
+/**
+ * Monta a demonstração com o MESMO buildSteps da avaliação real, para o preview
+ * mostrar o sorteio das metáforas e a condição sem contexto de verdade.
+ * `seed` faz o papel do testId — fixo, para a demonstração ser reproduzível.
+ */
 function buildPreview(sel: Selection) {
-  const chosen =
-    sel === "all" ? PHASES : PHASES.filter((p) => p.phase === sel);
+  const seed = "preview";
+  const all = buildSteps(byBank, seed);
+  const chosen = sel === "all" ? all : all.filter((s) => s.phase === sel);
 
-  const steps: RunnerStep[] = [];
-  const correctKeys: Record<string, string> = {};
-
-  for (const cfg of chosen) {
-    const qs = banks[cfg.bank] ?? [];
-    qs.forEach((q, i) => {
-      const id = qid(q);
-      const correct = q.options.find((o) => o.is_correct);
-      if (correct) correctKeys[id] = correct.key;
-
-      const shuffled = shuffleOptions(q.options, `preview:${cfg.phase}:${id}`);
-      steps.push({
-        phase: cfg.phase,
-        phaseLabel: cfg.label,
-        feedback: cfg.feedbackPerQuestion,
-        indexInPhase: i,
-        phaseTotal: qs.length,
-        question: {
-          id,
-          context: q.context || null,
-          image_key: q.image_key,
-          question_text: q.question_text,
-          options: shuffled.map((o) => ({ key: o.key, text: o.text })),
-        },
-      });
-    });
+  const phaseTotals = new Map<Phase, number>();
+  for (const s of chosen) {
+    phaseTotals.set(s.phase, (phaseTotals.get(s.phase) ?? 0) + 1);
   }
+
+  const correctKeys: Record<string, string> = {};
+  const steps: RunnerStep[] = chosen.map((s, i) => {
+    const cfg = phaseConfig(s.phase);
+    const q = shuffleStep(s, seed);
+    const correct = q.options.find((o) => o.is_correct);
+    if (correct) correctKeys[q.id] = correct.key;
+
+    return {
+      phase: s.phase,
+      phaseLabel: cfg.label,
+      feedback: cfg.feedbackPerQuestion,
+      // Ao ver uma fase isolada, o índice do passo dentro dela recomeça do zero.
+      indexInPhase: sel === "all" ? s.indexInPhase : i,
+      phaseTotal: phaseTotals.get(s.phase) ?? 0,
+      question: {
+        id: q.id,
+        context: q.context,
+        phrases: q.phrases,
+        image_key: q.image_key,
+        etapa_label: q.etapa_label,
+        question_text: q.question_text,
+        options: q.options.map((o) => ({ key: o.key, text: o.text })),
+      },
+    };
+  });
+
   return { steps, correctKeys };
 }
 
@@ -74,32 +78,41 @@ export default async function PreviewPage({
     return <PreviewRunner steps={steps} correctKeys={correctKeys} />;
   }
 
+  const counts = new Map<Phase, number>();
+  for (const s of buildSteps(byBank, "preview")) {
+    counts.set(s.phase, (counts.get(s.phase) ?? 0) + 1);
+  }
+  const total = [...counts.values()].reduce((a, b) => a + b, 0);
+
+  const emoji: Record<Phase, string> = {
+    A: "🌱",
+    B1: "🚀",
+    AR1: "🌿",
+    B2: "🛸",
+    AR2: "🌳",
+    C: "🏆",
+  };
+  const desc: Record<Phase, string> = {
+    A: "história + imagem, sem feedback",
+    B1: "metáforas A1B01, A1B03, A1B05 · 3 etapas, com feedback",
+    AR1: "reaplicação da Fase A depois de A1B05",
+    B2: "metáforas A1B07, A1B09 · 3 etapas, com feedback",
+    AR2: "reaplicação da Fase A depois de A1B09",
+    C: "metáforas novas (banco A2)",
+  };
+
   const cards: { sel: Selection; title: string; desc: string; emoji: string }[] =
     [
-      {
-        sel: "A",
-        title: "Fase A",
-        desc: `${banks.A1?.length ?? 0} perguntas · história + imagem, sem feedback`,
-        emoji: "🌱",
-      },
-      {
-        sel: "B",
-        title: "Fase B",
-        desc: `${banks.B?.length ?? 0} perguntas · etapas, com feedback por pergunta`,
-        emoji: "🚀",
-      },
-      {
-        sel: "C",
-        title: "Fase C",
-        desc: `${banks.A1?.length ?? 0} perguntas · repete a Fase A`,
-        emoji: "🏆",
-      },
+      ...PHASES.map((p) => ({
+        sel: p.phase as Selection,
+        title: p.label,
+        desc: `${counts.get(p.phase) ?? 0} perguntas · ${desc[p.phase]}`,
+        emoji: emoji[p.phase],
+      })),
       {
         sel: "all",
-        title: "Tudo (A → B → C)",
-        desc: `${
-          (banks.A1?.length ?? 0) * 2 + (banks.B?.length ?? 0)
-        } perguntas · avaliação completa`,
+        title: "Tudo (A → B1 → AR1 → B2 → AR2 → C)",
+        desc: `${total} perguntas · avaliação completa`,
         emoji: "✨",
       },
     ];

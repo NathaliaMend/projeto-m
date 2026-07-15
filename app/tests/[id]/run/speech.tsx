@@ -82,7 +82,7 @@ export function useSpeak() {
 }
 
 /**
- * Reprodução preferindo o áudio pré-gerado (/audio/<id>.m4a, voz humana),
+ * Reprodução preferindo o áudio pré-gerado (/audio/<id>.mp3, voz humana),
  * com fallback automático para o TTS do navegador quando o arquivo não existe.
  */
 export function useVoice() {
@@ -104,21 +104,26 @@ export function useVoice() {
       cancelTTS();
       stopAudio();
 
-      const audio = new Audio(audioSrc(text));
+      const audio = new Audio();
+      audio.preload = "auto";
       audioRef.current = audio;
       let fellBack = false;
       const fallback = () => {
         if (fellBack) return;
         fellBack = true;
         stopAudio();
-        speak(text, onEnd); // arquivo ausente/bloqueado → voz do navegador
+        speak(text, onEnd);
       };
       audio.onended = () => {
         if (audioRef.current === audio) audioRef.current = null;
         onEnd?.();
       };
       audio.onerror = fallback;
-      audio.play().catch(fallback);
+      audio.oncanplaythrough = () => {
+        audio.oncanplaythrough = null;
+        audio.play().catch(fallback);
+      };
+      audio.src = audioSrc(text);
     },
     [speak, cancelTTS, stopAudio]
   );
@@ -129,6 +134,75 @@ export function useVoice() {
   }, [cancelTTS, stopAudio]);
 
   return { play, cancel, supported, ready };
+}
+
+/**
+ * Toca `text` ao abrir a tela e avisa quando a fala terminou — é o que libera
+ * o botão "Continuar" (história) e as alternativas (pergunta).
+ *
+ * Dois cuidados que não são opcionais:
+ * - Tablets bloqueiam áudio disparado por timer, então a fala precisa sair de
+ *   dentro do gesto de toque. Quem chama `speakNow()` num handler de clique
+ *   marca `suppressAuto`, e o efeito automático se cala para não tocar 2x.
+ * - Se o fim nunca chega (mp3 quebrado, TTS falhando em silêncio), a trava
+ *   abre sozinha por tempo — senão a criança fica presa na tela.
+ */
+export function useGatedSpeech(
+  play: (text: string, onEnd?: () => void) => void,
+  ready: boolean,
+  text: string | null,
+  active: boolean,
+  timeoutMs: (t: string) => number
+) {
+  // Guarda QUAL texto já terminou, não um booleano: com um booleano, ao trocar
+  // de pergunta o `done` do passo anterior valeria durante os ~250ms até a fala
+  // começar, e a tela liberaria sozinha por um instante.
+  const [spokenFor, setSpokenFor] = useState<string | null>(null);
+  const done = !text || spokenFor === text;
+
+  const suppressAuto = useRef(false);
+  const timer = useRef<number | null>(null);
+
+  const start = useCallback(
+    (t: string) => {
+      if (timer.current) window.clearTimeout(timer.current);
+      const finish = () => setSpokenFor(t);
+      // Trava de segurança: se o fim não chegar (mp3 quebrado, TTS mudo),
+      // libera por tempo — senão a criança fica presa na tela.
+      timer.current = window.setTimeout(finish, timeoutMs(t));
+      play(t, finish);
+    },
+    [play, timeoutMs]
+  );
+
+  /** Fala dentro do gesto de toque; cala o autoplay que viria em seguida. */
+  const speakNow = useCallback(
+    (t: string) => {
+      suppressAuto.current = true;
+      start(t);
+    },
+    [start]
+  );
+
+  useEffect(() => {
+    if (!active || !text) return;
+    if (suppressAuto.current) {
+      suppressAuto.current = false;
+      return;
+    }
+    const delay = ready ? 250 : 700;
+    const t = window.setTimeout(() => start(text), delay);
+    return () => window.clearTimeout(t);
+  }, [text, active, ready, start]);
+
+  useEffect(
+    () => () => {
+      if (timer.current) window.clearTimeout(timer.current);
+    },
+    []
+  );
+
+  return { done, speakNow, replay: start };
 }
 
 /** Botão circular de "ouvir" que reproduz um texto. */

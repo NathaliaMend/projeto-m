@@ -1,0 +1,3348 @@
+{
+  "A1": [
+    {
+      "code": "A1B01",
+      "bank": "A1",
+      "metaphor_number": 1,
+      "parent_metaphor_code": null,
+      "etapa": null,
+      "etapa_label": null,
+      "step": null,
+      "order_index": 1,
+      "metaphor": "A coragem é uma mola.",
+      "context": "Maria estava com muito medo de tentar ficar em pé na prancha de surfe. Mas, ao ouvir o barulho do mar, ela acreditou nela mesma, e essa força a fez saltar para cima da prancha com toda a energia. O irmão dela comemorou: — \"A coragem da Maria é uma mola.\"",
+      "phrases": null,
+      "image_key": "faseA/01.jpg",
+      "question_text": "O que o irmão quis dizer quando falou que \"a coragem é uma mola\"?",
+      "options": [
+        {
+          "key": "a",
+          "text": "Que acreditar nela mesma deu um forte impulso para poder superar o medo e agir.",
+          "is_correct": true,
+          "is_fixed": false
+        },
+        {
+          "key": "b",
+          "text": "Que a Maria colou um pedaço de ferro enrolado debaixo da sua prancha.",
+          "is_correct": false,
+          "is_fixed": false
+        },
+        {
+          "key": "c",
+          "text": "Que o mar jogou a Maria para o alto de propósito porque a água estava funda.",
+          "is_correct": false,
+          "is_fixed": false
+        },
+        {
+          "key": "d",
+          "text": "Não tenho certeza da resposta correta.",
+          "is_correct": false,
+          "is_fixed": true
+        }
+      ]
+    },
+    {
+      "code": "A1B02",
+      "bank": "A1",
+      "metaphor_number": 2,
+      "parent_metaphor_code": null,
+      "etapa": null,
+      "etapa_label": null,
+      "step": null,
+      "order_index": 2,
+      "metaphor": "A ofensa é uma flecha.",
+      "context": "Lucas ficou com muita raiva e gritou xingamentos para o colega que estava do outro lado do recreio. As palavras voaram longe e atingiram o colega, que começou a chorar sentindo o coração machucado. A professora disse: — \"A ofensa é uma flecha.\"",
+      "phrases": null,
+      "image_key": "faseA/02.jpg",
+      "question_text": "O que a professora quis dizer quando falou que \"a ofensa é uma flecha\"?",
+      "options": [
+        {
+          "key": "a",
+          "text": "Que as palavras ruins foram jogadas de longe e acabaram machucando os sentimentos do colega.",
+          "is_correct": true,
+          "is_fixed": false
+        },
+        {
+          "key": "b",
+          "text": "Que Lucas atirou com um arco e flecha de madeira de verdade no recreio.",
+          "is_correct": false,
+          "is_fixed": false
+        },
+        {
+          "key": "c",
+          "text": "Que os meninos estavam brincando de caçadores durante o intervalo.",
+          "is_correct": false,
+          "is_fixed": false
+        },
+        {
+          "key": "d",
+          "text": "Não tenho certeza da resposta correta.",
+          "is_correct": false,
+          "is_fixed": true
+        }
+      ]
+    },
+    {
+      "code": "A1B03",
+      "bank": "A1",
+      "metaphor_number": 3,
+      "parent_metaphor_code": null,
+      "etapa": null,
+      "etapa_label": null,
+      "step": null,
+      "order_index": 3,
+      "metaphor": "O estudo é uma escada.",
+      "context": "Ana estuda um pouquinho todos os dias. Cada coisa nova que ela aprende ajuda ela a chegar mais perto dos seus sonhos, subindo degrau por degrau. Maria a amiga de ana disse: “O estudo é uma escada”",
+      "phrases": null,
+      "image_key": "faseA/03.jpg",
+      "question_text": "O que Maria quis dizer quando falou que “o estudo é uma escada”?",
+      "options": [
+        {
+          "key": "a",
+          "text": "Que Ana estuda na escada da escola e senta nos degraus.",
+          "is_correct": false,
+          "is_fixed": false
+        },
+        {
+          "key": "b",
+          "text": "Que aprender ajuda a gente a chegar nos nossos objetivos aos poucos.",
+          "is_correct": true,
+          "is_fixed": false
+        },
+        {
+          "key": "c",
+          "text": "Que os livros estão no alto de uma escada e ela tem que subir para pegar.",
+          "is_correct": false,
+          "is_fixed": false
+        },
+        {
+          "key": "d",
+          "text": "Não tenho certeza da resposta correta.",
+          "is_correct": false,
+          "is_fixed": true
+        }
+      ]
+    },
+    {
+      "code": "A1B04",
+      "bank": "A1",
+      "metaphor_number": 4,
+      "parent_metaphor_code": null,
+      "etapa": null,
+      "etapa_label": null,
+      "step": null,
+      "order_index": 4,
+      "metaphor": "O problema é uma areia movediça.",
+      "context": "Pedro perdeu seu caderno de matemática e, tentando resolver rápido, derrubou e espalhou todas as outras matérias no chão. Quanto mais ele tentava arrumar com pressa, mais a confusão aumentava, fazendo o menino se sentir afundando em uma situação muito ruim. A professora disse: — \"Esse problema é uma areia movediça.\"",
+      "phrases": null,
+      "image_key": "faseA/04.jpg",
+      "question_text": "O que a professora quis dizer quando falou que \"o problema é uma areia movediça\"?",
+      "options": [
+        {
+          "key": "a",
+          "text": "Que a situação ruim estava sugando o menino e deixando ele cada vez mais afundado na confusão.",
+          "is_correct": true,
+          "is_fixed": false
+        },
+        {
+          "key": "b",
+          "text": "Que o Pedro trouxe um balde cheio de areia molhada e pesada de verdade para a sala de aula.",
+          "is_correct": false,
+          "is_fixed": false
+        },
+        {
+          "key": "c",
+          "text": "Que os sapatos do menino estavam sujos de lama do pátio e ele manchou todo o chão da sala.",
+          "is_correct": false,
+          "is_fixed": false
+        },
+        {
+          "key": "d",
+          "text": "Não tenho certeza da resposta correta.",
+          "is_correct": false,
+          "is_fixed": true
+        }
+      ]
+    },
+    {
+      "code": "A1B05",
+      "bank": "A1",
+      "metaphor_number": 5,
+      "parent_metaphor_code": null,
+      "etapa": null,
+      "etapa_label": null,
+      "step": null,
+      "order_index": 5,
+      "metaphor": "A pressa dela é um furacão.",
+      "context": "De manhã, Ana estava com muita pressa para sair de casa. Ela se vestiu correndo, derrubou objetos, esqueceu a mochila e deixou tudo bagunçado. A mãe disse: “A pressa da Ana é um furacão.”",
+      "phrases": null,
+      "image_key": "faseA/05.jpg",
+      "question_text": "O que a mãe quis dizer quando falou que “a pressa dela é um furacão”?",
+      "options": [
+        {
+          "key": "a",
+          "text": "Que a pressa faz tudo ficar bagunçado e causa muitos problemas.",
+          "is_correct": true,
+          "is_fixed": false
+        },
+        {
+          "key": "b",
+          "text": "Que havia um furacão de verdade passando pela casa e quebrando o telhado.",
+          "is_correct": false,
+          "is_fixed": false
+        },
+        {
+          "key": "c",
+          "text": "Que Ana gosta muito de vento forte e quer ir correr lá fora.",
+          "is_correct": false,
+          "is_fixed": false
+        },
+        {
+          "key": "d",
+          "text": "Não tenho certeza da resposta correta.",
+          "is_correct": false,
+          "is_fixed": true
+        }
+      ]
+    },
+    {
+      "code": "A1B06",
+      "bank": "A1",
+      "metaphor_number": 6,
+      "parent_metaphor_code": null,
+      "etapa": null,
+      "etapa_label": null,
+      "step": null,
+      "order_index": 6,
+      "metaphor": "O abraço é um cobertor.",
+      "context": "O dia estava muito difícil e triste para Serginho. Quando ele encontrou sua mãe, ela apertou ele bem forte em seus braços. Aquele momento causou uma sensação de calor e proteção que acalmou o menino na hora. A professora observou e pensou: — \"O abraço é um cobertor.\"",
+      "phrases": null,
+      "image_key": "faseA/06.jpg",
+      "question_text": "O que a professora quis dizer quando pensou que \"o abraço é um cobertor\"?",
+      "options": [
+        {
+          "key": "a",
+          "text": "Que o abraço da mãe fez o menino se sentir protegido, aquecido e muito confortável.",
+          "is_correct": true,
+          "is_fixed": false
+        },
+        {
+          "key": "b",
+          "text": "Que a mãe enrolou um pano de lã pesado e quente em cima do menino na rua.",
+          "is_correct": false,
+          "is_fixed": false
+        },
+        {
+          "key": "c",
+          "text": "Que o menino foi deitar na cama para dormir bem quente porque estava doente.",
+          "is_correct": false,
+          "is_fixed": false
+        },
+        {
+          "key": "d",
+          "text": "Não tenho certeza da resposta correta.",
+          "is_correct": false,
+          "is_fixed": true
+        }
+      ]
+    },
+    {
+      "code": "A1B07",
+      "bank": "A1",
+      "metaphor_number": 7,
+      "parent_metaphor_code": null,
+      "etapa": null,
+      "etapa_label": null,
+      "step": null,
+      "order_index": 7,
+      "metaphor": "O livro é um avião.",
+      "context": "Marcos abriu um livro sobre história. Ao ler a história, a mente dele viajou rapidamente para muito longe, e ele imaginou estar voando entre as estrelas. O amigo disse: — \"Esse livro é um avião.\"",
+      "phrases": null,
+      "image_key": "faseA/07.jpg",
+      "question_text": "O que o amigo quis dizer quando falou que \"o livro é um avião\"?",
+      "options": [
+        {
+          "key": "a",
+          "text": "Que a história fez a mente do menino viajar e o transportou para lugares muito distantes.",
+          "is_correct": true,
+          "is_fixed": false
+        },
+        {
+          "key": "b",
+          "text": "Que o menino rasgou as páginas para fazer um aviãozinho de papel de verdade.",
+          "is_correct": false,
+          "is_fixed": false
+        },
+        {
+          "key": "c",
+          "text": "Que eles precisavam comprar uma passagem no aeroporto para poder ler o livro.",
+          "is_correct": false,
+          "is_fixed": false
+        },
+        {
+          "key": "d",
+          "text": "Não tenho certeza da resposta correta.",
+          "is_correct": false,
+          "is_fixed": true
+        }
+      ]
+    },
+    {
+      "code": "A1B08",
+      "bank": "A1",
+      "metaphor_number": 8,
+      "parent_metaphor_code": null,
+      "etapa": null,
+      "etapa_label": null,
+      "step": null,
+      "order_index": 8,
+      "metaphor": "A rotina é um mapa.",
+      "context": "Jonas sempre acordava confuso, esquecia as tarefas e perdia a hora de brincar. Ele ficava totalmente perdido no seu dia. Então, o pai fez um quadro de horários. Seguindo aquela rotina, ele encontrou o caminho das suas atividades e conseguiu fazer tudo. O pai disse: — \"A rotina é um mapa.\"",
+      "phrases": null,
+      "image_key": "faseA/08.jpg",
+      "question_text": "O que o pai quis dizer quando falou que \"a rotina é um mapa\"?",
+      "options": [
+        {
+          "key": "a",
+          "text": "Que o quadro de horários organizou o dia e guiou o menino para ele não ficar perdido.",
+          "is_correct": true,
+          "is_fixed": false
+        },
+        {
+          "key": "b",
+          "text": "Que a mãe desenhou um mapa do tesouro de papel de verdade para ele achar.",
+          "is_correct": false,
+          "is_fixed": false
+        },
+        {
+          "key": "c",
+          "text": "Que Jonas perdeu os seus cadernos e não sabia o caminho de volta da escola.",
+          "is_correct": false,
+          "is_fixed": false
+        },
+        {
+          "key": "d",
+          "text": "Não tenho certeza da resposta correta.",
+          "is_correct": false,
+          "is_fixed": true
+        }
+      ]
+    },
+    {
+      "code": "A1B09",
+      "bank": "A1",
+      "metaphor_number": 9,
+      "parent_metaphor_code": null,
+      "etapa": null,
+      "etapa_label": null,
+      "step": null,
+      "order_index": 9,
+      "metaphor": "O carinho é um curativo.",
+      "context": "A menina estava chorando muito de tristeza porque o seu lanche caiu no chão. O amigo dela chegou perto, deu um abraço forte e falou palavras bonitas. Na mesma hora, a menina parou de chorar e voltou a sorrir. Vendo a dor dela passar, a professora disse: — \"Esse carinho foi um curativo.\"",
+      "phrases": null,
+      "image_key": "faseA/09.jpg",
+      "question_text": "O que a professora quis dizer quando falou que \"o carinho foi um curativo\"?",
+      "options": [
+        {
+          "key": "a",
+          "text": "Que o abraço e o afeto do amigo ajudaram a curar a tristeza e fizeram a menina melhorar.",
+          "is_correct": true,
+          "is_fixed": false
+        },
+        {
+          "key": "b",
+          "text": "Que o menino colou um curativo adesivo com remédio de verdade no braço da sua amiga.",
+          "is_correct": false,
+          "is_fixed": false
+        },
+        {
+          "key": "c",
+          "text": "Que a menina tinha caído, ralado o joelho no chão e estava machucada de verdade no recreio.",
+          "is_correct": false,
+          "is_fixed": false
+        },
+        {
+          "key": "d",
+          "text": "Não tenho certeza da resposta correta.",
+          "is_correct": false,
+          "is_fixed": true
+        }
+      ]
+    },
+    {
+      "code": "A1B10",
+      "bank": "A1",
+      "metaphor_number": 10,
+      "parent_metaphor_code": null,
+      "etapa": null,
+      "etapa_label": null,
+      "step": null,
+      "order_index": 10,
+      "metaphor": "A raiva é uma panela de pressão.",
+      "context": "Pedro estava chateado, mas guardou tudo para ele e não falou nada. A raiva foi acumulando e esquentando por dentro, até que ele não aguentou mais, explodiu e gritou com todos os colegas. A professora disse: — \"A raiva do Pedro é uma panela de pressão.\"",
+      "phrases": null,
+      "image_key": "faseA/10.jpg",
+      "question_text": "O que a professora quis dizer quando falou que \"a raiva é uma panela de pressão\"?",
+      "options": [
+        {
+          "key": "a",
+          "text": "Que a raiva foi se juntando por dentro até fazer o menino explodir e gritar.",
+          "is_correct": true,
+          "is_fixed": false
+        },
+        {
+          "key": "b",
+          "text": "Que o Pedro trouxe uma panela de fazer feijão de verdade para a sala.",
+          "is_correct": false,
+          "is_fixed": false
+        },
+        {
+          "key": "c",
+          "text": "Que a professora estava ensinando as crianças a cozinhar com fogo na escola.",
+          "is_correct": false,
+          "is_fixed": false
+        },
+        {
+          "key": "d",
+          "text": "Não tenho certeza da resposta correta.",
+          "is_correct": false,
+          "is_fixed": true
+        }
+      ]
+    }
+  ],
+  "A2": [
+    {
+      "code": "A201",
+      "bank": "A2",
+      "metaphor_number": 1,
+      "parent_metaphor_code": null,
+      "etapa": null,
+      "etapa_label": null,
+      "step": null,
+      "order_index": 1,
+      "metaphor": "A calma é um remédio.",
+      "context": "Tiago estava chorando muito porque o seu castelo de blocos caiu. O pai se sentou com ele, pediu para ele respirar fundo e ter calma. Aos poucos, a tristeza e a raiva passaram e Tiago se sentiu melhor. O pai disse: “A calma é um remédio.”",
+      "phrases": null,
+      "image_key": "faseA2/01.jpg",
+      "question_text": "O que o pai quis dizer quando falou que “a calma é um remédio”?",
+      "options": [
+        {
+          "key": "a",
+          "text": "Que a calma tem um gosto muito amargo na boca e é ruim de engolir.",
+          "is_correct": false,
+          "is_fixed": false
+        },
+        {
+          "key": "b",
+          "text": "Que ficar calmo ajuda a curar a tristeza e faz a gente se sentir bem de novo.",
+          "is_correct": true,
+          "is_fixed": false
+        },
+        {
+          "key": "c",
+          "text": "Que Tiago estava com febre alta e precisou tomar xarope para melhorar logo.",
+          "is_correct": false,
+          "is_fixed": false
+        },
+        {
+          "key": "d",
+          "text": "Não tenho certeza da resposta correta.",
+          "is_correct": false,
+          "is_fixed": true
+        }
+      ]
+    },
+    {
+      "code": "A202",
+      "bank": "A2",
+      "metaphor_number": 2,
+      "parent_metaphor_code": null,
+      "etapa": null,
+      "etapa_label": null,
+      "step": null,
+      "order_index": 2,
+      "metaphor": "A preguiça é uma corrente.",
+      "context": "Na hora da lição, Sofia não queria levantar. A vontade de não fazer nada não deixava a menina se mover, prendendo o corpo dela no sofá o tempo todo. A mãe observou e disse: — \"A preguiça da Sofia é uma corrente.\"",
+      "phrases": null,
+      "image_key": "faseA2/02.jpg",
+      "question_text": "O que a mãe quis dizer quando falou que \"a preguiça é uma corrente\"?",
+      "options": [
+        {
+          "key": "a",
+          "text": "Que a falta de vontade amarrou a menina no sofá e impediu ela de agir e fazer a lição.",
+          "is_correct": true,
+          "is_fixed": false
+        },
+        {
+          "key": "b",
+          "text": "Que a mãe usou uma corrente de ferro pesado para segurar a filha na sala.",
+          "is_correct": false,
+          "is_fixed": false
+        },
+        {
+          "key": "c",
+          "text": "Que a menina estava brincando de prender o cachorro no quintal de casa.",
+          "is_correct": false,
+          "is_fixed": false
+        },
+        {
+          "key": "d",
+          "text": "Não tenho certeza da resposta correta.",
+          "is_correct": false,
+          "is_fixed": true
+        }
+      ]
+    },
+    {
+      "code": "A203",
+      "bank": "A2",
+      "metaphor_number": 3,
+      "parent_metaphor_code": null,
+      "etapa": null,
+      "etapa_label": null,
+      "step": null,
+      "order_index": 3,
+      "metaphor": "A bagunça é uma teia.",
+      "context": "O quarto de João estava com brinquedos e roupas espalhados por todo o chão. Quando ele tentou atravessar o espaço para pegar a mochila, foi tropeçando, enroscando os pés nas roupas e demorou muito para conseguir sair. O irmão falou: — \"Essa bagunça é uma teia.\"",
+      "phrases": null,
+      "image_key": "faseA2/03.jpg",
+      "question_text": "O que o irmão quis dizer quando falou que \"a bagunça é uma teia\"?",
+      "options": [
+        {
+          "key": "a",
+          "text": "Que as coisas espalhadas pelo chão enroscaram no menino e deixaram o movimento dele muito lento.",
+          "is_correct": true,
+          "is_fixed": false
+        },
+        {
+          "key": "b",
+          "text": "Que tinha uma aranha grande tecendo uma teia de fios brancos de verdade no teto do quarto.",
+          "is_correct": false,
+          "is_fixed": false
+        },
+        {
+          "key": "c",
+          "text": "Que o menino estava brincando de atirar teias fingindo usar a fantasia do Homem-Aranha.",
+          "is_correct": false,
+          "is_fixed": false
+        },
+        {
+          "key": "d",
+          "text": "Não tenho certeza da resposta correta.",
+          "is_correct": false,
+          "is_fixed": true
+        }
+      ]
+    },
+    {
+      "code": "A204",
+      "bank": "A2",
+      "metaphor_number": 4,
+      "parent_metaphor_code": null,
+      "etapa": null,
+      "etapa_label": null,
+      "step": null,
+      "order_index": 4,
+      "metaphor": "O medo é um freio.",
+      "context": "O menino estava descendo a ladeira de bicicleta muito rápido e feliz. De repente, ele pensou que poderia cair e se machucar muito. Esse pensamento ruim fez o corpo dele travar e ele parou de pedalar na mesma hora. O amigo dele disse: — \"O medo é um freio.\"",
+      "phrases": null,
+      "image_key": "faseA2/04.jpg",
+      "question_text": "O que o amigo quis dizer quando falou que \"o medo é um freio\"?",
+      "options": [
+        {
+          "key": "a",
+          "text": "Que o sentimento de medo fez o menino travar e parar de fazer o que estava fazendo.",
+          "is_correct": true,
+          "is_fixed": false
+        },
+        {
+          "key": "b",
+          "text": "Que o menino apertou a peça de metal da bicicleta para parar o pneu de verdade.",
+          "is_correct": false,
+          "is_fixed": false
+        },
+        {
+          "key": "c",
+          "text": "Que a bicicleta quebrou no meio da rua e não conseguia mais andar para frente.",
+          "is_correct": false,
+          "is_fixed": false
+        },
+        {
+          "key": "d",
+          "text": "Não tenho certeza da resposta correta.",
+          "is_correct": false,
+          "is_fixed": true
+        }
+      ]
+    },
+    {
+      "code": "A205",
+      "bank": "A2",
+      "metaphor_number": 5,
+      "parent_metaphor_code": null,
+      "etapa": null,
+      "etapa_label": null,
+      "step": null,
+      "order_index": 5,
+      "metaphor": "A leitura é uma semente.",
+      "context": "Jonas adorava a biblioteca. Um dia, ele abriu um livro sobre o espaço profundo. Logo após ler as páginas, a mente de Jonas começou a se encher de imaginação e ele criou suas próprias histórias. A bibliotecária sorriu e disse: — \"A leitura é uma semente.\"",
+      "phrases": null,
+      "image_key": "faseA2/05.jpg",
+      "question_text": "O que a bibliotecária quis dizer quando falou que \"a leitura é uma semente\"?",
+      "options": [
+        {
+          "key": "a",
+          "text": "Que a leitura faz novas ideias e muita imaginação crescerem na mente da pessoa.",
+          "is_correct": true,
+          "is_fixed": false
+        },
+        {
+          "key": "b",
+          "text": "Que Jonas plantou um livro na terra do jardim da biblioteca de verdade.",
+          "is_correct": false,
+          "is_fixed": false
+        },
+        {
+          "key": "c",
+          "text": "Que ler livros em voz alta ajuda as plantas a crescerem muito mais rápido.",
+          "is_correct": false,
+          "is_fixed": false
+        },
+        {
+          "key": "d",
+          "text": "Não tenho certeza da resposta correta.",
+          "is_correct": false,
+          "is_fixed": true
+        }
+      ]
+    },
+    {
+      "code": "A206",
+      "bank": "A2",
+      "metaphor_number": 6,
+      "parent_metaphor_code": null,
+      "etapa": null,
+      "etapa_label": null,
+      "step": null,
+      "order_index": 6,
+      "metaphor": "A pista é um farol.",
+      "context": "Tati estava brincando de detetive no quintal e não conseguia resolver o mistério. De repente, ela encontrou uma pena caída no chão. Essa descoberta ajudou a clarear as ideias e mostrou a direção exata para encontrar os pássaros. O pai dela sorriu e disse: — \"Essa pista é um farol.\"",
+      "phrases": null,
+      "image_key": "faseA2/06.jpg",
+      "question_text": "O que o pai quis dizer quando falou que \"a pista é um farol\"?",
+      "options": [
+        {
+          "key": "a",
+          "text": "Que a pena ajudou a clarear as ideias de Tati e mostrou a direção para resolver o mistério.",
+          "is_correct": true,
+          "is_fixed": false
+        },
+        {
+          "key": "b",
+          "text": "Que Tati usou a pena para consertar a luz do farol do carro do seu pai.",
+          "is_correct": false,
+          "is_fixed": false
+        },
+        {
+          "key": "c",
+          "text": "Que o pai acendeu uma luz forte no meio do quintal para enxergar de noite.",
+          "is_correct": false,
+          "is_fixed": false
+        },
+        {
+          "key": "d",
+          "text": "Não tenho certeza da resposta correta.",
+          "is_correct": false,
+          "is_fixed": true
+        }
+      ]
+    },
+    {
+      "code": "A207",
+      "bank": "A2",
+      "metaphor_number": 7,
+      "parent_metaphor_code": null,
+      "etapa": null,
+      "etapa_label": null,
+      "step": null,
+      "order_index": 7,
+      "metaphor": "A preocupação é um peso.",
+      "context": "Antes de dormir, Mariana ficou pensando em tudo o que poderia dar errado no dia seguinte. Ela acordou cansada, distraída e teve dificuldade para fazer as atividades. A mãe observou e disse apenas: - “A preocupação é um peso.”",
+      "phrases": null,
+      "image_key": "faseA2/07.jpg",
+      "question_text": "O que alguém quis dizer quando falou que “a preocupação é um peso”?",
+      "options": [
+        {
+          "key": "a",
+          "text": "Que Mariana estava carregando algo muito pesado e ficou com dor nas costas.",
+          "is_correct": false,
+          "is_fixed": false
+        },
+        {
+          "key": "b",
+          "text": "Que o quarto de Mariana estava desorganizado e cheio de brinquedos no chão.",
+          "is_correct": false,
+          "is_fixed": false
+        },
+        {
+          "key": "c",
+          "text": "Que a preocupação deixa a pessoa muito cansada e acaba atrapalhando o dia.",
+          "is_correct": true,
+          "is_fixed": false
+        },
+        {
+          "key": "d",
+          "text": "Não tenho certeza da resposta correta.",
+          "is_correct": false,
+          "is_fixed": true
+        }
+      ]
+    },
+    {
+      "code": "A208",
+      "bank": "A2",
+      "metaphor_number": 8,
+      "parent_metaphor_code": null,
+      "etapa": null,
+      "etapa_label": null,
+      "step": null,
+      "order_index": 8,
+      "metaphor": "A atenção é um binóculo.",
+      "context": "Paulo estava no fundo da sala, distraído, e não conseguia entender a lição. Quando ele finalmente se concentrou no quadro, o assunto pareceu vir para perto e ficou bem claro. Feliz por ter entendido, Paulo falou para a amiga: — \"A atenção é um binóculo.\"",
+      "phrases": null,
+      "image_key": "faseA2/08.jpg",
+      "question_text": "O que Paulo quis dizer quando falou que \"a atenção é um binóculo\"?",
+      "options": [
+        {
+          "key": "a",
+          "text": "Que se concentrar ajudou a focar no assunto e trazer a explicação clara para perto da mente dele.",
+          "is_correct": true,
+          "is_fixed": false
+        },
+        {
+          "key": "b",
+          "text": "Que Paulo trouxe um binóculo de verdade para enxergar a lousa da escola.",
+          "is_correct": false,
+          "is_fixed": false
+        },
+        {
+          "key": "c",
+          "text": "Que os alunos estavam olhando os passarinhos com binóculo e vendo eles voarem para longe.",
+          "is_correct": false,
+          "is_fixed": false
+        },
+        {
+          "key": "d",
+          "text": "Não tenho certeza da resposta correta.",
+          "is_correct": false,
+          "is_fixed": true
+        }
+      ]
+    },
+    {
+      "code": "A209",
+      "bank": "A2",
+      "metaphor_number": 9,
+      "parent_metaphor_code": null,
+      "etapa": null,
+      "etapa_label": null,
+      "step": null,
+      "order_index": 9,
+      "metaphor": "O elogio é um regador.",
+      "context": "O menino estava desanimado e de cabeça baixa, achando que seu desenho estava feio. A professora olhou e elogiou muito as cores que ele usou. Ouvir aquilo deu força para o menino, que se animou e voltou a desenhar na mesma hora. O colega viu a cena e disse: — \"Esse elogio foi um regador.\"",
+      "phrases": null,
+      "image_key": "faseA2/09.jpg",
+      "question_text": "O que o colega quis dizer quando falou que \"o elogio foi um regador\"?",
+      "options": [
+        {
+          "key": "a",
+          "text": "Que as palavras da professora deram força e fizeram o ânimo do menino crescer e melhorar.",
+          "is_correct": true,
+          "is_fixed": false
+        },
+        {
+          "key": "b",
+          "text": "Que a professora usou um regador de plástico cheio de água de verdade dentro da sala de aula.",
+          "is_correct": false,
+          "is_fixed": false
+        },
+        {
+          "key": "c",
+          "text": "Que as crianças estavam aprendendo a plantar sementes e molhar o jardim da escola.",
+          "is_correct": false,
+          "is_fixed": false
+        },
+        {
+          "key": "d",
+          "text": "Não tenho certeza da resposta correta.",
+          "is_correct": false,
+          "is_fixed": true
+        }
+      ]
+    },
+    {
+      "code": "A210",
+      "bank": "A2",
+      "metaphor_number": 10,
+      "parent_metaphor_code": null,
+      "etapa": null,
+      "etapa_label": null,
+      "step": null,
+      "order_index": 10,
+      "metaphor": "A equipe é uma caixa de lápis de cor.",
+      "context": "João tentou fazer o cartaz da escola sozinho, mas a ideia ficou de uma cor só. Quando ele chamou os amigos, cada um usou sua habilidade diferente e o trabalho ficou maravilhoso e cheio de vida. A diretora elogiou: — \"Essa equipe é uma caixa de lápis de cor.\"",
+      "phrases": null,
+      "image_key": "faseA2/10.jpg",
+      "question_text": "O que a diretora quis dizer quando falou que \"a equipe é uma caixa de lápis de cor\"?",
+      "options": [
+        {
+          "key": "a",
+          "text": "Que a união dos talentos diferentes de cada aluno deixou o trabalho muito mais bonito e vivo.",
+          "is_correct": true,
+          "is_fixed": false
+        },
+        {
+          "key": "b",
+          "text": "Que os alunos trouxeram uma caixa cheia de lápis de pintar de verdade para a escola.",
+          "is_correct": false,
+          "is_fixed": false
+        },
+        {
+          "key": "c",
+          "text": "Que a diretora mandou os alunos apontarem todos os lápis coloridos da sala.",
+          "is_correct": false,
+          "is_fixed": false
+        },
+        {
+          "key": "d",
+          "text": "Não tenho certeza da resposta correta.",
+          "is_correct": false,
+          "is_fixed": true
+        }
+      ]
+    }
+  ],
+  "B": [
+    {
+      "code": "A1B01-E1-V1",
+      "bank": "B",
+      "metaphor_number": 1,
+      "parent_metaphor_code": "A1B01",
+      "etapa": 1,
+      "etapa_label": "Causalidade",
+      "step": "causalidade_veiculo1",
+      "order_index": 1,
+      "metaphor": "A coragem é uma mola.",
+      "context": null,
+      "phrases": null,
+      "image_key": null,
+      "question_text": "O que acontece de verdade quando a gente aperta e solta uma mola?",
+      "options": [
+        {
+          "key": "a",
+          "text": "Dá um empurrão forte, jogando a força para a frente ou para cima.",
+          "is_correct": true,
+          "is_fixed": false
+        },
+        {
+          "key": "b",
+          "text": "Fica parada no mesmo lugar sem conseguir se mexer.",
+          "is_correct": false,
+          "is_fixed": false
+        },
+        {
+          "key": "c",
+          "text": "Ela afunda rapidamente e fica pesada no fundo da água.",
+          "is_correct": false,
+          "is_fixed": false
+        },
+        {
+          "key": "d",
+          "text": "Não tenho certeza da resposta correta.",
+          "is_correct": false,
+          "is_fixed": true
+        }
+      ]
+    },
+    {
+      "code": "A1B01-E1-V2",
+      "bank": "B",
+      "metaphor_number": 1,
+      "parent_metaphor_code": "A1B01",
+      "etapa": 1,
+      "etapa_label": "Causalidade",
+      "step": "causalidade_veiculo2",
+      "order_index": 2,
+      "metaphor": "A coragem é uma mola.",
+      "context": null,
+      "phrases": null,
+      "image_key": null,
+      "question_text": "Qual é a função de uma mola?",
+      "options": [
+        {
+          "key": "a",
+          "text": "Impulsionar e dar saltos para jogar as coisas para o alto.",
+          "is_correct": true,
+          "is_fixed": false
+        },
+        {
+          "key": "b",
+          "text": "Puxar e amarrar as coisas para o chão bem devagar.",
+          "is_correct": false,
+          "is_fixed": false
+        },
+        {
+          "key": "c",
+          "text": "Fazer a prancha de surfe boiar com mais facilidade na água.",
+          "is_correct": false,
+          "is_fixed": false
+        },
+        {
+          "key": "d",
+          "text": "Não tenho certeza da resposta correta.",
+          "is_correct": false,
+          "is_fixed": true
+        }
+      ]
+    },
+    {
+      "code": "A1B01-E1-A1",
+      "bank": "B",
+      "metaphor_number": 1,
+      "parent_metaphor_code": "A1B01",
+      "etapa": 1,
+      "etapa_label": "Causalidade",
+      "step": "causalidade_alvo1",
+      "order_index": 3,
+      "metaphor": "A coragem é uma mola.",
+      "context": null,
+      "phrases": null,
+      "image_key": null,
+      "question_text": "O que aconteceu com a Maria quando ela acreditou nela mesma?",
+      "options": [
+        {
+          "key": "a",
+          "text": "Ela ganhou um forte impulso de energia e saltou na prancha.",
+          "is_correct": true,
+          "is_fixed": false
+        },
+        {
+          "key": "b",
+          "text": "Ela ficou sentada chorando de medo na areia da praia.",
+          "is_correct": false,
+          "is_fixed": false
+        },
+        {
+          "key": "c",
+          "text": "Ela decidiu nadar de volta para a areia para poder descansar.",
+          "is_correct": false,
+          "is_fixed": false
+        },
+        {
+          "key": "d",
+          "text": "Não tenho certeza da resposta correta.",
+          "is_correct": false,
+          "is_fixed": true
+        }
+      ]
+    },
+    {
+      "code": "A1B01-E1-A2",
+      "bank": "B",
+      "metaphor_number": 1,
+      "parent_metaphor_code": "A1B01",
+      "etapa": 1,
+      "etapa_label": "Causalidade",
+      "step": "causalidade_alvo2",
+      "order_index": 4,
+      "metaphor": "A coragem é uma mola.",
+      "context": null,
+      "phrases": null,
+      "image_key": null,
+      "question_text": "O que a força de vontade causou na atitude da Maria?",
+      "options": [
+        {
+          "key": "a",
+          "text": "Deu o impulso que ela precisava para vencer o medo e pular.",
+          "is_correct": true,
+          "is_fixed": false
+        },
+        {
+          "key": "b",
+          "text": "Fez ela enrolar uma corda na prancha de surfe.",
+          "is_correct": false,
+          "is_fixed": false
+        },
+        {
+          "key": "c",
+          "text": "Deixou a menina com muita raiva e vontade de ir embora.",
+          "is_correct": false,
+          "is_fixed": false
+        },
+        {
+          "key": "d",
+          "text": "Não tenho certeza da resposta correta.",
+          "is_correct": false,
+          "is_fixed": true
+        }
+      ]
+    },
+    {
+      "code": "A1B01-E2-EQ1",
+      "bank": "B",
+      "metaphor_number": 1,
+      "parent_metaphor_code": "A1B01",
+      "etapa": 2,
+      "etapa_label": "Semelhança",
+      "step": "semelhanca_eqeq1",
+      "order_index": 5,
+      "metaphor": "A coragem é uma mola.",
+      "context": "Frase 1: A mola dá um empurrão físico. Frase 2: A coragem impulsionou a Maria.",
+      "phrases": [
+        "A mola dá um empurrão físico.",
+        "A coragem impulsionou a Maria."
+      ],
+      "image_key": null,
+      "question_text": "O que as duas situações têm de parecido?",
+      "options": [
+        {
+          "key": "a",
+          "text": "As duas dão um forte impulso para a pessoa ou o objeto subir.",
+          "is_correct": true,
+          "is_fixed": false
+        },
+        {
+          "key": "b",
+          "text": "As duas coisas são feitas de ferro enrolado e duro.",
+          "is_correct": false,
+          "is_fixed": false
+        },
+        {
+          "key": "c",
+          "text": "As duas coisas ajudam a proteger do sol forte na praia.",
+          "is_correct": false,
+          "is_fixed": false
+        },
+        {
+          "key": "d",
+          "text": "Não tenho certeza da resposta correta.",
+          "is_correct": false,
+          "is_fixed": true
+        }
+      ]
+    },
+    {
+      "code": "A1B01-E2-EQ2",
+      "bank": "B",
+      "metaphor_number": 1,
+      "parent_metaphor_code": "A1B01",
+      "etapa": 2,
+      "etapa_label": "Semelhança",
+      "step": "semelhanca_eqeq2",
+      "order_index": 6,
+      "metaphor": "A coragem é uma mola.",
+      "context": "Frase 1: A mola dá um empurrão físico. Frase 2: A coragem impulsionou a Maria.",
+      "phrases": [
+        "A mola dá um empurrão físico.",
+        "A coragem impulsionou a Maria."
+      ],
+      "image_key": null,
+      "question_text": "Qual a semelhança entre soltar uma mola e sentir muita coragem?",
+      "options": [
+        {
+          "key": "a",
+          "text": "Ambas as coisas jogam a gente para a ação com muita força.",
+          "is_correct": true,
+          "is_fixed": false
+        },
+        {
+          "key": "b",
+          "text": "Ambas as coisas afundam rapidamente na água do mar.",
+          "is_correct": false,
+          "is_fixed": false
+        },
+        {
+          "key": "c",
+          "text": "Ambas as coisas fazem muito barulho quando batem na água.",
+          "is_correct": false,
+          "is_fixed": false
+        },
+        {
+          "key": "d",
+          "text": "Não tenho certeza da resposta correta.",
+          "is_correct": false,
+          "is_fixed": true
+        }
+      ]
+    },
+    {
+      "code": "A1B01-E2-EQ3",
+      "bank": "B",
+      "metaphor_number": 1,
+      "parent_metaphor_code": "A1B01",
+      "etapa": 2,
+      "etapa_label": "Semelhança",
+      "step": "semelhanca_eqeq3",
+      "order_index": 7,
+      "metaphor": "A coragem é uma mola.",
+      "context": "Frase 1: A mola dá um empurrão físico. Frase 2: A coragem impulsionou a Maria.",
+      "phrases": [
+        "A mola dá um empurrão físico.",
+        "A coragem impulsionou a Maria."
+      ],
+      "image_key": null,
+      "question_text": "O que a mola e a atitude da Maria têm em comum?",
+      "options": [
+        {
+          "key": "a",
+          "text": "Ambas causam um salto de energia para superar um obstáculo.",
+          "is_correct": true,
+          "is_fixed": false
+        },
+        {
+          "key": "b",
+          "text": "Ambas são objetos de metal que o irmão da Maria comprou.",
+          "is_correct": false,
+          "is_fixed": false
+        },
+        {
+          "key": "c",
+          "text": "Ambas são coisas usadas apenas durante as aulas de natação.",
+          "is_correct": false,
+          "is_fixed": false
+        },
+        {
+          "key": "d",
+          "text": "Não tenho certeza da resposta correta.",
+          "is_correct": false,
+          "is_fixed": true
+        }
+      ]
+    },
+    {
+      "code": "A1B01-E2-EQ4",
+      "bank": "B",
+      "metaphor_number": 1,
+      "parent_metaphor_code": "A1B01",
+      "etapa": 2,
+      "etapa_label": "Semelhança",
+      "step": "semelhanca_eqeq4",
+      "order_index": 8,
+      "metaphor": "A coragem é uma mola.",
+      "context": "Frase 1: A mola dá um empurrão físico. Frase 2: A coragem impulsionou a Maria.",
+      "phrases": [
+        "A mola dá um empurrão físico.",
+        "A coragem impulsionou a Maria."
+      ],
+      "image_key": null,
+      "question_text": "De que forma a atitude da Maria funciona igual a uma mola?",
+      "options": [
+        {
+          "key": "a",
+          "text": "Porque as duas coisas impulsionam para o alto e para a frente.",
+          "is_correct": true,
+          "is_fixed": false
+        },
+        {
+          "key": "b",
+          "text": "Porque a Maria usou um ferro colado no pé dela para subir.",
+          "is_correct": false,
+          "is_fixed": false
+        },
+        {
+          "key": "c",
+          "text": "Porque as duas coisas precisam de rodinhas para andar rápido.",
+          "is_correct": false,
+          "is_fixed": false
+        },
+        {
+          "key": "d",
+          "text": "Não tenho certeza da resposta correta.",
+          "is_correct": false,
+          "is_fixed": true
+        }
+      ]
+    },
+    {
+      "code": "A1B01-E3-M1",
+      "bank": "B",
+      "metaphor_number": 1,
+      "parent_metaphor_code": "A1B01",
+      "etapa": 3,
+      "etapa_label": "Compreensão",
+      "step": "compreensao_metafora1",
+      "order_index": 9,
+      "metaphor": "A coragem é uma mola.",
+      "context": "Maria estava com muito medo de tentar ficar em pé na prancha de surfe. Mas, ao ouvir o barulho do mar, ela acreditou nela mesma, e essa força a fez saltar para cima da prancha com toda a energia. O irmão dela comemorou: — \"A coragem da Maria é uma mola.\"",
+      "phrases": null,
+      "image_key": "faseA/01.jpg",
+      "question_text": "O que o irmão quis dizer quando falou que \"a coragem é uma mola\"?",
+      "options": [
+        {
+          "key": "a",
+          "text": "Que a força de vontade deu um forte impulso para ela superar o medo e agir.",
+          "is_correct": true,
+          "is_fixed": false
+        },
+        {
+          "key": "b",
+          "text": "Que a Maria colou um pedaço de ferro enrolado debaixo da sua prancha.",
+          "is_correct": false,
+          "is_fixed": false
+        },
+        {
+          "key": "c",
+          "text": "Que a prancha bateu em uma pedra e fez a Maria pular para o alto.",
+          "is_correct": false,
+          "is_fixed": false
+        },
+        {
+          "key": "d",
+          "text": "Não tenho certeza da resposta correta.",
+          "is_correct": false,
+          "is_fixed": true
+        }
+      ]
+    },
+    {
+      "code": "A1B01-E3-M2",
+      "bank": "B",
+      "metaphor_number": 1,
+      "parent_metaphor_code": "A1B01",
+      "etapa": 3,
+      "etapa_label": "Compreensão",
+      "step": "compreensao_metafora2",
+      "order_index": 10,
+      "metaphor": "A coragem é uma mola.",
+      "context": "Maria estava com muito medo de tentar ficar em pé na prancha de surfe. Mas, ao ouvir o barulho do mar, ela acreditou nela mesma, e essa força a fez saltar para cima da prancha com toda a energia. O irmão dela comemorou: — \"A coragem da Maria é uma mola.\"",
+      "phrases": null,
+      "image_key": "faseA/01.jpg",
+      "question_text": "Qual o sentido da frase \"a coragem da Maria é uma mola\"?",
+      "options": [
+        {
+          "key": "a",
+          "text": "Que a coragem empurrou a Maria para a ação igual o salto de uma mola faz.",
+          "is_correct": true,
+          "is_fixed": false
+        },
+        {
+          "key": "b",
+          "text": "Que a Maria engoliu uma mola de ferro e por isso começou a pular.",
+          "is_correct": false,
+          "is_fixed": false
+        },
+        {
+          "key": "c",
+          "text": "Que o irmão foi lá e jogou a Maria com as mãos para cima da prancha.",
+          "is_correct": false,
+          "is_fixed": false
+        },
+        {
+          "key": "d",
+          "text": "Não tenho certeza da resposta correta.",
+          "is_correct": false,
+          "is_fixed": true
+        }
+      ]
+    },
+    {
+      "code": "A1B01-E3-M3",
+      "bank": "B",
+      "metaphor_number": 1,
+      "parent_metaphor_code": "A1B01",
+      "etapa": 3,
+      "etapa_label": "Compreensão",
+      "step": "compreensao_metafora3",
+      "order_index": 11,
+      "metaphor": "A coragem é uma mola.",
+      "context": "Maria estava com muito medo de tentar ficar em pé na prancha de surfe. Mas, ao ouvir o barulho do mar, ela acreditou nela mesma, e essa força a fez saltar para cima da prancha com toda a energia. O irmão dela comemorou: — \"A coragem da Maria é uma mola.\"",
+      "phrases": null,
+      "image_key": "faseA/01.jpg",
+      "question_text": "O que a palavra \"mola\" está explicando sobre a coragem da Maria?",
+      "options": [
+        {
+          "key": "a",
+          "text": "Explica que a coragem causou um impulso que fez a menina não desistir.",
+          "is_correct": true,
+          "is_fixed": false
+        },
+        {
+          "key": "b",
+          "text": "Explica que a prancha tinha grandes molas escondidas na madeira.",
+          "is_correct": false,
+          "is_fixed": false
+        },
+        {
+          "key": "c",
+          "text": "Explica que as ondas do mar estavam muito agitadas naquele dia.",
+          "is_correct": false,
+          "is_fixed": false
+        },
+        {
+          "key": "d",
+          "text": "Não tenho certeza da resposta correta.",
+          "is_correct": false,
+          "is_fixed": true
+        }
+      ]
+    },
+    {
+      "code": "A1B01-E3-M4",
+      "bank": "B",
+      "metaphor_number": 1,
+      "parent_metaphor_code": "A1B01",
+      "etapa": 3,
+      "etapa_label": "Compreensão",
+      "step": "compreensao_metafora4",
+      "order_index": 12,
+      "metaphor": "A coragem é uma mola.",
+      "context": "Maria estava com muito medo de tentar ficar em pé na prancha de surfe. Mas, ao ouvir o barulho do mar, ela acreditou nela mesma, e essa força a fez saltar para cima da prancha com toda a energia. O irmão dela comemorou: — \"A coragem da Maria é uma mola.\"",
+      "phrases": null,
+      "image_key": "faseA/01.jpg",
+      "question_text": "Quando o irmão diz que \"a coragem é uma mola\", ele quer mostrar que:",
+      "options": [
+        {
+          "key": "a",
+          "text": "A vontade interna impulsionou a menina para vencer o desafio.",
+          "is_correct": true,
+          "is_fixed": false
+        },
+        {
+          "key": "b",
+          "text": "A Maria virou um boneco de mola de verdade no meio do mar.",
+          "is_correct": false,
+          "is_fixed": false
+        },
+        {
+          "key": "c",
+          "text": "A prancha quebrou e a Maria precisou nadar de volta para a areia.",
+          "is_correct": false,
+          "is_fixed": false
+        },
+        {
+          "key": "d",
+          "text": "Não tenho certeza da resposta correta.",
+          "is_correct": false,
+          "is_fixed": true
+        }
+      ]
+    },
+    {
+      "code": "A1B03-E1-V1",
+      "bank": "B",
+      "metaphor_number": 3,
+      "parent_metaphor_code": "A1B03",
+      "etapa": 1,
+      "etapa_label": "Causalidade",
+      "step": "causalidade_veiculo1",
+      "order_index": 13,
+      "metaphor": "O estudo é uma escada.",
+      "context": null,
+      "phrases": null,
+      "image_key": null,
+      "question_text": "Para que serve uma escada fisicamente?",
+      "options": [
+        {
+          "key": "a",
+          "text": "Para ajudar a pessoa a subir aos poucos e alcançar lugares mais altos.",
+          "is_correct": true,
+          "is_fixed": false
+        },
+        {
+          "key": "b",
+          "text": "Para a pessoa sentar nos degraus de cimento e ficar descansando.",
+          "is_correct": false,
+          "is_fixed": false
+        },
+        {
+          "key": "c",
+          "text": "Para descer escorregando pelo corrimão até o chão do pátio.",
+          "is_correct": false,
+          "is_fixed": false
+        },
+        {
+          "key": "d",
+          "text": "Não tenho certeza da resposta correta.",
+          "is_correct": false,
+          "is_fixed": true
+        }
+      ]
+    },
+    {
+      "code": "A1B03-E1-V2",
+      "bank": "B",
+      "metaphor_number": 3,
+      "parent_metaphor_code": "A1B03",
+      "etapa": 1,
+      "etapa_label": "Causalidade",
+      "step": "causalidade_veiculo2",
+      "order_index": 14,
+      "metaphor": "O estudo é uma escada.",
+      "context": null,
+      "phrases": null,
+      "image_key": null,
+      "question_text": "O que acontece quando a gente sobe os degraus de uma escada?",
+      "options": [
+        {
+          "key": "a",
+          "text": "Vamos chegando cada vez mais perto do topo, passo a passo.",
+          "is_correct": true,
+          "is_fixed": false
+        },
+        {
+          "key": "b",
+          "text": "A escada começa a andar sozinha para a frente bem rápido.",
+          "is_correct": false,
+          "is_fixed": false
+        },
+        {
+          "key": "c",
+          "text": "A gente guarda as caixas de papelão embaixo do último degrau.",
+          "is_correct": false,
+          "is_fixed": false
+        },
+        {
+          "key": "d",
+          "text": "Não tenho certeza da resposta correta.",
+          "is_correct": false,
+          "is_fixed": true
+        }
+      ]
+    },
+    {
+      "code": "A1B03-E1-A1",
+      "bank": "B",
+      "metaphor_number": 3,
+      "parent_metaphor_code": "A1B03",
+      "etapa": 1,
+      "etapa_label": "Causalidade",
+      "step": "causalidade_alvo1",
+      "order_index": 15,
+      "metaphor": "O estudo é uma escada.",
+      "context": null,
+      "phrases": null,
+      "image_key": null,
+      "question_text": "O que aconteceu com a Ana quando ela estudou todos os dias?",
+      "options": [
+        {
+          "key": "a",
+          "text": "Ela foi aprendendo coisas novas e chegando mais perto dos seus sonhos.",
+          "is_correct": true,
+          "is_fixed": false
+        },
+        {
+          "key": "b",
+          "text": "Ela subiu no telhado da escola de verdade para ler os cadernos.",
+          "is_correct": false,
+          "is_fixed": false
+        },
+        {
+          "key": "c",
+          "text": "Ela pediu para a professora ler todas as histórias em voz alta.",
+          "is_correct": false,
+          "is_fixed": false
+        },
+        {
+          "key": "d",
+          "text": "Não tenho certeza da resposta correta.",
+          "is_correct": false,
+          "is_fixed": true
+        }
+      ]
+    },
+    {
+      "code": "A1B03-E1-A2",
+      "bank": "B",
+      "metaphor_number": 3,
+      "parent_metaphor_code": "A1B03",
+      "etapa": 1,
+      "etapa_label": "Causalidade",
+      "step": "causalidade_alvo2",
+      "order_index": 16,
+      "metaphor": "O estudo é uma escada.",
+      "context": null,
+      "phrases": null,
+      "image_key": null,
+      "question_text": "O que o esforço de estudar fez na vida da Ana?",
+      "options": [
+        {
+          "key": "a",
+          "text": "Ajudou a menina a avançar e progredir um pouco de cada vez.",
+          "is_correct": true,
+          "is_fixed": false
+        },
+        {
+          "key": "b",
+          "text": "Fez a Ana construir uma escada de livros no chão da sala.",
+          "is_correct": false,
+          "is_fixed": false
+        },
+        {
+          "key": "c",
+          "text": "Deixou a Ana muito cansada e com sono na hora de brincar no recreio.",
+          "is_correct": false,
+          "is_fixed": false
+        },
+        {
+          "key": "d",
+          "text": "Não tenho certeza da resposta correta.",
+          "is_correct": false,
+          "is_fixed": true
+        }
+      ]
+    },
+    {
+      "code": "A1B03-E2-EQ1",
+      "bank": "B",
+      "metaphor_number": 3,
+      "parent_metaphor_code": "A1B03",
+      "etapa": 2,
+      "etapa_label": "Semelhança",
+      "step": "semelhanca_eqeq1",
+      "order_index": 17,
+      "metaphor": "O estudo é uma escada.",
+      "context": "Frase 1: A escada ajuda a subir aos poucos. Frase 2: O estudo aproximou Ana dos seus sonhos.",
+      "phrases": [
+        "A escada ajuda a subir aos poucos.",
+        "O estudo aproximou Ana dos seus sonhos."
+      ],
+      "image_key": null,
+      "question_text": "O que há de parecido nas duas situações?",
+      "options": [
+        {
+          "key": "a",
+          "text": "As duas coisas ajudam a gente a avançar passo a passo para um objetivo.",
+          "is_correct": true,
+          "is_fixed": false
+        },
+        {
+          "key": "b",
+          "text": "As duas coisas são feitas de degraus de cimento ou madeira.",
+          "is_correct": false,
+          "is_fixed": false
+        },
+        {
+          "key": "c",
+          "text": "As duas coisas só acontecem dentro da biblioteca da escola.",
+          "is_correct": false,
+          "is_fixed": false
+        },
+        {
+          "key": "d",
+          "text": "Não tenho certeza da resposta correta.",
+          "is_correct": false,
+          "is_fixed": true
+        }
+      ]
+    },
+    {
+      "code": "A1B03-E2-EQ2",
+      "bank": "B",
+      "metaphor_number": 3,
+      "parent_metaphor_code": "A1B03",
+      "etapa": 2,
+      "etapa_label": "Semelhança",
+      "step": "semelhanca_eqeq2",
+      "order_index": 18,
+      "metaphor": "O estudo é uma escada.",
+      "context": "Frase 1: A escada ajuda a subir aos poucos. Frase 2: O estudo aproximou Ana dos seus sonhos.",
+      "phrases": [
+        "A escada ajuda a subir aos poucos.",
+        "O estudo aproximou Ana dos seus sonhos."
+      ],
+      "image_key": null,
+      "question_text": "O que a escada e o hábito de estudar da Ana têm em comum?",
+      "options": [
+        {
+          "key": "a",
+          "text": "Ambos servem para elevar a pessoa para o lugar onde ela deseja chegar.",
+          "is_correct": true,
+          "is_fixed": false
+        },
+        {
+          "key": "b",
+          "text": "Ambos precisam que a pessoa use os pés de verdade para subir.",
+          "is_correct": false,
+          "is_fixed": false
+        },
+        {
+          "key": "c",
+          "text": "A escola da Ana tem muitos andares diferentes e salas grandes.",
+          "is_correct": false,
+          "is_fixed": false
+        },
+        {
+          "key": "d",
+          "text": "Não tenho certeza da resposta correta.",
+          "is_correct": false,
+          "is_fixed": true
+        }
+      ]
+    },
+    {
+      "code": "A1B03-E2-EQ3",
+      "bank": "B",
+      "metaphor_number": 3,
+      "parent_metaphor_code": "A1B03",
+      "etapa": 2,
+      "etapa_label": "Semelhança",
+      "step": "semelhanca_eqeq3",
+      "order_index": 19,
+      "metaphor": "O estudo é uma escada.",
+      "context": "Frase 1: A escada ajuda a subir aos poucos. Frase 2: O estudo aproximou Ana dos seus sonhos.",
+      "phrases": [
+        "A escada ajuda a subir aos poucos.",
+        "O estudo aproximou Ana dos seus sonhos."
+      ],
+      "image_key": null,
+      "question_text": "Qual é a semelhança entre subir uma escada e estudar diariamente?",
+      "options": [
+        {
+          "key": "a",
+          "text": "Ambas as atitudes fazem a gente progredir e subir na vida aos poucos.",
+          "is_correct": true,
+          "is_fixed": false
+        },
+        {
+          "key": "b",
+          "text": "Ambas as atividades deixam as pernas da pessoa doendo muito.",
+          "is_correct": false,
+          "is_fixed": false
+        },
+        {
+          "key": "c",
+          "text": "Ambas as coisas precisam de um professor ajudando do lado.",
+          "is_correct": false,
+          "is_fixed": false
+        },
+        {
+          "key": "d",
+          "text": "Não tenho certeza da resposta correta.",
+          "is_correct": false,
+          "is_fixed": true
+        }
+      ]
+    },
+    {
+      "code": "A1B03-E2-EQ4",
+      "bank": "B",
+      "metaphor_number": 3,
+      "parent_metaphor_code": "A1B03",
+      "etapa": 2,
+      "etapa_label": "Semelhança",
+      "step": "semelhanca_eqeq4",
+      "order_index": 20,
+      "metaphor": "O estudo é uma escada.",
+      "context": "Frase 1: A escada ajuda a subir aos poucos. Frase 2: O estudo aproximou Ana dos seus sonhos.",
+      "phrases": [
+        "A escada ajuda a subir aos poucos.",
+        "O estudo aproximou Ana dos seus sonhos."
+      ],
+      "image_key": null,
+      "question_text": "De que forma o estudo funciona igual a uma escada?",
+      "options": [
+        {
+          "key": "a",
+          "text": "Porque estudando a gente sobe de nível um pouquinho por dia, sem pular etapas.",
+          "is_correct": true,
+          "is_fixed": false
+        },
+        {
+          "key": "b",
+          "text": "Porque o livro da escola da Ana é duro e pesado igual a uma escada de ferro.",
+          "is_correct": false,
+          "is_fixed": false
+        },
+        {
+          "key": "c",
+          "text": "Porque a amiga da Ana sempre lê sentada no pátio e tira notas boas.",
+          "is_correct": false,
+          "is_fixed": false
+        },
+        {
+          "key": "d",
+          "text": "Não tenho certeza da resposta correta.",
+          "is_correct": false,
+          "is_fixed": true
+        }
+      ]
+    },
+    {
+      "code": "A1B03-E3-M1",
+      "bank": "B",
+      "metaphor_number": 3,
+      "parent_metaphor_code": "A1B03",
+      "etapa": 3,
+      "etapa_label": "Compreensão",
+      "step": "compreensao_metafora1",
+      "order_index": 21,
+      "metaphor": "O estudo é uma escada.",
+      "context": "Ana estuda um pouquinho todos os dias. Cada coisa nova que ela aprende ajuda ela a chegar mais perto dos seus sonhos, subindo degrau por degrau. Maria a amiga de ana disse: “O estudo é uma escada”",
+      "phrases": null,
+      "image_key": "faseA/03.jpg",
+      "question_text": "O que a amiga quis dizer quando falou que \"o estudo é uma escada\"?",
+      "options": [
+        {
+          "key": "a",
+          "text": "Que aprender ajuda a gente a chegar nos nossos objetivos aos poucos.",
+          "is_correct": true,
+          "is_fixed": false
+        },
+        {
+          "key": "b",
+          "text": "Que Ana estuda sentada nos degraus da escada da escola de verdade.",
+          "is_correct": false,
+          "is_fixed": false
+        },
+        {
+          "key": "c",
+          "text": "Que a Ana gosta muito de ler livros sobre como construir escadas altas.",
+          "is_correct": false,
+          "is_fixed": false
+        },
+        {
+          "key": "d",
+          "text": "Não tenho certeza da resposta correta.",
+          "is_correct": false,
+          "is_fixed": true
+        }
+      ]
+    },
+    {
+      "code": "A1B03-E3-M2",
+      "bank": "B",
+      "metaphor_number": 3,
+      "parent_metaphor_code": "A1B03",
+      "etapa": 3,
+      "etapa_label": "Compreensão",
+      "step": "compreensao_metafora2",
+      "order_index": 22,
+      "metaphor": "O estudo é uma escada.",
+      "context": "Ana estuda um pouquinho todos os dias. Cada coisa nova que ela aprende ajuda ela a chegar mais perto dos seus sonhos, subindo degrau por degrau. Maria a amiga de ana disse: “O estudo é uma escada”",
+      "phrases": null,
+      "image_key": "faseA/03.jpg",
+      "question_text": "Qual o sentido da frase da amiga \"o estudo é uma escada\"?",
+      "options": [
+        {
+          "key": "a",
+          "text": "Que o esforço contínuo de estudar faz a pessoa progredir na vida passo a passo.",
+          "is_correct": true,
+          "is_fixed": false
+        },
+        {
+          "key": "b",
+          "text": "Que os livros de Ana estão no alto de uma escada e ela tem que subir para pegar.",
+          "is_correct": false,
+          "is_fixed": false
+        },
+        {
+          "key": "c",
+          "text": "Que a amiga estava chamando a Ana para descer logo para o intervalo.",
+          "is_correct": false,
+          "is_fixed": false
+        },
+        {
+          "key": "d",
+          "text": "Não tenho certeza da resposta correta.",
+          "is_correct": false,
+          "is_fixed": true
+        }
+      ]
+    },
+    {
+      "code": "A1B03-E3-M3",
+      "bank": "B",
+      "metaphor_number": 3,
+      "parent_metaphor_code": "A1B03",
+      "etapa": 3,
+      "etapa_label": "Compreensão",
+      "step": "compreensao_metafora3",
+      "order_index": 23,
+      "metaphor": "O estudo é uma escada.",
+      "context": "Ana estuda um pouquinho todos os dias. Cada coisa nova que ela aprende ajuda ela a chegar mais perto dos seus sonhos, subindo degrau por degrau. Maria a amiga de ana disse: “O estudo é uma escada”",
+      "phrases": null,
+      "image_key": "faseA/03.jpg",
+      "question_text": "O que a palavra \"escada\" explica sobre a atitude de Ana estudar?",
+      "options": [
+        {
+          "key": "a",
+          "text": "Explica que a dedicação diária da menina é o caminho certo para alcançar seus sonhos.",
+          "is_correct": true,
+          "is_fixed": false
+        },
+        {
+          "key": "b",
+          "text": "Explica que a escola não tem elevador e a Ana precisa usar as escadas todos os dias.",
+          "is_correct": false,
+          "is_fixed": false
+        },
+        {
+          "key": "c",
+          "text": "Explica que as amigas vão fazer uma prova muito difícil de matemática amanhã.",
+          "is_correct": false,
+          "is_fixed": false
+        },
+        {
+          "key": "d",
+          "text": "Não tenho certeza da resposta correta.",
+          "is_correct": false,
+          "is_fixed": true
+        }
+      ]
+    },
+    {
+      "code": "A1B03-E3-M4",
+      "bank": "B",
+      "metaphor_number": 3,
+      "parent_metaphor_code": "A1B03",
+      "etapa": 3,
+      "etapa_label": "Compreensão",
+      "step": "compreensao_metafora4",
+      "order_index": 24,
+      "metaphor": "O estudo é uma escada.",
+      "context": "Ana estuda um pouquinho todos os dias. Cada coisa nova que ela aprende ajuda ela a chegar mais perto dos seus sonhos, subindo degrau por degrau. Maria a amiga de ana disse: “O estudo é uma escada”",
+      "phrases": null,
+      "image_key": "faseA/03.jpg",
+      "question_text": "Quando a amiga diz que \"o estudo é uma escada\", ela quer mostrar que:",
+      "options": [
+        {
+          "key": "a",
+          "text": "Cada nova lição aprendida funciona como um degrau a mais para o sucesso.",
+          "is_correct": true,
+          "is_fixed": false
+        },
+        {
+          "key": "b",
+          "text": "A Ana construiu uma escada de brinquedo empilhando os cadernos na sala.",
+          "is_correct": false,
+          "is_fixed": false
+        },
+        {
+          "key": "c",
+          "text": "A amiga da Ana prefere estudar as matérias de história e ciências.",
+          "is_correct": false,
+          "is_fixed": false
+        },
+        {
+          "key": "d",
+          "text": "Não tenho certeza da resposta correta.",
+          "is_correct": false,
+          "is_fixed": true
+        }
+      ]
+    },
+    {
+      "code": "A1B05-E1-V1",
+      "bank": "B",
+      "metaphor_number": 5,
+      "parent_metaphor_code": "A1B05",
+      "etapa": 1,
+      "etapa_label": "Causalidade",
+      "step": "causalidade_veiculo1",
+      "order_index": 25,
+      "metaphor": "A pressa dela é um furacão.",
+      "context": null,
+      "phrases": null,
+      "image_key": null,
+      "question_text": "O que o furacão faz quando passa por um lugar?",
+      "options": [
+        {
+          "key": "a",
+          "text": "Passa muito rápido, causa um forte impacto e bagunça tudo.",
+          "is_correct": true,
+          "is_fixed": false
+        },
+        {
+          "key": "b",
+          "text": "Deixa o lugar mais calmo, bem limpo e organizado.",
+          "is_correct": false,
+          "is_fixed": false
+        },
+        {
+          "key": "c",
+          "text": "Traz uma chuva bem fraquinha que ajuda a regar as flores do jardim.",
+          "is_correct": false,
+          "is_fixed": false
+        },
+        {
+          "key": "d",
+          "text": "Não tenho certeza da resposta correta.",
+          "is_correct": false,
+          "is_fixed": true
+        }
+      ]
+    },
+    {
+      "code": "A1B05-E1-V2",
+      "bank": "B",
+      "metaphor_number": 5,
+      "parent_metaphor_code": "A1B05",
+      "etapa": 1,
+      "etapa_label": "Causalidade",
+      "step": "causalidade_veiculo2",
+      "order_index": 26,
+      "metaphor": "A pressa dela é um furacão.",
+      "context": null,
+      "phrases": null,
+      "image_key": null,
+      "question_text": "Como fica um lugar depois que um furacão passa?",
+      "options": [
+        {
+          "key": "a",
+          "text": "Fica tudo virado de cabeça para baixo e muito destruído.",
+          "is_correct": true,
+          "is_fixed": false
+        },
+        {
+          "key": "b",
+          "text": "Fica com as luzes acesas porque escureceu mais cedo.",
+          "is_correct": false,
+          "is_fixed": false
+        },
+        {
+          "key": "c",
+          "text": "Fica com um clima quente, ensolarado e perfeito para ir à praia.",
+          "is_correct": false,
+          "is_fixed": false
+        },
+        {
+          "key": "d",
+          "text": "Não tenho certeza da resposta correta.",
+          "is_correct": false,
+          "is_fixed": true
+        }
+      ]
+    },
+    {
+      "code": "A1B05-E1-A1",
+      "bank": "B",
+      "metaphor_number": 5,
+      "parent_metaphor_code": "A1B05",
+      "etapa": 1,
+      "etapa_label": "Causalidade",
+      "step": "causalidade_alvo1",
+      "order_index": 27,
+      "metaphor": "A pressa dela é um furacão.",
+      "context": null,
+      "phrases": null,
+      "image_key": null,
+      "question_text": "O que aconteceu quando Ana se vestiu correndo de manhã?",
+      "options": [
+        {
+          "key": "a",
+          "text": "Ela derrubou os objetos e deixou o quarto todo bagunçado.",
+          "is_correct": true,
+          "is_fixed": false
+        },
+        {
+          "key": "b",
+          "text": "Ela sentou e comeu o café da manhã bem devagar com os pais.",
+          "is_correct": false,
+          "is_fixed": false
+        },
+        {
+          "key": "c",
+          "text": "Ela colocou uma blusa de frio pesada porque a mãe avisou que ia chover.",
+          "is_correct": false,
+          "is_fixed": false
+        },
+        {
+          "key": "d",
+          "text": "Não tenho certeza da resposta correta.",
+          "is_correct": false,
+          "is_fixed": true
+        }
+      ]
+    },
+    {
+      "code": "A1B05-E1-A2",
+      "bank": "B",
+      "metaphor_number": 5,
+      "parent_metaphor_code": "A1B05",
+      "etapa": 1,
+      "etapa_label": "Causalidade",
+      "step": "causalidade_alvo2",
+      "order_index": 28,
+      "metaphor": "A pressa dela é um furacão.",
+      "context": null,
+      "phrases": null,
+      "image_key": null,
+      "question_text": "O que a pressa da Ana causou dentro de casa?",
+      "options": [
+        {
+          "key": "a",
+          "text": "Deixou a casa inteira desarrumada com várias coisas atiradas no chão.",
+          "is_correct": true,
+          "is_fixed": false
+        },
+        {
+          "key": "b",
+          "text": "Fez a mãe da Ana trancar a porta do quarto com a chave.",
+          "is_correct": false,
+          "is_fixed": false
+        },
+        {
+          "key": "c",
+          "text": "Atrasou a ida para a escola porque elas pararam para assistir à previsão do tempo.",
+          "is_correct": false,
+          "is_fixed": false
+        },
+        {
+          "key": "d",
+          "text": "Não tenho certeza da resposta correta.",
+          "is_correct": false,
+          "is_fixed": true
+        }
+      ]
+    },
+    {
+      "code": "A1B05-E2-EQ1",
+      "bank": "B",
+      "metaphor_number": 5,
+      "parent_metaphor_code": "A1B05",
+      "etapa": 2,
+      "etapa_label": "Semelhança",
+      "step": "semelhanca_eqeq1",
+      "order_index": 29,
+      "metaphor": "A pressa dela é um furacão.",
+      "context": "Frase 1: O furacão passa rápido e bagunça tudo. Frase 2: A pressa fez Ana deixar a casa bagunçada.",
+      "phrases": [
+        "O furacão passa rápido e bagunça tudo.",
+        "A pressa fez Ana deixar a casa bagunçada."
+      ],
+      "image_key": null,
+      "question_text": "O que acontece de parecido nas duas situações?",
+      "options": [
+        {
+          "key": "a",
+          "text": "Uma agitação muito rápida acaba deixando tudo uma grande confusão.",
+          "is_correct": true,
+          "is_fixed": false
+        },
+        {
+          "key": "b",
+          "text": "O vento estava muito forte e frio de verdade dentro da casa.",
+          "is_correct": false,
+          "is_fixed": false
+        },
+        {
+          "key": "c",
+          "text": "A Ana e a mãe correram da chuva para não se molharem na rua.",
+          "is_correct": false,
+          "is_fixed": false
+        },
+        {
+          "key": "d",
+          "text": "Não tenho certeza da resposta correta.",
+          "is_correct": false,
+          "is_fixed": true
+        }
+      ]
+    },
+    {
+      "code": "A1B05-E2-EQ2",
+      "bank": "B",
+      "metaphor_number": 5,
+      "parent_metaphor_code": "A1B05",
+      "etapa": 2,
+      "etapa_label": "Semelhança",
+      "step": "semelhanca_eqeq2",
+      "order_index": 30,
+      "metaphor": "A pressa dela é um furacão.",
+      "context": "Frase 1: O furacão passa rápido e bagunça tudo. Frase 2: A pressa fez Ana deixar a casa bagunçada.",
+      "phrases": [
+        "O furacão passa rápido e bagunça tudo.",
+        "A pressa fez Ana deixar a casa bagunçada."
+      ],
+      "image_key": null,
+      "question_text": "O que a ação do furacão e a pressa da Ana têm em comum?",
+      "options": [
+        {
+          "key": "a",
+          "text": "Ambos passam rápido e deixam desordem e caos para trás.",
+          "is_correct": true,
+          "is_fixed": false
+        },
+        {
+          "key": "b",
+          "text": "Ambos fazem um barulho de vento muito forte no telhado.",
+          "is_correct": false,
+          "is_fixed": false
+        },
+        {
+          "key": "c",
+          "text": "Ambos fizeram a Ana esquecer a lancheira da escola na mesa.",
+          "is_correct": false,
+          "is_fixed": false
+        },
+        {
+          "key": "d",
+          "text": "Não tenho certeza da resposta correta.",
+          "is_correct": false,
+          "is_fixed": true
+        }
+      ]
+    },
+    {
+      "code": "A1B05-E2-EQ3",
+      "bank": "B",
+      "metaphor_number": 5,
+      "parent_metaphor_code": "A1B05",
+      "etapa": 2,
+      "etapa_label": "Semelhança",
+      "step": "semelhanca_eqeq3",
+      "order_index": 31,
+      "metaphor": "A pressa dela é um furacão.",
+      "context": "Frase 1: O furacão passa rápido e bagunça tudo. Frase 2: A pressa fez Ana deixar a casa bagunçada.",
+      "phrases": [
+        "O furacão passa rápido e bagunça tudo.",
+        "A pressa fez Ana deixar a casa bagunçada."
+      ],
+      "image_key": null,
+      "question_text": "Qual é a semelhança entre o estrago do furacão e a correria da Ana?",
+      "options": [
+        {
+          "key": "a",
+          "text": "As duas coisas acontecem de forma muito agitada e espalham tudo.",
+          "is_correct": true,
+          "is_fixed": false
+        },
+        {
+          "key": "b",
+          "text": "As duas coisas quebram o telhado e as janelas das casas de verdade.",
+          "is_correct": false,
+          "is_fixed": false
+        },
+        {
+          "key": "c",
+          "text": "As duas coisas deixaram a mãe da Ana tremendo com muito frio.",
+          "is_correct": false,
+          "is_fixed": false
+        },
+        {
+          "key": "d",
+          "text": "Não tenho certeza da resposta correta.",
+          "is_correct": false,
+          "is_fixed": true
+        }
+      ]
+    },
+    {
+      "code": "A1B05-E2-EQ4",
+      "bank": "B",
+      "metaphor_number": 5,
+      "parent_metaphor_code": "A1B05",
+      "etapa": 2,
+      "etapa_label": "Semelhança",
+      "step": "semelhanca_eqeq4",
+      "order_index": 32,
+      "metaphor": "A pressa dela é um furacão.",
+      "context": "Frase 1: O furacão passa rápido e bagunça tudo. Frase 2: A pressa fez Ana deixar a casa bagunçada.",
+      "phrases": [
+        "O furacão passa rápido e bagunça tudo.",
+        "A pressa fez Ana deixar a casa bagunçada."
+      ],
+      "image_key": null,
+      "question_text": "De que forma a pressa funciona igual a um furacão?",
+      "options": [
+        {
+          "key": "a",
+          "text": "Porque fazer as coisas correndo sem cuidado desarruma todo o ambiente.",
+          "is_correct": true,
+          "is_fixed": false
+        },
+        {
+          "key": "b",
+          "text": "Porque a pressa levanta poeira e cria um redemoinho de vento na sala.",
+          "is_correct": false,
+          "is_fixed": false
+        },
+        {
+          "key": "c",
+          "text": "Porque a pressa faz a pessoa ficar suada como em um dia de calor.",
+          "is_correct": false,
+          "is_fixed": false
+        },
+        {
+          "key": "d",
+          "text": "Não tenho certeza da resposta correta.",
+          "is_correct": false,
+          "is_fixed": true
+        }
+      ]
+    },
+    {
+      "code": "A1B05-E3-M1",
+      "bank": "B",
+      "metaphor_number": 5,
+      "parent_metaphor_code": "A1B05",
+      "etapa": 3,
+      "etapa_label": "Compreensão",
+      "step": "compreensao_metafora1",
+      "order_index": 33,
+      "metaphor": "A pressa dela é um furacão.",
+      "context": "De manhã, Ana estava com muita pressa para sair de casa. Ela se vestiu correndo, derrubou objetos, esqueceu a mochila e deixou tudo bagunçado. A mãe disse: “A pressa da Ana é um furacão.”",
+      "phrases": null,
+      "image_key": "faseA/05.jpg",
+      "question_text": "O que a mãe quis dizer quando falou que \"a pressa da Ana é um furacão\"?",
+      "options": [
+        {
+          "key": "a",
+          "text": "Que a pressa faz tudo ficar bagunçado e causa muitos problemas e desorganização.",
+          "is_correct": true,
+          "is_fixed": false
+        },
+        {
+          "key": "b",
+          "text": "Que havia um furacão de verdade passando pela cidade e destruindo tudo.",
+          "is_correct": false,
+          "is_fixed": false
+        },
+        {
+          "key": "c",
+          "text": "Que a Ana deixou a janela aberta e o vento da rua bagunçou o quarto inteiro.",
+          "is_correct": false,
+          "is_fixed": false
+        },
+        {
+          "key": "d",
+          "text": "Não tenho certeza da resposta correta.",
+          "is_correct": false,
+          "is_fixed": true
+        }
+      ]
+    },
+    {
+      "code": "A1B05-E3-M2",
+      "bank": "B",
+      "metaphor_number": 5,
+      "parent_metaphor_code": "A1B05",
+      "etapa": 3,
+      "etapa_label": "Compreensão",
+      "step": "compreensao_metafora2",
+      "order_index": 34,
+      "metaphor": "A pressa dela é um furacão.",
+      "context": "De manhã, Ana estava com muita pressa para sair de casa. Ela se vestiu correndo, derrubou objetos, esqueceu a mochila e deixou tudo bagunçado. A mãe disse: “A pressa da Ana é um furacão.”",
+      "phrases": null,
+      "image_key": "faseA/05.jpg",
+      "question_text": "Qual o significado da frase da mãe \"a pressa é um furacão\"?",
+      "options": [
+        {
+          "key": "a",
+          "text": "Que fazer as coisas com excesso de agitação afeta o ambiente e deixa tudo fora do lugar.",
+          "is_correct": true,
+          "is_fixed": false
+        },
+        {
+          "key": "b",
+          "text": "Que entrou uma tempestade muito forte pela porta do quarto da Ana.",
+          "is_correct": false,
+          "is_fixed": false
+        },
+        {
+          "key": "c",
+          "text": "Que a Ana esqueceu o casaco de chuva em casa e a mãe precisou ir buscar.",
+          "is_correct": false,
+          "is_fixed": false
+        },
+        {
+          "key": "d",
+          "text": "Não tenho certeza da resposta correta.",
+          "is_correct": false,
+          "is_fixed": true
+        }
+      ]
+    },
+    {
+      "code": "A1B05-E3-M3",
+      "bank": "B",
+      "metaphor_number": 5,
+      "parent_metaphor_code": "A1B05",
+      "etapa": 3,
+      "etapa_label": "Compreensão",
+      "step": "compreensao_metafora3",
+      "order_index": 35,
+      "metaphor": "A pressa dela é um furacão.",
+      "context": "De manhã, Ana estava com muita pressa para sair de casa. Ela se vestiu correndo, derrubou objetos, esqueceu a mochila e deixou tudo bagunçado. A mãe disse: “A pressa da Ana é um furacão.”",
+      "phrases": null,
+      "image_key": "faseA/05.jpg",
+      "question_text": "O que a mãe explicou sobre a pressa usando a palavra \"furacão\"?",
+      "options": [
+        {
+          "key": "a",
+          "text": "Explicou que o jeito apressado causou a mesma confusão que um vento forte faria.",
+          "is_correct": true,
+          "is_fixed": false
+        },
+        {
+          "key": "b",
+          "text": "Explicou que a Ana estava soprando as roupas com a boca de propósito.",
+          "is_correct": false,
+          "is_fixed": false
+        },
+        {
+          "key": "c",
+          "text": "Explicou que o tempo fechou de repente e as duas iam tomar chuva no caminho.",
+          "is_correct": false,
+          "is_fixed": false
+        },
+        {
+          "key": "d",
+          "text": "Não tenho certeza da resposta correta.",
+          "is_correct": false,
+          "is_fixed": true
+        }
+      ]
+    },
+    {
+      "code": "A1B05-E3-M4",
+      "bank": "B",
+      "metaphor_number": 5,
+      "parent_metaphor_code": "A1B05",
+      "etapa": 3,
+      "etapa_label": "Compreensão",
+      "step": "compreensao_metafora4",
+      "order_index": 36,
+      "metaphor": "A pressa dela é um furacão.",
+      "context": "De manhã, Ana estava com muita pressa para sair de casa. Ela se vestiu correndo, derrubou objetos, esqueceu a mochila e deixou tudo bagunçado. A mãe disse: “A pressa da Ana é um furacão.”",
+      "phrases": null,
+      "image_key": "faseA/05.jpg",
+      "question_text": "Quando a mãe diz que \"a pressa é um furacão\", ela quer mostrar que:",
+      "options": [
+        {
+          "key": "a",
+          "text": "A correria intensa da menina acabou bagunçando o quarto como se fosse um vendaval.",
+          "is_correct": true,
+          "is_fixed": false
+        },
+        {
+          "key": "b",
+          "text": "A Ana começou a girar o corpo no meio da sala igual a um pião.",
+          "is_correct": false,
+          "is_fixed": false
+        },
+        {
+          "key": "c",
+          "text": "A mochila voou pela janela porque a mãe abriu a porta com muita força.",
+          "is_correct": false,
+          "is_fixed": false
+        },
+        {
+          "key": "d",
+          "text": "Não tenho certeza da resposta correta.",
+          "is_correct": false,
+          "is_fixed": true
+        }
+      ]
+    },
+    {
+      "code": "A1B07-E1-V1",
+      "bank": "B",
+      "metaphor_number": 7,
+      "parent_metaphor_code": "A1B07",
+      "etapa": 1,
+      "etapa_label": "Causalidade",
+      "step": "causalidade_veiculo1",
+      "order_index": 37,
+      "metaphor": "O livro é um avião.",
+      "context": null,
+      "phrases": null,
+      "image_key": null,
+      "question_text": "Para que serve um avião fisicamente?",
+      "options": [
+        {
+          "key": "a",
+          "text": "Para transportar as pessoas rapidamente para lugares muito distantes.",
+          "is_correct": true,
+          "is_fixed": false
+        },
+        {
+          "key": "b",
+          "text": "Para bater asas de metal e ficar voando parado no mesmo lugar da rua.",
+          "is_correct": false,
+          "is_fixed": false
+        },
+        {
+          "key": "c",
+          "text": "Para a aeromoça passar servindo lanche e suco para os passageiros sentados.",
+          "is_correct": false,
+          "is_fixed": false
+        },
+        {
+          "key": "d",
+          "text": "Não tenho certeza da resposta correta.",
+          "is_correct": false,
+          "is_fixed": true
+        }
+      ]
+    },
+    {
+      "code": "A1B07-E1-V2",
+      "bank": "B",
+      "metaphor_number": 7,
+      "parent_metaphor_code": "A1B07",
+      "etapa": 1,
+      "etapa_label": "Causalidade",
+      "step": "causalidade_veiculo2",
+      "order_index": 38,
+      "metaphor": "O livro é um avião.",
+      "context": null,
+      "phrases": null,
+      "image_key": null,
+      "question_text": "O que acontece quando a gente entra num avião e viaja?",
+      "options": [
+        {
+          "key": "a",
+          "text": "Somos deslocados fisicamente para conhecer outra cidade ou país novo.",
+          "is_correct": true,
+          "is_fixed": false
+        },
+        {
+          "key": "b",
+          "text": "Nós ficamos amarrados do lado de fora das janelas do piloto.",
+          "is_correct": false,
+          "is_fixed": false
+        },
+        {
+          "key": "c",
+          "text": "Nós temos que colocar o cinto de segurança para o veículo poder ligar.",
+          "is_correct": false,
+          "is_fixed": false
+        },
+        {
+          "key": "d",
+          "text": "Não tenho certeza da resposta correta.",
+          "is_correct": false,
+          "is_fixed": true
+        }
+      ]
+    },
+    {
+      "code": "A1B07-E1-A1",
+      "bank": "B",
+      "metaphor_number": 7,
+      "parent_metaphor_code": "A1B07",
+      "etapa": 1,
+      "etapa_label": "Causalidade",
+      "step": "causalidade_alvo1",
+      "order_index": 39,
+      "metaphor": "O livro é um avião.",
+      "context": null,
+      "phrases": null,
+      "image_key": null,
+      "question_text": "O que a leitura do livro fez com a imaginação do Marcos?",
+      "options": [
+        {
+          "key": "a",
+          "text": "Fez o pensamento dele viajar e conhecer mundos e lugares fantásticos.",
+          "is_correct": true,
+          "is_fixed": false
+        },
+        {
+          "key": "b",
+          "text": "Fez o Marcos colar as páginas de papel com cola quente na estante da escola.",
+          "is_correct": false,
+          "is_fixed": false
+        },
+        {
+          "key": "c",
+          "text": "Fez o Marcos ter que devolver a história para a bibliotecária no prazo certo.",
+          "is_correct": false,
+          "is_fixed": false
+        },
+        {
+          "key": "d",
+          "text": "Não tenho certeza da resposta correta.",
+          "is_correct": false,
+          "is_fixed": true
+        }
+      ]
+    },
+    {
+      "code": "A1B07-E1-A2",
+      "bank": "B",
+      "metaphor_number": 7,
+      "parent_metaphor_code": "A1B07",
+      "etapa": 1,
+      "etapa_label": "Causalidade",
+      "step": "causalidade_alvo2",
+      "order_index": 40,
+      "metaphor": "O livro é um avião.",
+      "context": null,
+      "phrases": null,
+      "image_key": null,
+      "question_text": "O que acontece na cabeça do Marcos quando ele mergulha em uma história?",
+      "options": [
+        {
+          "key": "a",
+          "text": "Ele é transportado mentalmente para viver as aventuras lidas no papel.",
+          "is_correct": true,
+          "is_fixed": false
+        },
+        {
+          "key": "b",
+          "text": "Ele corta o livro com uma tesoura para fazer recortes em cima da mesa.",
+          "is_correct": false,
+          "is_fixed": false
+        },
+        {
+          "key": "c",
+          "text": "Ele precisa ler todas as palavras em voz alta para a professora escutar.",
+          "is_correct": false,
+          "is_fixed": false
+        },
+        {
+          "key": "d",
+          "text": "Não tenho certeza da resposta correta.",
+          "is_correct": false,
+          "is_fixed": true
+        }
+      ]
+    },
+    {
+      "code": "A1B07-E2-EQ1",
+      "bank": "B",
+      "metaphor_number": 7,
+      "parent_metaphor_code": "A1B07",
+      "etapa": 2,
+      "etapa_label": "Semelhança",
+      "step": "semelhanca_eqeq1",
+      "order_index": 41,
+      "metaphor": "O livro é um avião.",
+      "context": "Frase 1: O avião transporta o corpo para longe. Frase 2: O livro transportou a mente do Marcos.",
+      "phrases": [
+        "O avião transporta o corpo para longe.",
+        "O livro transportou a mente do Marcos."
+      ],
+      "image_key": null,
+      "question_text": "O que as duas situações têm de parecido?",
+      "options": [
+        {
+          "key": "a",
+          "text": "Ambas as atividades servem para levar a pessoa para explorar um lugar distante.",
+          "is_correct": true,
+          "is_fixed": false
+        },
+        {
+          "key": "b",
+          "text": "Ambas as atividades são feitas de peças de metal e motores pesados de verdade.",
+          "is_correct": false,
+          "is_fixed": false
+        },
+        {
+          "key": "c",
+          "text": "As duas coisas exigem que o Marcos compre passagens muito caras no balcão.",
+          "is_correct": false,
+          "is_fixed": false
+        },
+        {
+          "key": "d",
+          "text": "Não tenho certeza da resposta correta.",
+          "is_correct": false,
+          "is_fixed": true
+        }
+      ]
+    },
+    {
+      "code": "A1B07-E2-EQ2",
+      "bank": "B",
+      "metaphor_number": 7,
+      "parent_metaphor_code": "A1B07",
+      "etapa": 2,
+      "etapa_label": "Semelhança",
+      "step": "semelhanca_eqeq2",
+      "order_index": 42,
+      "metaphor": "O livro é um avião.",
+      "context": "Frase 1: O avião transporta o corpo para longe. Frase 2: O livro transportou a mente do Marcos.",
+      "phrases": [
+        "O avião transporta o corpo para longe.",
+        "O livro transportou a mente do Marcos."
+      ],
+      "image_key": null,
+      "question_text": "Qual é a semelhança entre andar de avião pelo céu e ler um livro?",
+      "options": [
+        {
+          "key": "a",
+          "text": "Os dois servem como veículos de transporte para fazer viagens incríveis.",
+          "is_correct": true,
+          "is_fixed": false
+        },
+        {
+          "key": "b",
+          "text": "Os dois batem asas brancas de verdade no meio das nuvens no céu.",
+          "is_correct": false,
+          "is_fixed": false
+        },
+        {
+          "key": "c",
+          "text": "Os dois costumam acontecer apenas durante as férias de verão da escola.",
+          "is_correct": false,
+          "is_fixed": false
+        },
+        {
+          "key": "d",
+          "text": "Não tenho certeza da resposta correta.",
+          "is_correct": false,
+          "is_fixed": true
+        }
+      ]
+    },
+    {
+      "code": "A1B07-E2-EQ3",
+      "bank": "B",
+      "metaphor_number": 7,
+      "parent_metaphor_code": "A1B07",
+      "etapa": 2,
+      "etapa_label": "Semelhança",
+      "step": "semelhanca_eqeq3",
+      "order_index": 43,
+      "metaphor": "O livro é um avião.",
+      "context": "Frase 1: O avião transporta o corpo para longe. Frase 2: O livro transportou a mente do Marcos.",
+      "phrases": [
+        "O avião transporta o corpo para longe.",
+        "O livro transportou a mente do Marcos."
+      ],
+      "image_key": null,
+      "question_text": "O que o avião e o livro de histórias têm em comum?",
+      "options": [
+        {
+          "key": "a",
+          "text": "Ambos tiram a pessoa de onde ela está e levam para explorar novos cenários.",
+          "is_correct": true,
+          "is_fixed": false
+        },
+        {
+          "key": "b",
+          "text": "Ambos são movidos a gasolina para conseguir andar para frente sem cair.",
+          "is_correct": false,
+          "is_fixed": false
+        },
+        {
+          "key": "c",
+          "text": "Marcos gosta muito de ir na livraria observar os aviões passando perto.",
+          "is_correct": false,
+          "is_fixed": false
+        },
+        {
+          "key": "d",
+          "text": "Não tenho certeza da resposta correta.",
+          "is_correct": false,
+          "is_fixed": true
+        }
+      ]
+    },
+    {
+      "code": "A1B07-E2-EQ4",
+      "bank": "B",
+      "metaphor_number": 7,
+      "parent_metaphor_code": "A1B07",
+      "etapa": 2,
+      "etapa_label": "Semelhança",
+      "step": "semelhanca_eqeq4",
+      "order_index": 44,
+      "metaphor": "O livro é um avião.",
+      "context": "Frase 1: O avião transporta o corpo para longe. Frase 2: O livro transportou a mente do Marcos.",
+      "phrases": [
+        "O avião transporta o corpo para longe.",
+        "O livro transportou a mente do Marcos."
+      ],
+      "image_key": null,
+      "question_text": "De que forma a leitura funciona igual a um avião?",
+      "options": [
+        {
+          "key": "a",
+          "text": "Porque a imaginação nos carrega por outro mundo, assim como o voo nos desloca.",
+          "is_correct": true,
+          "is_fixed": false
+        },
+        {
+          "key": "b",
+          "text": "Porque as folhas brancas de um livro saem voando sozinhas e caem no chão.",
+          "is_correct": false,
+          "is_fixed": false
+        },
+        {
+          "key": "c",
+          "text": "Porque o Marcos sempre senta para ler as histórias de ciências perto da janela.",
+          "is_correct": false,
+          "is_fixed": false
+        },
+        {
+          "key": "d",
+          "text": "Não tenho certeza da resposta correta.",
+          "is_correct": false,
+          "is_fixed": true
+        }
+      ]
+    },
+    {
+      "code": "A1B07-E3-M1",
+      "bank": "B",
+      "metaphor_number": 7,
+      "parent_metaphor_code": "A1B07",
+      "etapa": 3,
+      "etapa_label": "Compreensão",
+      "step": "compreensao_metafora1",
+      "order_index": 45,
+      "metaphor": "O livro é um avião.",
+      "context": "Marcos abriu um livro sobre história. Ao ler a história, a mente dele viajou rapidamente para muito longe, e ele imaginou estar voando entre as estrelas. O amigo disse: — \"Esse livro é um avião.\"",
+      "phrases": null,
+      "image_key": "faseA/07.jpg",
+      "question_text": "O que o amigo quis dizer quando falou que \"o livro é um avião\"?",
+      "options": [
+        {
+          "key": "a",
+          "text": "Que a história fez a mente do menino viajar e o transportou para lugares distantes.",
+          "is_correct": true,
+          "is_fixed": false
+        },
+        {
+          "key": "b",
+          "text": "Que o menino dobrou as páginas de propósito para fazer um aviãozinho de papel.",
+          "is_correct": false,
+          "is_fixed": false
+        },
+        {
+          "key": "c",
+          "text": "Que o Marcos estava lendo um livro muito grosso sobre como se constrói motores.",
+          "is_correct": false,
+          "is_fixed": false
+        },
+        {
+          "key": "d",
+          "text": "Não tenho certeza da resposta correta.",
+          "is_correct": false,
+          "is_fixed": true
+        }
+      ]
+    },
+    {
+      "code": "A1B07-E3-M2",
+      "bank": "B",
+      "metaphor_number": 7,
+      "parent_metaphor_code": "A1B07",
+      "etapa": 3,
+      "etapa_label": "Compreensão",
+      "step": "compreensao_metafora2",
+      "order_index": 46,
+      "metaphor": "O livro é um avião.",
+      "context": "Marcos abriu um livro sobre história. Ao ler a história, a mente dele viajou rapidamente para muito longe, e ele imaginou estar voando entre as estrelas. O amigo disse: — \"Esse livro é um avião.\"",
+      "phrases": null,
+      "image_key": "faseA/07.jpg",
+      "question_text": "Qual o significado profundo da frase \"o livro é um avião\"?",
+      "options": [
+        {
+          "key": "a",
+          "text": "Que a leitura serve para transportar a imaginação da pessoa, tirando ela da rotina.",
+          "is_correct": true,
+          "is_fixed": false
+        },
+        {
+          "key": "b",
+          "text": "Que o livro bateu as folhas no ar e saiu voando de verdade pela janela da sala.",
+          "is_correct": false,
+          "is_fixed": false
+        },
+        {
+          "key": "c",
+          "text": "Que as letras e as palavras daquela aventura de história eram muito difíceis de ler.",
+          "is_correct": false,
+          "is_fixed": false
+        },
+        {
+          "key": "d",
+          "text": "Não tenho certeza da resposta correta.",
+          "is_correct": false,
+          "is_fixed": true
+        }
+      ]
+    },
+    {
+      "code": "A1B07-E3-M3",
+      "bank": "B",
+      "metaphor_number": 7,
+      "parent_metaphor_code": "A1B07",
+      "etapa": 3,
+      "etapa_label": "Compreensão",
+      "step": "compreensao_metafora3",
+      "order_index": 47,
+      "metaphor": "O livro é um avião.",
+      "context": "Marcos abriu um livro sobre história. Ao ler a história, a mente dele viajou rapidamente para muito longe, e ele imaginou estar voando entre as estrelas. O amigo disse: — \"Esse livro é um avião.\"",
+      "phrases": null,
+      "image_key": "faseA/07.jpg",
+      "question_text": "O que a palavra \"avião\" explica sobre a leitura do menino?",
+      "options": [
+        {
+          "key": "a",
+          "text": "Explica que o livro foi um veículo rápido para ele conhecer mundos fantásticos.",
+          "is_correct": true,
+          "is_fixed": false
+        },
+        {
+          "key": "b",
+          "text": "Explica que o livro precisa ter a ajuda de um piloto usando farda para funcionar.",
+          "is_correct": false,
+          "is_fixed": false
+        },
+        {
+          "key": "c",
+          "text": "Explica que o amigo também queria pedir o livro de aventuras emprestado.",
+          "is_correct": false,
+          "is_fixed": false
+        },
+        {
+          "key": "d",
+          "text": "Não tenho certeza da resposta correta.",
+          "is_correct": false,
+          "is_fixed": true
+        }
+      ]
+    },
+    {
+      "code": "A1B07-E3-M4",
+      "bank": "B",
+      "metaphor_number": 7,
+      "parent_metaphor_code": "A1B07",
+      "etapa": 3,
+      "etapa_label": "Compreensão",
+      "step": "compreensao_metafora4",
+      "order_index": 48,
+      "metaphor": "O livro é um avião.",
+      "context": "Marcos abriu um livro sobre história. Ao ler a história, a mente dele viajou rapidamente para muito longe, e ele imaginou estar voando entre as estrelas. O amigo disse: — \"Esse livro é um avião.\"",
+      "phrases": null,
+      "image_key": "faseA/07.jpg",
+      "question_text": "Quando o amigo diz que \"o livro é um avião\", ele quer mostrar que:",
+      "options": [
+        {
+          "key": "a",
+          "text": "A concentração na história possui o poder de nos deslocar para aventuras desconhecidas.",
+          "is_correct": true,
+          "is_fixed": false
+        },
+        {
+          "key": "b",
+          "text": "O Marcos trouxe um brinquedo gigante e pesado com asas para o meio da escola.",
+          "is_correct": false,
+          "is_fixed": false
+        },
+        {
+          "key": "c",
+          "text": "A história do livro falava exatamente sobre o espaço profundo e o céu estrelado.",
+          "is_correct": false,
+          "is_fixed": false
+        },
+        {
+          "key": "d",
+          "text": "Não tenho certeza da resposta correta.",
+          "is_correct": false,
+          "is_fixed": true
+        }
+      ]
+    },
+    {
+      "code": "A1B09-E1-V1",
+      "bank": "B",
+      "metaphor_number": 9,
+      "parent_metaphor_code": "A1B09",
+      "etapa": 1,
+      "etapa_label": "Causalidade",
+      "step": "causalidade_veiculo1",
+      "order_index": 49,
+      "metaphor": "O carinho é um curativo.",
+      "context": null,
+      "phrases": null,
+      "image_key": null,
+      "question_text": "Para que serve colocar um curativo em cima de uma pele machucada?",
+      "options": [
+        {
+          "key": "a",
+          "text": "Para colar e proteger a ferida fisicamente, ajudando o corpo a curar a dor.",
+          "is_correct": true,
+          "is_fixed": false
+        },
+        {
+          "key": "b",
+          "text": "Serve para infectar e piorar o machucado com terra da rua.",
+          "is_correct": false,
+          "is_fixed": false
+        },
+        {
+          "key": "c",
+          "text": "É feito de material para fazer tatuagens nos braços do menino.",
+          "is_correct": false,
+          "is_fixed": false
+        },
+        {
+          "key": "d",
+          "text": "Não tenho certeza da resposta correta.",
+          "is_correct": false,
+          "is_fixed": true
+        }
+      ]
+    },
+    {
+      "code": "A1B09-E1-V2",
+      "bank": "B",
+      "metaphor_number": 9,
+      "parent_metaphor_code": "A1B09",
+      "etapa": 1,
+      "etapa_label": "Causalidade",
+      "step": "causalidade_veiculo2",
+      "order_index": 50,
+      "metaphor": "O carinho é um curativo.",
+      "context": null,
+      "phrases": null,
+      "image_key": null,
+      "question_text": "O que o uso de um curativo causa quando é bem colocado em um corte?",
+      "options": [
+        {
+          "key": "a",
+          "text": "Cobre toda a área ferida, blindando contra sujeiras e trazendo alívio.",
+          "is_correct": true,
+          "is_fixed": false
+        },
+        {
+          "key": "b",
+          "text": "Abre o ferimento do braço ainda mais forte até escorrer água pelo chão.",
+          "is_correct": false,
+          "is_fixed": false
+        },
+        {
+          "key": "c",
+          "text": "Dá arrepios de frio e faz a pessoa querer pular em um lago congelado.",
+          "is_correct": false,
+          "is_fixed": false
+        },
+        {
+          "key": "d",
+          "text": "Não tenho certeza da resposta correta.",
+          "is_correct": false,
+          "is_fixed": true
+        }
+      ]
+    },
+    {
+      "code": "A1B09-E1-A1",
+      "bank": "B",
+      "metaphor_number": 9,
+      "parent_metaphor_code": "A1B09",
+      "etapa": 1,
+      "etapa_label": "Causalidade",
+      "step": "causalidade_alvo1",
+      "order_index": 51,
+      "metaphor": "O carinho é um curativo.",
+      "context": null,
+      "phrases": null,
+      "image_key": null,
+      "question_text": "O que o abraço do amigo causou no momento em que a menina sofria?",
+      "options": [
+        {
+          "key": "a",
+          "text": "Amparou e acalmou a menina por dentro, fazendo a tristeza parar.",
+          "is_correct": true,
+          "is_fixed": false
+        },
+        {
+          "key": "b",
+          "text": "Deixa ela com ainda mais raiva pelo lanche gostoso que perdeu.",
+          "is_correct": false,
+          "is_fixed": false
+        },
+        {
+          "key": "c",
+          "text": "Faz a menina gritar mais alto de propósito com a turma que estava perto.",
+          "is_correct": false,
+          "is_fixed": false
+        },
+        {
+          "key": "d",
+          "text": "Não tenho certeza da resposta correta.",
+          "is_correct": false,
+          "is_fixed": true
+        }
+      ]
+    },
+    {
+      "code": "A1B09-E1-A2",
+      "bank": "B",
+      "metaphor_number": 9,
+      "parent_metaphor_code": "A1B09",
+      "etapa": 1,
+      "etapa_label": "Causalidade",
+      "step": "causalidade_alvo2",
+      "order_index": 52,
+      "metaphor": "O carinho é um curativo.",
+      "context": null,
+      "phrases": null,
+      "image_key": null,
+      "question_text": "O que o abraço afetuoso fez com o coração e a emoção triste da menina?",
+      "options": [
+        {
+          "key": "a",
+          "text": "Fez a dor interna sumir mais rápido e ajudou a curar os sentimentos ruins.",
+          "is_correct": true,
+          "is_fixed": false
+        },
+        {
+          "key": "b",
+          "text": "Colocou um grande rolo de fita amarela colado na roupa dela de verdade.",
+          "is_correct": false,
+          "is_fixed": false
+        },
+        {
+          "key": "c",
+          "text": "Derrubou de propósito o lanche do outro colega na sujeira do chão.",
+          "is_correct": false,
+          "is_fixed": false
+        },
+        {
+          "key": "d",
+          "text": "Não tenho certeza da resposta correta.",
+          "is_correct": false,
+          "is_fixed": true
+        }
+      ]
+    },
+    {
+      "code": "A1B09-E2-EQ1",
+      "bank": "B",
+      "metaphor_number": 9,
+      "parent_metaphor_code": "A1B09",
+      "etapa": 2,
+      "etapa_label": "Semelhança",
+      "step": "semelhanca_eqeq1",
+      "order_index": 53,
+      "metaphor": "O carinho é um curativo.",
+      "context": "Frase 1: O curativo protege o machucado. Frase 2: O carinho curou a tristeza profunda.",
+      "phrases": [
+        "O curativo protege o machucado.",
+        "O carinho curou a tristeza profunda."
+      ],
+      "image_key": null,
+      "question_text": "O que as duas situações do curativo físico e do carinho têm de parecido?",
+      "options": [
+        {
+          "key": "a",
+          "text": "Ambas cobrem aquilo que está machucando a pessoa e ajudam a sarar a ferida.",
+          "is_correct": true,
+          "is_fixed": false
+        },
+        {
+          "key": "b",
+          "text": "Ambas as coisas podem ser compradas pelo médico na farmácia da escola.",
+          "is_correct": false,
+          "is_fixed": false
+        },
+        {
+          "key": "c",
+          "text": "A menina tinha machucado as roupas caindo no chão duro do recreio.",
+          "is_correct": false,
+          "is_fixed": false
+        },
+        {
+          "key": "d",
+          "text": "Não tenho certeza da resposta correta.",
+          "is_correct": false,
+          "is_fixed": true
+        }
+      ]
+    },
+    {
+      "code": "A1B09-E2-EQ2",
+      "bank": "B",
+      "metaphor_number": 9,
+      "parent_metaphor_code": "A1B09",
+      "etapa": 2,
+      "etapa_label": "Semelhança",
+      "step": "semelhanca_eqeq2",
+      "order_index": 54,
+      "metaphor": "O carinho é um curativo.",
+      "context": "Frase 1: O curativo protege o machucado. Frase 2: O carinho curou a tristeza profunda.",
+      "phrases": [
+        "O curativo protege o machucado.",
+        "O carinho curou a tristeza profunda."
+      ],
+      "image_key": null,
+      "question_text": "Qual é a semelhança central entre usar um curativo e receber carinho num momento triste?",
+      "options": [
+        {
+          "key": "a",
+          "text": "As duas coisas funcionam trazendo proteção e forte alívio em cima de uma dor.",
+          "is_correct": true,
+          "is_fixed": false
+        },
+        {
+          "key": "b",
+          "text": "As duas coisas são usadas quando o joelho encosta e rala rasgando a pele.",
+          "is_correct": false,
+          "is_fixed": false
+        },
+        {
+          "key": "c",
+          "text": "O amigo da menina da escola quer ser enfermeiro no hospital quando crescer.",
+          "is_correct": false,
+          "is_fixed": false
+        },
+        {
+          "key": "d",
+          "text": "Não tenho certeza da resposta correta.",
+          "is_correct": false,
+          "is_fixed": true
+        }
+      ]
+    },
+    {
+      "code": "A1B09-E2-EQ3",
+      "bank": "B",
+      "metaphor_number": 9,
+      "parent_metaphor_code": "A1B09",
+      "etapa": 2,
+      "etapa_label": "Semelhança",
+      "step": "semelhanca_eqeq3",
+      "order_index": 55,
+      "metaphor": "O carinho é um curativo.",
+      "context": "Frase 1: O curativo protege o machucado. Frase 2: O carinho curou a tristeza profunda.",
+      "phrases": [
+        "O curativo protege o machucado.",
+        "O carinho curou a tristeza profunda."
+      ],
+      "image_key": null,
+      "question_text": "O que o abraço amigável e o curativo têm em comum no que eles fazem?",
+      "options": [
+        {
+          "key": "a",
+          "text": "Ambos servem como uma barreira que cuida e alivia diretamente aquilo que se feriu.",
+          "is_correct": true,
+          "is_fixed": false
+        },
+        {
+          "key": "b",
+          "text": "Ambos grudam a roupa e seguram muito forte de verdade com um pingo de remédio.",
+          "is_correct": false,
+          "is_fixed": false
+        },
+        {
+          "key": "c",
+          "text": "O lanche caiu porque a mesa estava com o pé muito torto.",
+          "is_correct": false,
+          "is_fixed": false
+        },
+        {
+          "key": "d",
+          "text": "Não tenho certeza da resposta correta.",
+          "is_correct": false,
+          "is_fixed": true
+        }
+      ]
+    },
+    {
+      "code": "A1B09-E2-EQ4",
+      "bank": "B",
+      "metaphor_number": 9,
+      "parent_metaphor_code": "A1B09",
+      "etapa": 2,
+      "etapa_label": "Semelhança",
+      "step": "semelhanca_eqeq4",
+      "order_index": 56,
+      "metaphor": "O carinho é um curativo.",
+      "context": "Frase 1: O curativo protege o machucado. Frase 2: O carinho curou a tristeza profunda.",
+      "phrases": [
+        "O curativo protege o machucado.",
+        "O carinho curou a tristeza profunda."
+      ],
+      "image_key": null,
+      "question_text": "De que forma a atitude do abraço longo funciona igual a usar um curativo?",
+      "options": [
+        {
+          "key": "a",
+          "text": "Porque o carinho ampara as dores emocionais exatamente igual ao band-aid que ampara a pele.",
+          "is_correct": true,
+          "is_fixed": false
+        },
+        {
+          "key": "b",
+          "text": "Porque o amigo amarrou todo o corpo da menina com muito esparadrapo duro.",
+          "is_correct": false,
+          "is_fixed": false
+        },
+        {
+          "key": "c",
+          "text": "Porque a professora mandou as crianças direto para a enfermaria com pressa.",
+          "is_correct": false,
+          "is_fixed": false
+        },
+        {
+          "key": "d",
+          "text": "Não tenho certeza da resposta correta.",
+          "is_correct": false,
+          "is_fixed": true
+        }
+      ]
+    },
+    {
+      "code": "A1B09-E3-M1",
+      "bank": "B",
+      "metaphor_number": 9,
+      "parent_metaphor_code": "A1B09",
+      "etapa": 3,
+      "etapa_label": "Compreensão",
+      "step": "compreensao_metafora1",
+      "order_index": 57,
+      "metaphor": "O carinho é um curativo.",
+      "context": "A menina estava chorando muito de tristeza porque o seu lanche caiu no chão. O amigo dela chegou perto, deu um abraço forte e falou palavras bonitas. Na mesma hora, a menina parou de chorar e voltou a sorrir. Vendo a dor dela passar, a professora disse: — \"Esse carinho foi um curativo.\"",
+      "phrases": null,
+      "image_key": "faseA/09.jpg",
+      "question_text": "O que a professora quis dizer quando falou que \"o carinho foi um curativo\"?",
+      "options": [
+        {
+          "key": "a",
+          "text": "Que o abraço ajudou a curar a tristeza e fez a menina deprimida melhorar na hora.",
+          "is_correct": true,
+          "is_fixed": false
+        },
+        {
+          "key": "b",
+          "text": "Que o menino colou um curativo adesivo com remédio de verdade no braço dela.",
+          "is_correct": false,
+          "is_fixed": false
+        },
+        {
+          "key": "c",
+          "text": "Que a menina tinha tropeçado e estava machucada de verdade no recreio.",
+          "is_correct": false,
+          "is_fixed": false
+        },
+        {
+          "key": "d",
+          "text": "Não tenho certeza da resposta correta.",
+          "is_correct": false,
+          "is_fixed": true
+        }
+      ]
+    },
+    {
+      "code": "A1B09-E3-M2",
+      "bank": "B",
+      "metaphor_number": 9,
+      "parent_metaphor_code": "A1B09",
+      "etapa": 3,
+      "etapa_label": "Compreensão",
+      "step": "compreensao_metafora2",
+      "order_index": 58,
+      "metaphor": "O carinho é um curativo.",
+      "context": "A menina estava chorando muito de tristeza porque o seu lanche caiu no chão. O amigo dela chegou perto, deu um abraço forte e falou palavras bonitas. Na mesma hora, a menina parou de chorar e voltou a sorrir. Vendo a dor dela passar, a professora disse: — \"Esse carinho foi um curativo.\"",
+      "phrases": null,
+      "image_key": "faseA/09.jpg",
+      "question_text": "Qual o sentido emocional da frase da professora \"o carinho é um curativo\"?",
+      "options": [
+        {
+          "key": "a",
+          "text": "Que a atitude protegeu a emoção arranhada igualzinho ao modo que um curativo protege a pele.",
+          "is_correct": true,
+          "is_fixed": false
+        },
+        {
+          "key": "b",
+          "text": "Que a blusa do menino estava suja de remédio vermelho e manchou a roupa da amiga.",
+          "is_correct": false,
+          "is_fixed": false
+        },
+        {
+          "key": "c",
+          "text": "Que a menina também perdeu na chuva a caixa de curativos coloridos que tinha trazido.",
+          "is_correct": false,
+          "is_fixed": false
+        },
+        {
+          "key": "d",
+          "text": "Não tenho certeza da resposta correta.",
+          "is_correct": false,
+          "is_fixed": true
+        }
+      ]
+    },
+    {
+      "code": "A1B09-E3-M3",
+      "bank": "B",
+      "metaphor_number": 9,
+      "parent_metaphor_code": "A1B09",
+      "etapa": 3,
+      "etapa_label": "Compreensão",
+      "step": "compreensao_metafora3",
+      "order_index": 59,
+      "metaphor": "O carinho é um curativo.",
+      "context": "A menina estava chorando muito de tristeza porque o seu lanche caiu no chão. O amigo dela chegou perto, deu um abraço forte e falou palavras bonitas. Na mesma hora, a menina parou de chorar e voltou a sorrir. Vendo a dor dela passar, a professora disse: — \"Esse carinho foi um curativo.\"",
+      "phrases": null,
+      "image_key": "faseA/09.jpg",
+      "question_text": "O que a professora explicou sobre o abraço usando a palavra \"curativo\"?",
+      "options": [
+        {
+          "key": "a",
+          "text": "Explicou que o afeto cobriu a dor da menina e tratou do sofrimento até ele sumir.",
+          "is_correct": true,
+          "is_fixed": false
+        },
+        {
+          "key": "b",
+          "text": "Explicou que a menina precisava tomar uma injeção de verdade para poder parar de chorar",
+          "is_correct": false,
+          "is_fixed": false
+        },
+        {
+          "key": "c",
+          "text": "Explicou que a professora estava brava porque as crianças deixaram comida cair no chão.",
+          "is_correct": false,
+          "is_fixed": false
+        },
+        {
+          "key": "d",
+          "text": "Não tenho certeza da resposta correta.",
+          "is_correct": false,
+          "is_fixed": true
+        }
+      ]
+    },
+    {
+      "code": "A1B09-E3-M4",
+      "bank": "B",
+      "metaphor_number": 9,
+      "parent_metaphor_code": "A1B09",
+      "etapa": 3,
+      "etapa_label": "Compreensão",
+      "step": "compreensao_metafora4",
+      "order_index": 60,
+      "metaphor": "O carinho é um curativo.",
+      "context": "A menina estava chorando muito de tristeza porque o seu lanche caiu no chão. O amigo dela chegou perto, deu um abraço forte e falou palavras bonitas. Na mesma hora, a menina parou de chorar e voltou a sorrir. Vendo a dor dela passar, a professora disse: — \"Esse carinho foi um curativo.\"",
+      "phrases": null,
+      "image_key": "faseA/09.jpg",
+      "question_text": "O que a professora quer mostrar quando observa que \"o carinho foi um curativo\"?",
+      "options": [
+        {
+          "key": "a",
+          "text": "O apoio e o afeto têm a força de fechar as feridas emocionais causadas por uma situação triste.",
+          "is_correct": true,
+          "is_fixed": false
+        },
+        {
+          "key": "b",
+          "text": "O menino achou um band-aid velho no chão e grudou no rosto da amiga como brincadeira.",
+          "is_correct": false,
+          "is_fixed": false
+        },
+        {
+          "key": "c",
+          "text": "A menina estava chorando apenas porque não queria dividir o lanche dela com a turma.",
+          "is_correct": false,
+          "is_fixed": false
+        },
+        {
+          "key": "d",
+          "text": "Não tenho certeza da resposta correta.",
+          "is_correct": false,
+          "is_fixed": true
+        }
+      ]
+    }
+  ]
+}
