@@ -201,3 +201,12 @@ create policy "answers_all_own" on public.answers
       where t.id = answers.test_id and t.applicator_id = auth.uid()
     )
   );
+
+-- RLS decide quais linhas podem ser acessadas, mas os papéis também precisam
+-- ter privilégios SQL nas tabelas. O service_role é usado pelo seed; o papel
+-- authenticated é usado pelo aplicador no app.
+grant usage on schema public to authenticated, service_role;
+grant select, insert, update on public.applicators to authenticated;
+grant select on public.questions to authenticated;
+grant select, insert, update, delete on public.tests, public.answers to authenticated;
+grant all on public.questions, public.tests, public.answers to service_role;

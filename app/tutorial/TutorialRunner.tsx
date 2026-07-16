@@ -3,6 +3,7 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { SpeakButton, useVoice } from "@/app/tests/[id]/run/speech";
 import { FEEDBACK_SCREEN_MS, speechTimeoutMs } from "@/lib/config";
 import { TUTORIAL_EXAMPLES } from "./examples";
@@ -43,8 +44,20 @@ export function TutorialRunner({ exitHref = "/" }: { exitHref?: string }) {
   const [correct, setCorrect] = useState(false);
 
   const { play, cancel } = useVoice();
+  const router = useRouter();
 
   const timerRef = useRef<number | null>(null);
+
+  // Sair é só pela tecla Esc (não há mais o ✕). O tutorial não grava nada.
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key !== "Escape") return;
+      cancel();
+      router.push(exitHref);
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [cancel, exitHref, router]);
 
   /**
    * Fala `text` e avança o guia quando a fala termina.
@@ -163,15 +176,8 @@ export function TutorialRunner({ exitHref = "/" }: { exitHref?: string }) {
 
   const header = (
     <div className="shrink-0 px-4 pt-4 pb-2 max-w-2xl w-full mx-auto">
+      {/* Sem ✕: quem aplica sai pela tecla Esc, a criança não sai com um toque. */}
       <div className="flex items-center gap-3">
-        <Link
-          href={exitHref}
-          className="text-2xl leading-none text-[var(--muted)]"
-          aria-label="Sair do tutorial"
-          title="Sair do tutorial"
-        >
-          ✕
-        </Link>
         <div className="progressbar flex-1">
           <div style={{ width: `${stepPct}%` }} />
         </div>

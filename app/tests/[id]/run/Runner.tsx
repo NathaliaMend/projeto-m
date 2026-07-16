@@ -3,6 +3,7 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useVoice, useGatedSpeech, SpeakButton } from "./speech";
 import { submitAnswer } from "@/app/tests/actions";
 import {
@@ -129,14 +130,34 @@ export function Runner({
   const [completedPhase, setCompletedPhase] = useState<Phase | null>(null);
 
   const step: RunnerStep | undefined = steps[cur];
+  // A tela de contexto só serve para a HISTÓRIA. Na Etapa 2 da Fase B o contexto
+  // são as frases, que agora aparecem JUNTO da pergunta (na tela da pergunta) —
+  // então esses passos pulam a tela de contexto para não mostrar as frases
+  // sozinhas primeiro.
+  const hasStoryScreen = (s: RunnerStep | undefined): boolean =>
+    !!s?.question.context && !s.question.phrases;
   const firstScreen = (s: RunnerStep | undefined): Screen =>
-    s?.question.context ? "context" : "question";
+    hasStoryScreen(s) ? "context" : "question";
 
   const [screen, setScreen] = useState<Screen>(
     beginDone ? "done" : showIntro ? "intro" : firstScreen(steps[startIndex])
   );
 
   const { play, cancel, ready } = useVoice();
+  const router = useRouter();
+
+  // Sair é só pela tecla Esc (não há mais o ✕): a criança não sai com um toque,
+  // e quem aplica encerra pelo teclado. O progresso já está salvo — cada
+  // resposta é gravada na hora (submitAnswer), então basta navegar embora.
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key !== "Escape") return;
+      cancel();
+      router.push(exitHref);
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [cancel, exitHref, router]);
 
   // A história tem que terminar antes de liberar o "Continuar"...
   const ctx = useGatedSpeech(
@@ -146,13 +167,32 @@ export function Runner({
     screen === "context",
     speechTimeoutMs
   );
-  // ...e a pergunta antes de liberar as alternativas.
+  // ...e a pergunta antes de liberar as alternativas. O texto gated é só a
+  // pergunta (o áudio é endereçado pelo conteúdo — ver lib/audio.ts —, então
+  // cada fala precisa casar exatamente com o texto que gerou o mp3).
   const qst = useGatedSpeech(
     play,
     ready,
     step?.question.question_text ?? null,
     screen === "question",
     speechTimeoutMs
+  );
+
+  /**
+   * Fala a pergunta ao abrir a tela. Na Etapa 2 da Fase B, toca ANTES o áudio
+   * das frases e, ao terminar, o da pergunta — DOIS mp3 separados, nunca um
+   * texto concatenado (que não teria arquivo e cairia no TTS robótico do
+   * navegador). É a pergunta que libera as alternativas.
+   */
+  const speakQuestion = useCallback(
+    (s: RunnerStep) => {
+      if (s.question.phrases && s.question.context) {
+        qst.speakNowPreceded(s.question.context, s.question.question_text);
+      } else {
+        qst.speakNow(s.question.question_text);
+      }
+    },
+    [qst]
   );
 
   // Fala automática das instruções ao abrir a tela de intro.
@@ -194,15 +234,15 @@ export function Runner({
       setCur(idx);
       setSelected(null);
       setResult(null);
-      if (s.question.context) {
+      if (hasStoryScreen(s)) {
         setScreen("context");
-        ctx.speakNow(s.question.context);
+        ctx.speakNow(s.question.context!);
       } else {
         setScreen("question");
-        qst.speakNow(s.question.question_text);
+        speakQuestion(s);
       }
     },
-    [steps, ctx, qst]
+    [steps, ctx, speakQuestion]
   );
 
   /** Fim da pergunta atual: encerra a fase, ou passa pela tela em branco. */
@@ -251,7 +291,7 @@ export function Runner({
             setSelected(null);
             setResult(null);
             setScreen("question");
-            qst.speakNow(step.question.question_text);
+            speakQuestion(step);
           } else {
             finishQuestion();
           }
@@ -386,21 +426,11 @@ export function Runner({
 
   const header = (
     <div className="shrink-0 px-4 pt-4 pb-2 max-w-2xl w-full mx-auto">
-      <div className="flex items-center gap-3">
-        <Link
-          href={exitHref}
-          className="text-2xl leading-none text-[var(--muted)]"
-          aria-label="Sair"
-          title="Sair"
-        >
-          ✕
-        </Link>
-        <div className="progressbar flex-1">
-          <div style={{ width: `${progressPct}%` }} />
-        </div>
-        <span className="text-sm font-black text-[var(--muted)] whitespace-nowrap">
-          {step.stageLabel}
-        </span>
+      {/* Sem botão de sair e sem o nome da fase: a criança não deve conseguir
+          sair com um toque, e o rótulo da etapa é ruído para ela. Quem aplica
+          sai pela tecla Esc (ver o efeito de teclado acima). */}
+      <div className="progressbar">
+        <div style={{ width: `${progressPct}%` }} />
       </div>
       {demoBadge && (
         <p className="text-center text-xs font-bold text-[var(--muted)] mt-1">
@@ -437,9 +467,6 @@ export function Runner({
                 speak={play}
                 label="Ouvir de novo"
               />
-              <span className="text-xs font-black uppercase tracking-wide text-[var(--muted)]">
-                {step.question.phrases ? "Leia as frases" : "História"}
-              </span>
             </div>
             {step.question.phrases ? (
               <ol className="flex flex-col gap-2">
@@ -465,7 +492,7 @@ export function Runner({
             <button
               onClick={() => {
                 setScreen("question");
-                qst.speakNow(step.question.question_text);
+                speakQuestion(step);
               }}
               disabled={!ctx.done}
               className="btn3d btn3d-green"
@@ -485,6 +512,33 @@ export function Runner({
       {header}
 
       <div className="flex-1 min-h-0 overflow-y-auto px-4 py-4 max-w-2xl w-full mx-auto flex flex-col gap-4">
+        {/* Etapa 2 da Fase B (Semelhança): as frases ficam à vista JUNTO da
+            pergunta — a criança compara as duas frases para responder, e teria
+            que lembrá-las da tela anterior se não estivessem aqui. */}
+        {step.question.phrases && (
+          <div className="bg-[#f7f9fc] rounded-2xl p-4">
+            {step.question.context && (
+              <div className="mb-2">
+                <SpeakButton
+                  text={step.question.context}
+                  speak={play}
+                  label="Ouvir as frases"
+                />
+              </div>
+            )}
+            <ol className="flex flex-col gap-2">
+              {step.question.phrases.map((p, i) => (
+                <li key={i} className="flex items-start gap-2">
+                  <span className="shrink-0 text-xs font-black uppercase text-[var(--muted)] mt-1">
+                    Frase {i + 1}
+                  </span>
+                  <span className="font-semibold leading-snug">{p}</span>
+                </li>
+              ))}
+            </ol>
+          </div>
+        )}
+
         <div>
           <div className="flex items-center gap-2 mb-1.5">
             <SpeakButton
@@ -492,9 +546,6 @@ export function Runner({
               speak={play}
               label="Ouvir a pergunta"
             />
-            <span className="text-xs font-black uppercase tracking-wide text-[var(--muted)]">
-              {step.question.etapa_label ?? "Pergunta"}
-            </span>
           </div>
           <h2 className="text-xl font-black leading-snug">
             {step.question.question_text}

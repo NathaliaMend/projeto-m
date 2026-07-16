@@ -204,6 +204,29 @@ export function useGatedSpeech(
     [start]
   );
 
+  /**
+   * Toca `lead` primeiro (áudio próprio) e, ao terminar, a fala gated `t`. Serve
+   * à Etapa 2 da Fase B: as frases antes da pergunta, DOIS mp3 separados — nunca
+   * um texto concatenado, que não teria arquivo (o áudio é endereçado pelo
+   * conteúdo, ver lib/audio.ts). Só o `t` conta como "falado" (libera a tela).
+   */
+  const speakNowPreceded = useCallback(
+    (lead: string, t: string) => {
+      suppressAuto.current = true;
+      if (timer.current) window.clearTimeout(timer.current);
+      let advanced = false;
+      const toGated = () => {
+        if (advanced) return;
+        advanced = true;
+        start(t); // start reinstala o próprio timer de segurança para `t`
+      };
+      // Se o áudio das frases falhar em silêncio, ainda seguimos para a pergunta.
+      timer.current = window.setTimeout(toGated, timeoutMs(lead));
+      play(lead, toGated);
+    },
+    [play, start, timeoutMs]
+  );
+
   useEffect(() => {
     if (!active || !text) return;
     if (suppressAuto.current) {
@@ -222,7 +245,7 @@ export function useGatedSpeech(
     []
   );
 
-  return { done, speakNow, replay: start };
+  return { done, speakNow, speakNowPreceded, replay: start };
 }
 
 /** Botão circular de "ouvir" que reproduz um texto. */

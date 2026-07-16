@@ -126,11 +126,14 @@ body {
   outline-offset: 2px;
 }
 
-/* Selecionada: mais clara + anel — visível sem depender de cor. */
+/* Selecionada: salto grande de luminosidade (fundo claro, texto escuro) + anel
+ * azul. A mudança forte é a LUMINOSIDADE, não a cor — quem não distingue cor
+ * ainda vê o contraste. */
 .choice.selected {
-  background: #6b7280;
-  border-color: #ffffff;
-  box-shadow: 0 0 0 3px #3c3c3c;
+  background: #dfe4ea;
+  border-color: var(--blue);
+  color: #1a1d21;
+  box-shadow: 0 0 0 4px var(--blue);
 }
 .choice.correct {
   background: var(--green-dark);
