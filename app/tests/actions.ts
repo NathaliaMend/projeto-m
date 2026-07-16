@@ -4,10 +4,16 @@ import { redirect } from "next/navigation";
 import { revalidatePath } from "next/cache";
 import { createClient } from "@/lib/supabase/server";
 import { getBanks } from "@/lib/questions.server";
-import { buildSteps, progressFromAnswers } from "@/lib/assessment";
+import {
+  buildSteps,
+  progressFromAnswers,
+  shuffleStep,
+  type AnsweredKey,
+  type Step,
+} from "@/lib/assessment";
 import { phaseConfig } from "@/lib/phases";
 import { MAX_ATTEMPTS_B } from "@/lib/config";
-import type { Answer, Phase } from "@/lib/types";
+import type { Phase, PresentedQuestion } from "@/lib/types";
 
 async function requireUser() {
   const supabase = await createClient();
@@ -39,28 +45,32 @@ export async function createTest(formData: FormData) {
   redirect(`/tests/${data.id}/run`);
 }
 
-/** Recalcula current_phase/current_index/status de um teste a partir das respostas. */
+/**
+ * Recalcula current_stage/status de um teste a partir das respostas. Recebe os
+ * `steps` prontos porque quem chama já os montou — remontá-los aqui seria um
+ * getBanks/buildSteps a mais por resposta gravada.
+ */
 async function recomputeProgress(
   supabase: Awaited<ReturnType<typeof createClient>>,
-  testId: string
+  testId: string,
+  steps: Step[]
 ) {
-  const byBank = await getBanks(supabase);
-  const steps = buildSteps(byBank, testId);
+  // Só (fase, pergunta): `select("*")` traria a foto `presented` de cada
+  // resposta — até 100 por teste — a cada resposta gravada, só para contar.
   const { data: answers } = await supabase
     .from("answers")
-    .select("*")
+    .select("phase, question_id")
     .eq("test_id", testId);
 
-  const { completed, currentPhase, currentIndex } = progressFromAnswers(
+  const { completed, currentStage } = progressFromAnswers(
     steps,
-    (answers ?? []) as Answer[]
+    (answers ?? []) as AnsweredKey[]
   );
 
   await supabase
     .from("tests")
     .update({
-      current_phase: currentPhase,
-      current_index: currentIndex,
+      current_stage: currentStage,
       status: completed ? "completed" : "in_progress",
       completed_at: completed ? new Date().toISOString() : null,
     })
@@ -93,6 +103,7 @@ export interface SubmitResult {
  *   solved        chegou na correta dentro do limite
  *   attempts      quantas tentativas usou
  *   selected_key  a primeira escolha; selected_keys, todas em ordem
+ *   presented     a pergunta como a criança viu — a foto do momento
  */
 export async function submitAnswer(input: {
   testId: string;
@@ -102,21 +113,40 @@ export async function submitAnswer(input: {
 }): Promise<SubmitResult> {
   const { supabase } = await requireUser();
 
-  // Autoridade do servidor: descobre a opção correta a partir do banco.
-  const { data: question, error } = await supabase
-    .from("questions")
-    .select("options")
-    .eq("id", input.questionId)
-    .single();
-  if (error || !question) throw new Error("Pergunta não encontrada.");
+  // Autoridade do servidor: reconstrói o passo com as MESMAS funções que
+  // montaram a tela (run/page.tsx faz buildSteps + shuffleStep). É o que faz a
+  // foto gravada bater com o que a criança viu, sem o cliente mandar nada —
+  // mandar seria forjável, como seria o número da tentativa.
+  const byBank = await getBanks(supabase);
+  const steps = buildSteps(byBank, input.testId);
+  const step = steps.find(
+    (s) => s.phase === input.phase && s.question.id === input.questionId
+  );
+  if (!step) throw new Error("Pergunta não pertence a esta fase do protocolo.");
 
-  const options = question.options as { key: string; is_correct: boolean }[];
-  const correctKey = options.find((o) => o.is_correct)?.key ?? null;
+  const shown = shuffleStep(step, input.testId);
+  const correctKey = shown.options.find((o) => o.is_correct)?.key ?? null;
   const isCorrect = input.selectedKey === correctKey;
+
+  const presented: PresentedQuestion = {
+    code: shown.code,
+    metaphor: shown.metaphor,
+    parent_metaphor_code: shown.parent_metaphor_code,
+    etapa: shown.etapa,
+    etapa_label: shown.etapa_label,
+    question_text: shown.question_text,
+    options: shown.options,
+    context: shown.context,
+    phrases: shown.phrases,
+    image_key: shown.image_key,
+    hide_context: step.hideContext,
+  };
 
   const { data: prev } = await supabase
     .from("answers")
-    .select("id, attempts, is_correct, solved, selected_key, selected_keys")
+    .select(
+      "id, attempts, is_correct, solved, selected_key, selected_keys, presented"
+    )
     .eq("test_id", input.testId)
     .eq("phase", input.phase)
     .eq("question_id", input.questionId)
@@ -145,13 +175,16 @@ export async function submitAnswer(input: {
       selected_keys: keys,
       solved: isCorrect,
       attempts,
+      // A foto é da PRIMEIRA vez que a pergunta apareceu; a retentativa mostra
+      // a mesma tela, então regravar só criaria chance de divergir.
+      presented: (prev?.presented as PresentedQuestion | null) ?? presented,
     },
     { onConflict: "test_id,phase,question_id" }
   );
   if (upErr) throw new Error(upErr.message);
 
   const canRetry = retriable && !isCorrect && attempts < MAX_ATTEMPTS_B;
-  const { completed } = await recomputeProgress(supabase, input.testId);
+  const { completed } = await recomputeProgress(supabase, input.testId, steps);
   revalidatePath("/");
   revalidatePath(`/tests/${input.testId}`);
 
@@ -172,8 +205,7 @@ export async function restartTest(testId: string) {
   await supabase
     .from("tests")
     .update({
-      current_phase: "A",
-      current_index: 0,
+      current_stage: "A",
       status: "in_progress",
       completed_at: null,
     })

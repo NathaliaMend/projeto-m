@@ -4,7 +4,7 @@ import { createClient } from "@/lib/supabase/server";
 import { getBanks } from "@/lib/questions.server";
 import { PHASES, phaseConfig } from "@/lib/phases";
 import { buildSteps } from "@/lib/assessment";
-import type { Answer, Phase, Question, Test } from "@/lib/types";
+import type { Answer, Phase, Test } from "@/lib/types";
 
 function formatDate(iso: string | null) {
   if (!iso) return "—";
@@ -46,11 +46,6 @@ export default async function TestDetailsPage({
   const phaseTotals = new Map<Phase, number>();
   for (const s of buildSteps(byBank, id)) {
     phaseTotals.set(s.phase, (phaseTotals.get(s.phase) ?? 0) + 1);
-  }
-
-  const questionById = new Map<string, Question>();
-  for (const list of Object.values(byBank)) {
-    for (const q of list) questionById.set(q.id, q);
   }
 
   const answersByPhase = new Map<Phase, Answer[]>();
@@ -136,11 +131,13 @@ export default async function TestDetailsPage({
               </h2>
               <ul className="flex flex-col gap-2">
                 {phaseAnswers.map((a) => {
-                  const q = questionById.get(a.question_id);
-                  const selected = q?.options.find(
+                  // A pergunta como a criança viu, não como ela está hoje no
+                  // banco: re-semear as planilhas não pode mudar um registro.
+                  const p = a.presented;
+                  const selected = p.options.find(
                     (o) => o.key === a.selected_key
                   );
-                  const correctOpt = q?.options.find((o) => o.is_correct);
+                  const correctOpt = p.options.find((o) => o.is_correct);
                   return (
                     <li
                       key={a.id}
@@ -151,7 +148,7 @@ export default async function TestDetailsPage({
                       </span>
                       <div className="min-w-0">
                         <p className="font-bold leading-snug">
-                          {q?.question_text ?? "—"}
+                          {p.question_text}
                         </p>
                         <p className="text-sm font-semibold text-[var(--muted)] mt-1">
                           1ª resposta: {selected?.text ?? a.selected_key}

@@ -3,7 +3,7 @@ import questionsData from "@/data/questions.json";
 import { PHASES, phaseConfig } from "@/lib/phases";
 import { buildSteps, shuffleStep } from "@/lib/assessment";
 import type { Phase, Question } from "@/lib/types";
-import { PreviewRunner } from "./PreviewRunner";
+import { LocalRunner } from "@/app/tests/[id]/run/LocalRunner";
 import type { RunnerStep } from "@/app/tests/[id]/run/Runner";
 
 /**
@@ -50,7 +50,7 @@ function buildPreview(sel: Selection, metaphor?: string) {
 
     return {
       phase: s.phase,
-      phaseLabel: cfg.label,
+      stageLabel: cfg.label,
       feedback: cfg.feedbackPerQuestion,
       // Ao ver uma fase isolada, o índice do passo dentro dela recomeça do zero.
       indexInPhase: sel === "all" && !metaphor ? s.indexInPhase : i,
@@ -79,7 +79,18 @@ export default async function PreviewPage({
 
   if (isSelection(phase)) {
     const { steps, correctKeys } = buildPreview(phase, metaphor);
-    return <PreviewRunner steps={steps} correctKeys={correctKeys} />;
+    return (
+      <LocalRunner
+        testId="preview"
+        studentName="Visitante"
+        steps={steps}
+        correctKeys={correctKeys}
+        exitHref="/preview"
+        resultHref="/preview"
+        resultLabel="Voltar ao início"
+        badge="Modo demonstração · nada é salvo"
+      />
+    );
   }
 
   const counts = new Map<Phase, number>();

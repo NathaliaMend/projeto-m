@@ -19,7 +19,8 @@ export interface RunnerOption {
 }
 export interface RunnerStep {
   phase: Phase;
-  phaseLabel: string;
+  /** Rótulo do que está sendo aplicado — a etapa (ver lib/stages.ts). */
+  stageLabel: string;
   feedback: boolean; // Fase B: feedback e novas tentativas
   indexInPhase: number;
   phaseTotal: number;
@@ -357,7 +358,7 @@ export function Runner({
       <CenterCard>
         <div className="text-6xl mb-3">{PHASE_EMOJI[completedPhase]}</div>
         <h1 className="text-2xl font-black mb-2">
-          {steps[cur]?.phaseLabel ?? `Fase ${completedPhase}`} concluída!
+          {steps[cur]?.stageLabel ?? `Fase ${completedPhase}`} concluída!
         </h1>
         <p className="text-[var(--muted)] font-semibold mb-6">
           Você foi muito bem! Vamos para a próxima parte.
@@ -398,7 +399,7 @@ export function Runner({
           <div style={{ width: `${progressPct}%` }} />
         </div>
         <span className="text-sm font-black text-[var(--muted)] whitespace-nowrap">
-          {step.phaseLabel}
+          {step.stageLabel}
         </span>
       </div>
       {demoBadge && (

@@ -39,11 +39,46 @@ export interface Test {
   student_name: string;
   student_birth_date: string | null;
   status: TestStatus;
-  current_phase: Phase;
-  current_index: number;
+  /**
+   * Em qual ETAPA o teste parou — um `Stage["id"]` (ver lib/stages.ts).
+   * É `string` e não uma union porque STAGES é derivado de PHASES em runtime.
+   * Cache derivado de `answers`; a fonte de verdade é sempre `answers`.
+   */
+  current_stage: string;
   started_at: string;
   completed_at: string | null;
   created_at: string;
+}
+
+/**
+ * A pergunta como a criança VIU, gravada junto da resposta.
+ *
+ * Não é cópia redundante do banco de perguntas. O que a criança viu é
+ * DERIVADO: a ordem das alternativas sai de `shuffleOptions(optionSeed(...))` e
+ * a condição sem suporte contextual sai de `orderSeed(...)` — ambos semeados
+ * pelo `test_id`. E o seed reescreve `questions` por `code`, no lugar. Sem esta
+ * foto, mexer no sorteio ou corrigir uma planilha muda em silêncio o
+ * significado de respostas já coletadas.
+ */
+export interface PresentedQuestion {
+  code: string; // mantém a linha legível mesmo se a pergunta for apagada
+  metaphor: string | null;
+  parent_metaphor_code: string | null;
+  etapa: number | null;
+  etapa_label: string | null;
+  question_text: string;
+  /** As alternativas NA ORDEM em que apareceram na tela. */
+  options: QuestionOption[];
+  /** O que estava na tela — null quando não foi mostrado. */
+  context: string | null;
+  phrases: string[] | null;
+  image_key: string | null;
+  /**
+   * A condição experimental. Distingue "a história foi escondida pela condição
+   * sem suporte contextual" de "esta pergunta nunca teve história" — os dois
+   * chegam aqui como `context: null`.
+   */
+  hide_context: boolean;
 }
 
 export interface Answer {
@@ -51,6 +86,7 @@ export interface Answer {
   test_id: string;
   phase: Phase;
   question_id: string;
+  presented: PresentedQuestion; // a foto do momento da aplicação
   selected_key: string; // a PRIMEIRA escolha
   selected_keys: string[] | null; // todas as escolhas, em ordem
   is_correct: boolean; // acertou na PRIMEIRA tentativa — é esta a medida de compreensão

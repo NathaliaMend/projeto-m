@@ -3,6 +3,7 @@ import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { getBanks } from "@/lib/questions.server";
 import { totalSteps as countSteps } from "@/lib/assessment";
+import { stageById } from "@/lib/stages";
 import { TestActions } from "./tests/TestActions";
 import type { Test } from "@/lib/types";
 
@@ -100,7 +101,10 @@ export default async function DashboardPage() {
                         >
                           {t.status === "completed"
                             ? "Concluído"
-                            : `Em andamento · Fase ${t.current_phase}`}
+                            : `Em andamento · ${
+                                stageById(t.current_stage)?.label ??
+                                t.current_stage
+                              }`}
                         </span>
                       </div>
                       <p className="text-sm text-[var(--muted)] font-semibold mt-0.5">

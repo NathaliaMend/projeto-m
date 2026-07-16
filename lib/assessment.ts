@@ -1,5 +1,6 @@
 import type { Answer, Phase, Question } from "./types";
 import { PHASES } from "./phases";
+import { stageIdOf } from "./stages";
 import { shuffleOptions, shuffleWithSeed } from "./shuffle";
 
 export interface Step {
@@ -103,10 +104,20 @@ export function shuffleStep(step: Step, testId: string): Question {
 }
 
 /**
+ * O mínimo para saber se um passo já foi respondido.
+ *
+ * Existe para quem só quer contar progresso poder fazer um
+ * `select("phase, question_id")`: desde que `answers.presented` guarda a foto da
+ * pergunta, um `select("*")` puxa ~1 KB por resposta — até 100 por teste, a cada
+ * toque de tela — só para contar.
+ */
+export type AnsweredKey = Pick<Answer, "phase" | "question_id">;
+
+/**
  * Primeiro passo ainda não respondido (ponto de retomada).
  * Retorna steps.length quando o teste está completo.
  */
-export function resumeIndex(steps: Step[], answers: Answer[]): number {
+export function resumeIndex(steps: Step[], answers: AnsweredKey[]): number {
   const answered = new Set(answers.map((a) => `${a.phase}:${a.question_id}`));
   for (let i = 0; i < steps.length; i++) {
     if (!answered.has(`${steps[i].phase}:${steps[i].question.id}`)) return i;
@@ -114,12 +125,16 @@ export function resumeIndex(steps: Step[], answers: Answer[]): number {
   return steps.length;
 }
 
-/** Progresso derivado das respostas, para gravar em `tests`. */
-export function progressFromAnswers(steps: Step[], answers: Answer[]) {
+/**
+ * Progresso derivado das respostas, para gravar em `tests`.
+ *
+ * Devolve a ETAPA (não a fase): dentro da B1 a fase fica em 'B1' do primeiro ao
+ * último dia de treino, o que não responde "onde ela parou". Ver lib/stages.ts.
+ */
+export function progressFromAnswers(steps: Step[], answers: AnsweredKey[]) {
   const idx = resumeIndex(steps, answers);
   const completed = idx >= steps.length;
   const at = completed ? steps[steps.length - 1] : steps[idx];
-  const currentPhase: Phase = at ? at.phase : "A";
-  const currentIndex = at ? at.indexInPhase : 0;
-  return { completed, currentPhase, currentIndex };
+  const currentStage = at ? stageIdOf(at) : "A";
+  return { completed, currentStage };
 }

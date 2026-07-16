@@ -1,24 +1,46 @@
 "use client";
 
 import { useRef } from "react";
-import { Runner, type RunnerStep, type SubmitFn } from "@/app/tests/[id]/run/Runner";
+import { Runner, type RunnerStep, type SubmitFn } from "./Runner";
 import { MAX_ATTEMPTS_B } from "@/lib/config";
 import { phaseConfig } from "@/lib/phases";
 
 /**
- * Executa o questionário em modo demonstração: a correção acontece no cliente,
- * sem Supabase e sem salvar nada. Usa o mesmo componente Runner da avaliação real.
+ * Roda o questionário SEM gravar nada: a correção acontece no cliente, a partir
+ * de `correctKeys`. Usa o mesmo Runner da aplicação real, então o que aparece na
+ * tela é o que a criança vê.
+ *
+ * Dois usos:
+ *   - /preview  — demonstração, sem Supabase e sem login.
+ *   - conferir uma etapa já concluída — o dado já está medido, e reaplicar
+ *     sobrescreveria a medida (ver submitAnswer: is_correct é a PRIMEIRA
+ *     tentativa e nunca é regravado).
  *
  * As tentativas ficam num ref (não em estado) porque só o `submit` as consulta —
  * mudá-las não deve re-renderizar. A regra de tentativas espelha a de
  * `submitAnswer` em app/tests/actions.ts; se uma mudar, mude a outra.
  */
-export function PreviewRunner({
+export function LocalRunner({
+  testId,
+  studentName,
   steps,
   correctKeys,
+  badge,
+  exitHref,
+  resultHref,
+  resultLabel,
+  doneMessage,
 }: {
+  testId: string;
+  studentName: string;
   steps: RunnerStep[];
+  /** question.id → key da alternativa correta. */
   correctKeys: Record<string, string>;
+  badge?: string;
+  exitHref?: string;
+  resultHref?: string;
+  resultLabel?: string;
+  doneMessage?: string;
 }) {
   const attemptsRef = useRef<Record<string, number>>({});
 
@@ -45,15 +67,16 @@ export function PreviewRunner({
 
   return (
     <Runner
-      testId="preview"
-      studentName="Visitante"
+      testId={testId}
+      studentName={studentName}
       steps={steps}
       startIndex={0}
       submit={submit}
-      exitHref="/preview"
-      resultHref="/preview"
-      resultLabel="Voltar ao início"
-      demoBadge="Modo demonstração · nada é salvo"
+      exitHref={exitHref}
+      resultHref={resultHref}
+      resultLabel={resultLabel}
+      doneMessage={doneMessage}
+      demoBadge={badge}
     />
   );
 }
