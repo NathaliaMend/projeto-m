@@ -5,7 +5,12 @@ import Image from "next/image";
 import Link from "next/link";
 import { useVoice, useGatedSpeech, SpeakButton } from "./speech";
 import { submitAnswer } from "@/app/tests/actions";
-import { BLANK_SCREEN_MS, FEEDBACK_EMOJIS, speechTimeoutMs } from "@/lib/config";
+import {
+  BLANK_SCREEN_MS,
+  FEEDBACK_EMOJIS,
+  FEEDBACK_SCREEN_MS,
+  speechTimeoutMs,
+} from "@/lib/config";
 import type { Phase } from "@/lib/types";
 
 export interface RunnerOption {
@@ -84,6 +89,7 @@ export function Runner({
   exitHref = "/",
   resultHref,
   resultLabel = "Ver resultado",
+  doneMessage = "Você concluiu toda a avaliação. Muito bem!",
   demoBadge,
 }: {
   testId: string;
@@ -97,6 +103,8 @@ export function Runner({
   /** Destino do botão da tela final. Padrão: /tests/{testId}. */
   resultHref?: string;
   resultLabel?: string;
+  /** Texto da tela final. Padrão: fim de toda a avaliação. */
+  doneMessage?: string;
   /** Texto opcional exibido como selo de "demonstração". */
   demoBadge?: string;
 }) {
@@ -163,6 +171,16 @@ export function Runner({
     return () => window.clearTimeout(t);
   }, [screen]);
 
+  // A tela de feedback também avança sozinha; o botão só antecipa. A saída mora
+  // num ref (como nextRef) porque o timer não pode depender do render: as
+  // dependências de `finishQuestion` mudam a cada render e o timer reiniciaria.
+  const afterRef = useRef<() => void>(() => {});
+  useEffect(() => {
+    if (screen !== "feedback") return;
+    const t = window.setTimeout(() => afterRef.current(), FEEDBACK_SCREEN_MS);
+    return () => window.clearTimeout(t);
+  }, [screen]);
+
   useEffect(() => () => cancel(), [cancel]);
 
   const optionLetters = ["A", "B", "C", "D"];
@@ -226,6 +244,17 @@ export function Runner({
             FEEDBACK_EMOJIS[Math.floor(Math.random() * FEEDBACK_EMOJIS.length)],
         });
         cancel();
+        // Saída da tela de feedback: volta para a pergunta ou segue adiante.
+        afterRef.current = () => {
+          if (res.canRetry) {
+            setSelected(null);
+            setResult(null);
+            setScreen("question");
+            qst.speakNow(step.question.question_text);
+          } else {
+            finishQuestion();
+          }
+        };
         setScreen("feedback");
       } else {
         finishQuestion();
@@ -233,18 +262,6 @@ export function Runner({
     } finally {
       setPending(false);
     }
-  }
-
-  /** Saída da tela de feedback: volta para a pergunta ou segue adiante. */
-  function afterFeedback() {
-    if (result?.canRetry) {
-      setSelected(null);
-      setResult(null);
-      setScreen("question");
-      qst.speakNow(step!.question.question_text);
-      return;
-    }
-    finishQuestion();
   }
 
   function goNextPhase() {
@@ -327,9 +344,7 @@ export function Runner({
       <CenterCard>
         <div className="text-6xl mb-3">🎉</div>
         <h1 className="text-2xl font-black mb-2">Parabéns, {studentName}!</h1>
-        <p className="text-[var(--muted)] font-semibold mb-6">
-          Você concluiu toda a avaliação. Muito bem!
-        </p>
+        <p className="text-[var(--muted)] font-semibold mb-6">{doneMessage}</p>
         <Link href={finalHref} className="btn3d btn3d-green">
           {resultLabel}
         </Link>
@@ -363,7 +378,9 @@ export function Runner({
 
   // ---------- Feedback (só Fase B) ----------
   if (screen === "feedback" && result) {
-    return <FeedbackScreen result={result} onContinue={afterFeedback} />;
+    return (
+      <FeedbackScreen result={result} onContinue={() => afterRef.current()} />
+    );
   }
 
   const header = (
@@ -497,10 +514,8 @@ export function Runner({
                   disabled={locked}
                   aria-pressed={isSel}
                   className={cls}
-                  onClick={() => {
-                    setSelected(opt.key);
-                    play(opt.text);
-                  }}
+                  // Escolher a alternativa não fala: quem fala é o 🔊 ao lado.
+                  onClick={() => setSelected(opt.key)}
                 >
                   {opt.text}
                 </button>

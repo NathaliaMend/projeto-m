@@ -3,6 +3,13 @@
 /** Tela em branco entre uma pergunta e outra. */
 export const BLANK_SCREEN_MS = 1000;
 
+/**
+ * Quanto tempo a tela de "Parabéns"/"Tente novamente" fica no ar antes de
+ * seguir sozinha. O botão continua lá, mas só antecipa — a criança não precisa
+ * clicar. Tem que dar para ler a mensagem inteira sem pressa.
+ */
+export const FEEDBACK_SCREEN_MS = 2500;
+
 /** Tentativas por pergunta na Fase B (nas demais fases é sempre 1). */
 export const MAX_ATTEMPTS_B = 3;
 

@@ -89,13 +89,25 @@ export function useVoice() {
   const { speak, cancel: cancelTTS, supported, ready } = useSpeak();
   const audioRef = useRef<HTMLAudioElement | null>(null);
 
+  /**
+   * A fala mais recente sempre vence. Cada `play()` leva um número de geração;
+   * tudo que chega atrasado de uma fala anterior (o mp3 que só terminou de
+   * carregar agora, o `onend` de um TTS já cancelado) é descartado. Sem isto,
+   * dois áudios tocam juntos e o `onEnd` da tela anterior libera a tela nova.
+   */
+  const genRef = useRef(0);
+
   const stopAudio = useCallback(() => {
-    if (audioRef.current) {
-      audioRef.current.onended = null;
-      audioRef.current.onerror = null;
-      audioRef.current.pause();
-      audioRef.current = null;
-    }
+    const audio = audioRef.current;
+    if (!audio) return;
+    // Desarmar `oncanplaythrough` não é opcional: `pause()` não cancela o
+    // `play()` já agendado para quando o arquivo acabar de carregar — ele
+    // dispararia depois, por cima da fala nova ou já na tela seguinte.
+    audio.oncanplaythrough = null;
+    audio.onended = null;
+    audio.onerror = null;
+    audio.pause();
+    audioRef.current = null;
   }, []);
 
   const play = useCallback(
@@ -104,23 +116,30 @@ export function useVoice() {
       cancelTTS();
       stopAudio();
 
+      const gen = ++genRef.current;
+      const current = () => genRef.current === gen;
+
       const audio = new Audio();
       audio.preload = "auto";
       audioRef.current = audio;
       let fellBack = false;
       const fallback = () => {
-        if (fellBack) return;
+        if (fellBack || !current()) return;
         fellBack = true;
         stopAudio();
-        speak(text, onEnd);
+        speak(text, () => {
+          if (current()) onEnd?.();
+        });
       };
       audio.onended = () => {
-        if (audioRef.current === audio) audioRef.current = null;
+        if (!current()) return;
+        audioRef.current = null;
         onEnd?.();
       };
       audio.onerror = fallback;
       audio.oncanplaythrough = () => {
         audio.oncanplaythrough = null;
+        if (!current()) return;
         audio.play().catch(fallback);
       };
       audio.src = audioSrc(text);
@@ -129,6 +148,7 @@ export function useVoice() {
   );
 
   const cancel = useCallback(() => {
+    genRef.current++;
     cancelTTS();
     stopAudio();
   }, [cancelTTS, stopAudio]);

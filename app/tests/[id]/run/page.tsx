@@ -34,7 +34,21 @@ export default async function RunPage({
     supabase.from("answers").select("*").eq("test_id", id),
   ]);
 
-  const steps = buildSteps(byBank, id);
+  const allSteps = buildSteps(byBank, id);
+  const answerList = (answers ?? []) as Answer[];
+
+  // Escolher uma metáfora no menu LIMITA a sessão a ela: o treino da Fase B é
+  // aplicado no máximo uma metáfora por dia, então a sessão tem que terminar
+  // quando a metáfora termina, em vez de emendar na próxima.
+  const scoped =
+    wantPhase && wantMetaphor
+      ? allSteps.filter(
+          (s) =>
+            s.phase === wantPhase &&
+            s.question.parent_metaphor_code === wantMetaphor
+        )
+      : null;
+  const steps = scoped?.length ? scoped : allSteps;
 
   // Quantos passos cada fase tem — a Fase B filtra por metáfora, então isto
   // não é o tamanho do banco.
@@ -45,26 +59,29 @@ export default async function RunPage({
 
   // Por padrão retoma de onde parou; o menu do aplicador pode pedir uma fase
   // (e, na Fase B, uma metáfora) específica.
-  let startIndex = resumeIndex(steps, (answers ?? []) as Answer[]);
-  if (wantPhase) {
-    const at = steps.findIndex(
-      (s) =>
-        s.phase === wantPhase &&
-        (!wantMetaphor || s.question.parent_metaphor_code === wantMetaphor)
-    );
+  let startIndex = resumeIndex(steps, answerList);
+  if (scoped?.length) {
+    // Retoma no meio da metáfora se o dia foi interrompido. Se ela já estiver
+    // completa, reaplica do começo — o aplicador só chega aqui por escolha
+    // explícita no menu, que já avisa que responder de novo sobrescreve.
+    if (startIndex >= steps.length) startIndex = 0;
+  } else if (wantPhase) {
+    const at = steps.findIndex((s) => s.phase === wantPhase);
     if (at >= 0) startIndex = at;
   }
 
   // Pré-embaralha as opções e remove a marcação de correta antes de enviar ao
   // cliente — quem inspecionar o HTML não pode achar a resposta.
-  const runnerSteps: RunnerStep[] = steps.map((s) => {
+  const runnerSteps: RunnerStep[] = steps.map((s, i) => {
     const cfg = phaseConfig(s.phase);
     const q = shuffleStep(s, id);
     return {
       phase: s.phase,
       phaseLabel: cfg.label,
       feedback: cfg.feedbackPerQuestion,
-      indexInPhase: s.indexInPhase,
+      // Na sessão de uma metáfora só, a barra de progresso mede a metáfora —
+      // `indexInPhase` conta a fase inteira e a barra começaria pela metade.
+      indexInPhase: scoped?.length ? i : s.indexInPhase,
       phaseTotal: phaseTotals.get(s.phase) ?? 0,
       question: {
         id: q.id,
@@ -84,6 +101,14 @@ export default async function RunPage({
       studentName={t.student_name}
       steps={runnerSteps}
       startIndex={startIndex}
+      {...(scoped?.length
+        ? {
+            doneMessage: "Você terminou esta parte. Muito bem!",
+            exitHref: `/tests/${id}/menu`,
+            resultHref: `/tests/${id}/menu`,
+            resultLabel: "Voltar ao menu",
+          }
+        : {})}
     />
   );
 }

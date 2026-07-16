@@ -27,10 +27,14 @@ const isSelection = (v: string | undefined): v is Selection =>
  * mostrar o sorteio das metáforas e a condição sem contexto de verdade.
  * `seed` faz o papel do testId — fixo, para a demonstração ser reproduzível.
  */
-function buildPreview(sel: Selection) {
+function buildPreview(sel: Selection, metaphor?: string) {
   const seed = "preview";
   const all = buildSteps(byBank, seed);
-  const chosen = sel === "all" ? all : all.filter((s) => s.phase === sel);
+  const chosen = all.filter(
+    (s) =>
+      (sel === "all" || s.phase === sel) &&
+      (!metaphor || s.question.parent_metaphor_code === metaphor)
+  );
 
   const phaseTotals = new Map<Phase, number>();
   for (const s of chosen) {
@@ -49,7 +53,7 @@ function buildPreview(sel: Selection) {
       phaseLabel: cfg.label,
       feedback: cfg.feedbackPerQuestion,
       // Ao ver uma fase isolada, o índice do passo dentro dela recomeça do zero.
-      indexInPhase: sel === "all" ? s.indexInPhase : i,
+      indexInPhase: sel === "all" && !metaphor ? s.indexInPhase : i,
       phaseTotal: phaseTotals.get(s.phase) ?? 0,
       question: {
         id: q.id,
@@ -69,12 +73,12 @@ function buildPreview(sel: Selection) {
 export default async function PreviewPage({
   searchParams,
 }: {
-  searchParams: Promise<{ phase?: string }>;
+  searchParams: Promise<{ phase?: string; metaphor?: string }>;
 }) {
-  const { phase } = await searchParams;
+  const { phase, metaphor } = await searchParams;
 
   if (isSelection(phase)) {
-    const { steps, correctKeys } = buildPreview(phase);
+    const { steps, correctKeys } = buildPreview(phase, metaphor);
     return <PreviewRunner steps={steps} correctKeys={correctKeys} />;
   }
 
@@ -101,21 +105,34 @@ export default async function PreviewPage({
     C: "metáforas novas (banco A2)",
   };
 
-  const cards: { sel: Selection; title: string; desc: string; emoji: string }[] =
-    [
-      ...PHASES.map((p) => ({
-        sel: p.phase as Selection,
-        title: p.label,
-        desc: `${counts.get(p.phase) ?? 0} perguntas · ${desc[p.phase]}`,
-        emoji: emoji[p.phase],
-      })),
-      {
-        sel: "all",
-        title: "Tudo (A → B1 → AR1 → B2 → AR2 → C)",
-        desc: `${total} perguntas · avaliação completa`,
-        emoji: "✨",
-      },
-    ];
+  // Quantos passos cada metáfora da Fase B tem — para as entradas do submenu.
+  const metaphorCounts = new Map<string, number>();
+  for (const s of buildSteps(byBank, "preview")) {
+    const code = s.question.parent_metaphor_code;
+    if (code) metaphorCounts.set(code, (metaphorCounts.get(code) ?? 0) + 1);
+  }
+
+  const cards: {
+    sel: Selection;
+    title: string;
+    desc: string;
+    emoji: string;
+    metaphors?: string[];
+  }[] = [
+    ...PHASES.map((p) => ({
+      sel: p.phase as Selection,
+      title: p.label,
+      desc: `${counts.get(p.phase) ?? 0} perguntas · ${desc[p.phase]}`,
+      emoji: emoji[p.phase],
+      metaphors: p.metaphors,
+    })),
+    {
+      sel: "all",
+      title: "Tudo (A → B1 → AR1 → B2 → AR2 → C)",
+      desc: `${total} perguntas · avaliação completa`,
+      emoji: "✨",
+    },
+  ];
 
   return (
     <main className="min-h-screen bg-[var(--blue-soft)] flex flex-col items-center px-4 py-10">
@@ -147,6 +164,29 @@ export default async function PreviewPage({
                   →
                 </span>
               </Link>
+
+              {/* Uma entrada por metáfora: é assim que a Fase B é aplicada, no
+                  máximo uma metáfora por dia. */}
+              {c.metaphors && (
+                <ul className="mt-1.5 ml-6 flex flex-col gap-1.5">
+                  {c.metaphors.map((code) => (
+                    <li key={code}>
+                      <Link
+                        href={`/preview?phase=${c.sel}&metaphor=${code}`}
+                        className="flex items-center gap-3 bg-white/70 rounded-xl px-3 py-2 border-2 border-transparent hover:border-[var(--blue)] transition-colors"
+                      >
+                        <span className="font-bold text-sm">{code}</span>
+                        <span className="text-xs font-semibold text-[var(--muted)]">
+                          {metaphorCounts.get(code) ?? 0} perguntas
+                        </span>
+                        <span className="ml-auto text-[var(--muted)] font-black">
+                          →
+                        </span>
+                      </Link>
+                    </li>
+                  ))}
+                </ul>
+              )}
             </li>
           ))}
         </ul>
