@@ -123,6 +123,7 @@ export function Runner({
   const [result, setResult] = useState<null | {
     correct: boolean;
     canRetry: boolean;
+    retryInContext: boolean;
     correctKey: string | null;
     emoji: string;
   }>(null);
@@ -276,9 +277,11 @@ export function Runner({
         selectedKey: selected,
       });
       if (step.feedback) {
+        const retryInContext = res.canRetry && hasStoryScreen(step);
         setResult({
           correct: res.isCorrect,
           canRetry: res.canRetry,
+          retryInContext,
           correctKey: res.correctKey,
           // Sorteado aqui (handler de evento, não render): um emoji por resposta.
           emoji:
@@ -290,8 +293,13 @@ export function Runner({
           if (res.canRetry) {
             setSelected(null);
             setResult(null);
-            setScreen("question");
-            speakQuestion(step);
+            if (retryInContext) {
+              setScreen("context");
+              ctx.speakNow(step.question.context!);
+            } else {
+              setScreen("question");
+              speakQuestion(step);
+            }
           } else {
             finishQuestion();
           }
@@ -611,6 +619,7 @@ function FeedbackScreen({
   result: {
     correct: boolean;
     canRetry: boolean;
+    retryInContext: boolean;
     correctKey: string | null;
     emoji: string;
   };
@@ -646,11 +655,17 @@ function FeedbackScreen({
         </h1>
         <p className="text-[var(--muted)] font-semibold mb-6">
           {result.canRetry
-            ? "Ouça a pergunta com atenção e escolha outra resposta."
+            ? result.retryInContext
+              ? "Veja novamente a imagem e a frase antes de responder."
+              : "Ouça a pergunta com atenção e escolha outra resposta."
             : "Tudo bem! Vamos para a próxima."}
         </p>
         <button onClick={onContinue} className="btn3d btn3d-green">
-          {result.canRetry ? "Voltar para a pergunta" : "Continuar"}
+          {result.canRetry
+            ? result.retryInContext
+              ? "Voltar para a imagem e a frase"
+              : "Voltar para a pergunta"
+            : "Continuar"}
         </button>
       </div>
     </div>

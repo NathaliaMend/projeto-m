@@ -115,8 +115,8 @@ body {
   transition: background 0.1s ease, border-color 0.1s ease, transform 0.05s ease;
 }
 .choice:hover:not(:disabled) {
-  background: #5c626c;
-  border-color: #8f97a3;
+  background: #808894;
+  border-color: #c3c9d2;
 }
 .choice:active:not(:disabled) {
   transform: translateY(1px);
