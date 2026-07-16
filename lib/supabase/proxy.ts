@@ -55,6 +55,9 @@ export async function updateSession(request: NextRequest) {
     pathname === "/login" ||
     pathname.startsWith("/auth") ||
     pathname.startsWith("/preview") ||
+    // O tutorial é conteúdo fixo e não grava nada: exigir login só atrapalharia
+    // quem só quer mostrar o app para a criança.
+    pathname.startsWith("/tutorial") ||
     pathname.startsWith("/audio");
 
   if (!user && !isPublic) {

@@ -181,3 +181,67 @@ body {
   border-radius: 999px;
   transition: width 0.3s ease;
 }
+
+/* ---------------------------------------------------------------- Tutorial
+ * Mão e anel que apontam o próximo toque. Só no tutorial guiado.
+ *
+ * A mão tem DOIS elementos de propósito: o de fora posiciona (as classes de
+ * posição do Tailwind escrevem `transform`) e o de dentro anima. Num elemento
+ * só, a animação e o `-translate-x-1/2` disputariam a mesma propriedade e a
+ * mão saltaria para o lugar errado.
+ */
+.guide-hand {
+  position: absolute;
+  /* Nunca roubar o toque do que ela está apontando. */
+  pointer-events: none;
+  z-index: 10;
+}
+.guide-hand > span {
+  display: block;
+  font-size: 2rem;
+  line-height: 1;
+  filter: drop-shadow(0 2px 3px rgba(0, 0, 0, 0.35));
+  animation: guide-tap 1.1s ease-in-out infinite;
+}
+@keyframes guide-tap {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-0.45rem);
+  }
+}
+
+.guide-target {
+  position: relative;
+}
+.guide-target::after {
+  content: "";
+  position: absolute;
+  inset: -7px;
+  border-radius: 1.25rem;
+  border: 3px solid var(--blue);
+  pointer-events: none;
+  animation: guide-ring 1.2s ease-in-out infinite;
+}
+.guide-target.round::after {
+  border-radius: 999px;
+}
+@keyframes guide-ring {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.25;
+  }
+}
+
+/* Quem pediu menos movimento continua vendo o anel — só sem piscar nem pular. */
+@media (prefers-reduced-motion: reduce) {
+  .guide-hand > span,
+  .guide-target::after {
+    animation: none;
+  }
+}

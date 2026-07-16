@@ -146,6 +146,20 @@ export default async function PreviewPage({
           </p>
         </div>
 
+        <Link
+          href="/tutorial"
+          className="flex items-center gap-4 bg-white rounded-2xl p-4 mb-3 border-2 border-[var(--blue)] hover:bg-[var(--blue-soft)] transition-colors"
+        >
+          <span className="text-3xl">👋</span>
+          <span className="min-w-0">
+            <span className="block font-black text-lg">Tutorial guiado</span>
+            <span className="block text-sm font-semibold text-[var(--muted)]">
+              3 exemplos · ensina a usar o app antes da Fase A
+            </span>
+          </span>
+          <span className="ml-auto text-[var(--blue)] font-black text-xl">→</span>
+        </Link>
+
         <ul className="flex flex-col gap-3">
           {cards.map((c) => (
             <li key={c.sel}>

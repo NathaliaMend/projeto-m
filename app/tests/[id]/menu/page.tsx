@@ -67,6 +67,21 @@ export default async function TestMenuPage({
           mantidas — responder de novo sobrescreve a anterior.
         </p>
 
+        {/* Antes da Fase A: ensina a mecânica do app. Nada é gravado. */}
+        <Link
+          href="/tutorial"
+          className="flex items-center gap-3 bg-white rounded-2xl border-2 border-[var(--blue)] p-4 hover:bg-[var(--blue-soft)] transition-colors"
+        >
+          <span className="text-2xl">👋</span>
+          <span className="min-w-0">
+            <span className="block font-black">Tutorial guiado</span>
+            <span className="block text-sm font-semibold text-[var(--muted)]">
+              3 exemplos · aplicar antes da Fase A · nada é gravado
+            </span>
+          </span>
+          <span className="ml-auto text-[var(--blue)] font-black text-xl">→</span>
+        </Link>
+
         {PHASES.map((cfg) => {
           const phaseSteps = steps.filter((s) => s.phase === cfg.phase);
           const done = phaseSteps.filter((s) =>
