@@ -638,9 +638,7 @@ function FeedbackScreen({
           <p className="text-[var(--muted)] font-semibold mb-6">
             Você acertou!
           </p>
-          <button onClick={onContinue} className="btn3d btn3d-green">
-            Continuar
-          </button>
+          <AutoAdvanceButton label="Continuar" onClick={onContinue} />
         </div>
       </div>
     );
@@ -660,15 +658,43 @@ function FeedbackScreen({
               : "Ouça a pergunta com atenção e escolha outra resposta."
             : "Tudo bem! Vamos para a próxima."}
         </p>
-        <button onClick={onContinue} className="btn3d btn3d-green">
-          {result.canRetry
-            ? result.retryInContext
-              ? "Voltar para a imagem e a frase"
-              : "Voltar para a pergunta"
-            : "Continuar"}
-        </button>
+        <AutoAdvanceButton
+          label={
+            result.canRetry
+              ? result.retryInContext
+                ? "Voltar para a imagem e a frase"
+                : "Voltar para a pergunta"
+              : "Continuar"
+          }
+          onClick={onContinue}
+        />
       </div>
     </div>
+  );
+}
+
+/**
+ * Botão da tela de feedback. Ele avança sozinho depois de FEEDBACK_SCREEN_MS
+ * (o botão só antecipa), então um preenchimento verde escuro corre da esquerda
+ * para a direita EXATAMENTE nessa duração — a criança vê "carregando" e sente
+ * quanto falta para a próxima tela. Clicar antecipa.
+ */
+function AutoAdvanceButton({
+  label,
+  onClick,
+}: {
+  label: string;
+  onClick: () => void;
+}) {
+  return (
+    <button onClick={onClick} className="btn3d btn-load">
+      <span
+        className="btn-load-fill"
+        style={{ animationDuration: `${FEEDBACK_SCREEN_MS}ms` }}
+        aria-hidden
+      />
+      <span className="relative z-10">{label}</span>
+    </button>
   );
 }
 
