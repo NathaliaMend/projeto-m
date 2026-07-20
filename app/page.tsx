@@ -64,6 +64,9 @@ export default async function DashboardPage() {
           >
             Exportar CSV
           </a>
+          <Link href="/questions" className="btn3d btn3d-gray">
+            Perguntas
+          </Link>
           <span className="ml-auto text-sm font-bold text-[var(--muted)]">
             {list.length} teste{list.length === 1 ? "" : "s"}
           </span>

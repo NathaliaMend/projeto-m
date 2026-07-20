@@ -88,48 +88,6 @@ body {
 }
 
 /*
- * Botão que avança sozinho: fundo verde claro e um preenchimento verde mais
- * escuro que corre da esquerda para a direita. A duração é passada inline
- * (animationDuration = FEEDBACK_SCREEN_MS) para o preenchimento terminar
- * exatamente quando a tela troca — dá a sensação de "carregando".
- */
-.btn-load {
-  position: relative;
-  overflow: hidden;
-  background: var(--green-soft);
-  color: #1f4d00;
-  box-shadow: 0 4px 0 var(--green-dark);
-}
-.btn-load-fill {
-  position: absolute;
-  top: 0;
-  left: 0;
-  bottom: 0;
-  width: 0;
-  background: var(--green);
-  pointer-events: none;
-  animation-name: btn-load-fill;
-  animation-timing-function: linear;
-  animation-fill-mode: forwards;
-}
-@keyframes btn-load-fill {
-  from {
-    width: 0;
-  }
-  to {
-    width: 100%;
-  }
-}
-/* Quem pediu menos movimento vê o botão cheio na hora, sem a corrida. */
-@media (prefers-reduced-motion: reduce) {
-  .btn-load-fill {
-    animation: none;
-    width: 100%;
-    opacity: 0.5;
-  }
-}
-
-/*
  * Cartão de alternativa selecionável.
  *
  * Todas as alternativas têm a MESMA cor (cinza escuro), de propósito: quando

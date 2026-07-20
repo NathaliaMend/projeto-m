@@ -13,6 +13,7 @@ import {
   speechTimeoutMs,
 } from "@/lib/config";
 import type { Phase } from "@/lib/types";
+import { imageSrc } from "@/lib/images";
 
 export interface RunnerOption {
   key: string;
@@ -427,9 +428,7 @@ export function Runner({
 
   // ---------- Feedback (só Fase B) ----------
   if (screen === "feedback" && result) {
-    return (
-      <FeedbackScreen result={result} onContinue={() => afterRef.current()} />
-    );
+    return <FeedbackScreen result={result} />;
   }
 
   const header = (
@@ -458,7 +457,7 @@ export function Runner({
           {step.question.image_key && (
             <div className="relative w-full aspect-[16/9] rounded-2xl overflow-hidden bg-[#f0f4f8]">
               <Image
-                src={`/images/${step.question.image_key}`}
+                src={imageSrc(step.question.image_key)}
                 alt=""
                 fill
                 sizes="(max-width: 640px) 100vw, 640px"
@@ -611,10 +610,13 @@ export function Runner({
   );
 }
 
-/** Tela cheia de "Parabéns" / "Tente novamente" (Fase B). */
+/**
+ * Tela cheia de "Parabéns" / "Tente novamente" (Fase B). Não tem botão: avança
+ * sozinha depois de FEEDBACK_SCREEN_MS (o timer mora no Runner, no efeito da
+ * tela "feedback").
+ */
 function FeedbackScreen({
   result,
-  onContinue,
 }: {
   result: {
     correct: boolean;
@@ -623,7 +625,6 @@ function FeedbackScreen({
     correctKey: string | null;
     emoji: string;
   };
-  onContinue: () => void;
 }) {
   const emoji = result.emoji;
 
@@ -635,10 +636,7 @@ function FeedbackScreen({
           <h1 className="text-3xl font-black mb-2 text-[var(--green-dark)]">
             Parabéns!
           </h1>
-          <p className="text-[var(--muted)] font-semibold mb-6">
-            Você acertou!
-          </p>
-          <AutoAdvanceButton label="Continuar" onClick={onContinue} />
+          <p className="text-[var(--muted)] font-semibold">Você acertou!</p>
         </div>
       </div>
     );
@@ -651,50 +649,15 @@ function FeedbackScreen({
         <h1 className="text-3xl font-black mb-2 text-[var(--red-dark)]">
           {result.canRetry ? "Tente novamente" : "Não foi dessa vez"}
         </h1>
-        <p className="text-[var(--muted)] font-semibold mb-6">
+        <p className="text-[var(--muted)] font-semibold">
           {result.canRetry
             ? result.retryInContext
               ? "Veja novamente a imagem e a frase antes de responder."
               : "Ouça a pergunta com atenção e escolha outra resposta."
             : "Tudo bem! Vamos para a próxima."}
         </p>
-        <AutoAdvanceButton
-          label={
-            result.canRetry
-              ? result.retryInContext
-                ? "Voltar para a imagem e a frase"
-                : "Voltar para a pergunta"
-              : "Continuar"
-          }
-          onClick={onContinue}
-        />
       </div>
     </div>
-  );
-}
-
-/**
- * Botão da tela de feedback. Ele avança sozinho depois de FEEDBACK_SCREEN_MS
- * (o botão só antecipa), então um preenchimento verde escuro corre da esquerda
- * para a direita EXATAMENTE nessa duração — a criança vê "carregando" e sente
- * quanto falta para a próxima tela. Clicar antecipa.
- */
-function AutoAdvanceButton({
-  label,
-  onClick,
-}: {
-  label: string;
-  onClick: () => void;
-}) {
-  return (
-    <button onClick={onClick} className="btn3d btn-load">
-      <span
-        className="btn-load-fill"
-        style={{ animationDuration: `${FEEDBACK_SCREEN_MS}ms` }}
-        aria-hidden
-      />
-      <span className="relative z-10">{label}</span>
-    </button>
   );
 }
 

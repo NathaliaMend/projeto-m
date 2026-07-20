@@ -80,6 +80,24 @@ da tentativa, senão bastaria mentir para ganhar tentativas extras.
   `.xlsx` é um zip; os textos ficam em `xl/sharedStrings.xml` e as células de
   `xl/worksheets/sheet1.xml` apontam para lá por índice (`t="s"`).
 
+## Depois do import, o BANCO é a fonte de verdade do conteúdo
+As planilhas + `build-questions` + `seed` são o **import inicial**. A partir daí,
+o painel **`/questions`** edita o enunciado e as alternativas **direto no banco**
+(`updateQuestion` em `app/questions/actions.ts`, RLS de update para autenticados).
+Consequências:
+- **Não rode `npm run seed` depois de começar a editar** — ele sobrescreveria as
+  edições com o `data/questions.json` das planilhas. Só re-semeie num import
+  proposital (e, aí, exportando antes o banco de volta para o JSON, se quiser
+  manter o backup versionado).
+- Editar só altera as aplicações **futuras**. Respostas já registradas guardam a
+  foto `answers.presented` e não mudam — `submitAnswer` re-deriva a correção da
+  tabela viva, então perguntas ainda-não-respondidas passam a valer a versão nova.
+- `npm run gen-audio:openai` lê do **banco** quando há credenciais do Supabase
+  (cai para o JSON sem elas). Rode-o depois de editar para gerar o mp3 do texto
+  novo; até lá, aquela pergunta toca na voz do navegador.
+- O `/preview` continua lendo `data/questions.json` estático — **não** reflete
+  edições do banco.
+
 # Armadilhas que já custaram caro
 
 ## Áudio é endereçado pelo CONTEÚDO

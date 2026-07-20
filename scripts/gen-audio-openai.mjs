@@ -17,6 +17,7 @@
 import { readFileSync, existsSync, mkdirSync, writeFileSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 import { dirname, join } from "node:path";
+import { createClient } from "@supabase/supabase-js";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const root = join(__dirname, "..");
@@ -87,15 +88,45 @@ const INTRO_SPEECH =
   "Depois: vamos fazer uma pergunta. " +
   "Lembre-se: você pode usar o botão de som para ouvir quantas vezes quiser!";
 
-const data = JSON.parse(readFileSync(join(root, "data/questions.json"), "utf8"));
 const banks = ["A1", "A2", "B"]; // A1 = Fases A/AR1/AR2; B = Fases B1/B2; A2 = Fase C.
-const texts = new Set([INTRO_SPEECH]);
-for (const bank of banks) {
-  for (const q of data[bank] ?? []) {
-    if (q.context && q.context.trim()) texts.add(q.context);
-    texts.add(q.question_text);
-    for (const o of q.options) texts.add(o.text);
+
+/**
+ * As perguntas vêm do BANCO, não de data/questions.json: o painel /questions
+ * edita direto no Supabase, então é o banco que reflete o texto vigente — e é
+ * dele que o áudio precisa sair. Sem credenciais do Supabase, cai para o JSON
+ * (import inicial, antes de qualquer edição).
+ */
+async function loadQuestions() {
+  const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
+  const serviceKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
+  if (url && serviceKey) {
+    const supabase = createClient(url, serviceKey, {
+      auth: { persistSession: false },
+    });
+    const { data, error } = await supabase
+      .from("questions")
+      .select("context, question_text, options")
+      .in("bank", banks);
+    if (error) {
+      console.error(`Erro ao ler perguntas do banco: ${error.message}`);
+      process.exit(1);
+    }
+    console.log(`Fonte: banco Supabase (${data.length} perguntas).`);
+    return data;
   }
+  // Fallback: JSON do import inicial.
+  const json = JSON.parse(
+    readFileSync(join(root, "data/questions.json"), "utf8")
+  );
+  console.log("Fonte: data/questions.json (sem credenciais do Supabase).");
+  return banks.flatMap((b) => json[b] ?? []);
+}
+
+const texts = new Set([INTRO_SPEECH]);
+for (const q of await loadQuestions()) {
+  if (q.context && q.context.trim()) texts.add(q.context);
+  texts.add(q.question_text);
+  for (const o of q.options) texts.add(o.text);
 }
 
 mkdirSync(outDir, { recursive: true });

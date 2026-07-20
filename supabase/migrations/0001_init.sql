@@ -96,6 +96,14 @@ drop policy if exists "questions_select_authenticated" on public.questions;
 create policy "questions_select_authenticated" on public.questions
   for select to authenticated using (true);
 
+-- E editá-las pelo painel /questions. Todo aplicador é pesquisador de confiança;
+-- as edições valem para as próximas aplicações e não tocam respostas já dadas
+-- (answers.presented guarda a foto de cada resposta). O insert/delete continua
+-- só pelo seed (service role), que ignora RLS.
+drop policy if exists "questions_update_authenticated" on public.questions;
+create policy "questions_update_authenticated" on public.questions
+  for update to authenticated using (true) with check (true);
+
 -- ==========================================================================
 -- tests: uma avaliação de um aluno (o que o dashboard lista)
 -- ==========================================================================
@@ -207,6 +215,29 @@ create policy "answers_all_own" on public.answers
 -- authenticated é usado pelo aplicador no app.
 grant usage on schema public to authenticated, service_role;
 grant select, insert, update on public.applicators to authenticated;
-grant select on public.questions to authenticated;
+-- update: o painel /questions edita enunciado, frases, imagem e alternativas.
+grant select, update on public.questions to authenticated;
 grant select, insert, update, delete on public.tests, public.answers to authenticated;
 grant all on public.questions, public.tests, public.answers to service_role;
+
+-- ==========================================================================
+-- Storage: imagens das perguntas enviadas pelo painel /questions
+-- ==========================================================================
+-- O painel envia a imagem já reduzida para este bucket público; o image_key da
+-- pergunta passa a guardar a URL pública. As imagens do import inicial continuam
+-- estáticas em /public/images (ver lib/images.ts).
+insert into storage.buckets (id, name, public)
+  values ('question-images', 'question-images', true)
+  on conflict (id) do nothing;
+
+-- Leitura pública: a imagem aparece na avaliação (a criança não faz login).
+drop policy if exists "question_images_public_read" on storage.objects;
+create policy "question_images_public_read" on storage.objects
+  for select using (bucket_id = 'question-images');
+
+-- Envio/troca só por aplicador autenticado.
+drop policy if exists "question_images_auth_write" on storage.objects;
+create policy "question_images_auth_write" on storage.objects
+  for all to authenticated
+  using (bucket_id = 'question-images')
+  with check (bucket_id = 'question-images');
