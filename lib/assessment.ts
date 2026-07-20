@@ -133,7 +133,11 @@ export function resumeIndex(steps: Step[], answers: AnsweredKey[]): number {
  */
 export function progressFromAnswers(steps: Step[], answers: AnsweredKey[]) {
   const idx = resumeIndex(steps, answers);
-  const completed = idx >= steps.length;
+  // `steps.length > 0`: sem perguntas no banco, `buildSteps` devolve [] e o
+  // índice 0 >= 0 pareceria "tudo respondido" — um teste vazio não está
+  // concluído, está sem dados. Sem esta guarda, um banco não semeado faz toda
+  // avaliação cair na tela de "você concluiu".
+  const completed = steps.length > 0 && idx >= steps.length;
   const at = completed ? steps[steps.length - 1] : steps[idx];
   const currentStage = at ? stageIdOf(at) : "A";
   return { completed, currentStage };

@@ -51,6 +51,27 @@ export default async function RunPage({
 
   const allSteps = buildSteps(byBank, id);
   const answerList = (answers ?? []) as AnsweredKey[];
+
+  // Banco sem perguntas (ex.: prod sem `npm run seed`): sem esta guarda, 0
+  // passos seria lido como avaliação concluída e cairia na tela de parabéns.
+  if (allSteps.length === 0) {
+    return (
+      <main className="min-h-[100dvh] flex items-center justify-center px-6 bg-[var(--blue-soft)]">
+        <div className="bg-white rounded-3xl p-8 text-center max-w-sm w-full">
+          <div className="text-5xl mb-3">🗂️</div>
+          <h1 className="text-xl font-black mb-2">Perguntas não carregadas</h1>
+          <p className="text-[var(--muted)] font-semibold mb-6">
+            O banco de perguntas está vazio. Rode a carga (<code>npm run seed</code>)
+            antes de aplicar a avaliação.
+          </p>
+          <a href={`/tests/${id}`} className="btn3d btn3d-green">
+            Voltar
+          </a>
+        </div>
+      </main>
+    );
+  }
+
   const { completed, currentStage } = progressFromAnswers(allSteps, answerList);
 
   if (wantStage && !stageById(wantStage)) notFound();
