@@ -105,8 +105,31 @@ create policy "questions_update_authenticated" on public.questions
   for update to authenticated using (true) with check (true);
 
 -- ==========================================================================
--- tests: uma avaliação de um aluno (o que o dashboard lista)
+-- students: o aluno avaliado (um aluno pode fazer o teste várias vezes)
 -- ==========================================================================
+create table if not exists public.students (
+  id uuid primary key default gen_random_uuid(),
+  applicator_id uuid not null references auth.users (id) on delete cascade,
+  name text not null,
+  birth_date date,
+  created_at timestamptz not null default now()
+);
+
+create index if not exists students_applicator_created_idx
+  on public.students (applicator_id, created_at desc);
+
+alter table public.students enable row level security;
+
+drop policy if exists "students_all_own" on public.students;
+create policy "students_all_own" on public.students
+  for all using (auth.uid() = applicator_id)
+  with check (auth.uid() = applicator_id);
+
+-- ==========================================================================
+-- tests: uma aplicação da avaliação a um aluno (o que o dashboard lista)
+-- ==========================================================================
+-- O MESMO aluno pode ter vários testes (reaplicações), por isso o vínculo é por
+-- student_id, e não mais nome/nascimento embutidos.
 -- current_stage: em qual ETAPA de aplicação o teste parou. As 6 fases viram 9
 -- etapas porque a Fase B é aplicada uma metáfora por dia:
 --
@@ -128,8 +151,7 @@ create policy "questions_update_authenticated" on public.questions
 create table if not exists public.tests (
   id uuid primary key default gen_random_uuid(),
   applicator_id uuid not null references auth.users (id) on delete cascade,
-  student_name text not null,
-  student_birth_date date,
+  student_id uuid not null references public.students (id) on delete cascade,
   status text not null default 'in_progress'
     check (status in ('in_progress', 'completed')),
   current_stage text not null default 'A',
@@ -140,6 +162,7 @@ create table if not exists public.tests (
 
 create index if not exists tests_applicator_created_idx
   on public.tests (applicator_id, created_at desc);
+create index if not exists tests_student_idx on public.tests (student_id);
 
 alter table public.tests enable row level security;
 
@@ -217,8 +240,11 @@ grant usage on schema public to authenticated, service_role;
 grant select, insert, update on public.applicators to authenticated;
 -- update: o painel /questions edita enunciado, frases, imagem e alternativas.
 grant select, update on public.questions to authenticated;
-grant select, insert, update, delete on public.tests, public.answers to authenticated;
-grant all on public.questions, public.tests, public.answers to service_role;
+grant select, insert, update, delete
+  on public.students, public.tests, public.answers to authenticated;
+grant all
+  on public.questions, public.students, public.tests, public.answers
+  to service_role;
 
 -- ==========================================================================
 -- Storage: imagens das perguntas enviadas pelo painel /questions

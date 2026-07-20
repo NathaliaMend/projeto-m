@@ -4,7 +4,8 @@ import { createClient } from "@/lib/supabase/server";
 import { getBanks } from "@/lib/questions.server";
 import { PHASES, phaseConfig } from "@/lib/phases";
 import { buildSteps } from "@/lib/assessment";
-import type { Answer, Phase, Test } from "@/lib/types";
+import { createTestForStudent } from "@/app/tests/actions";
+import type { Answer, Phase, TestWithStudent } from "@/lib/types";
 
 function formatDate(iso: string | null) {
   if (!iso) return "—";
@@ -25,11 +26,11 @@ export default async function TestDetailsPage({
 
   const { data: test } = await supabase
     .from("tests")
-    .select("*")
+    .select("*, student:students(name, birth_date)")
     .eq("id", id)
     .single();
   if (!test) notFound();
-  const t = test as Test;
+  const t = test as TestWithStudent;
 
   const [byBank, { data: answerData }] = await Promise.all([
     getBanks(supabase),
@@ -68,17 +69,17 @@ export default async function TestDetailsPage({
         <div className="bg-white rounded-3xl p-6 mt-4">
           <div className="flex items-center justify-between gap-3 flex-wrap">
             <div>
-              <h1 className="text-2xl font-black">{t.student_name}</h1>
+              <h1 className="text-2xl font-black">{t.student?.name ?? "—"}</h1>
               <p className="text-sm text-[var(--muted)] font-semibold">
-                Nasc.: {formatDate(t.student_birth_date)}
+                Nasc.: {formatDate(t.student?.birth_date ?? null)}
               </p>
             </div>
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-2 flex-wrap">
               <Link
                 href={`/tests/${t.id}/menu`}
                 className="btn3d !py-2 !px-4 text-sm"
               >
-                Escolher fase
+                Escolher etapa
               </Link>
               <Link
                 href={`/tests/${t.id}/run`}
@@ -86,6 +87,13 @@ export default async function TestDetailsPage({
               >
                 {t.status === "completed" ? "Rever" : "Continuar"}
               </Link>
+              {/* Reaplicar: nova aplicação para o MESMO aluno. */}
+              <form action={createTestForStudent}>
+                <input type="hidden" name="student_id" value={t.student_id} />
+                <button className="btn3d btn3d-blue !py-2 !px-4 text-sm">
+                  Novo teste
+                </button>
+              </form>
             </div>
           </div>
 

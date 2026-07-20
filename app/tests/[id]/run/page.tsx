@@ -10,7 +10,7 @@ import {
 } from "@/lib/assessment";
 import { phaseConfig } from "@/lib/phases";
 import { stageById, stageIdOf } from "@/lib/stages";
-import type { Test } from "@/lib/types";
+import type { TestWithStudent } from "@/lib/types";
 import { Runner, type RunnerStep } from "./Runner";
 import { LocalRunner } from "./LocalRunner";
 
@@ -36,11 +36,11 @@ export default async function RunPage({
 
   const { data: test } = await supabase
     .from("tests")
-    .select("*")
+    .select("*, student:students(name, birth_date)")
     .eq("id", id)
     .single();
   if (!test) notFound();
-  const t = test as Test;
+  const t = test as TestWithStudent;
 
   const [byBank, { data: answers }] = await Promise.all([
     getBanks(supabase),
@@ -103,7 +103,7 @@ export default async function RunPage({
     return (
       <LocalRunner
         testId={id}
-        studentName={t.student_name}
+        studentName={t.student?.name ?? ""}
         steps={runnerSteps}
         correctKeys={correctKeys}
         exitHref={menuHref}
@@ -118,7 +118,7 @@ export default async function RunPage({
   return (
     <Runner
       testId={id}
-      studentName={t.student_name}
+      studentName={t.student?.name ?? ""}
       steps={runnerSteps}
       startIndex={allDone ? steps.length : at}
       exitHref={menuHref}

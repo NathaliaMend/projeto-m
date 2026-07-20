@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
-import type { Answer, Test } from "@/lib/types";
+import type { Answer, TestWithStudent } from "@/lib/types";
 
 function csvCell(value: string | number | null | undefined): string {
   const s = value == null ? "" : String(value);
@@ -23,12 +23,12 @@ export async function GET() {
   // aplicada (answers.presented). Ler a tabela viva faria o CSV mudar quando o
   // banco de perguntas fosse re-semeado — o dado histórico tem que ficar parado.
   const [{ data: tests }, { data: answers }] = await Promise.all([
-    supabase.from("tests").select("*"),
+    supabase.from("tests").select("*, student:students(name, birth_date)"),
     supabase.from("answers").select("*"),
   ]);
 
-  const testById = new Map<string, Test>();
-  for (const t of (tests ?? []) as Test[]) testById.set(t.id, t);
+  const testById = new Map<string, TestWithStudent>();
+  for (const t of (tests ?? []) as TestWithStudent[]) testById.set(t.id, t);
 
   const header = [
     "aluno",
@@ -64,8 +64,8 @@ export async function GET() {
         .map((k) => p.options.find((o) => o.key === k)?.text ?? k)
         .join(" | ");
       return [
-        t.student_name,
-        t.student_birth_date ?? "",
+        t.student?.name ?? "",
+        t.student?.birth_date ?? "",
         t.status,
         a.phase,
         p.code,

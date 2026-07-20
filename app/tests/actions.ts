@@ -24,25 +24,57 @@ async function requireUser() {
   return { supabase, user };
 }
 
-/** Cria uma nova avaliação (cadastro do aluno) e abre o questionário. */
+/** Cadastra um aluno novo e já abre a primeira aplicação. */
 export async function createTest(formData: FormData) {
   const { supabase, user } = await requireUser();
   const name = String(formData.get("student_name") ?? "").trim();
   const birth = String(formData.get("student_birth_date") ?? "").trim();
   if (!name) return;
 
-  const { data, error } = await supabase
-    .from("tests")
-    .insert({
-      applicator_id: user.id,
-      student_name: name,
-      student_birth_date: birth || null,
-    })
+  const { data: student, error: sErr } = await supabase
+    .from("students")
+    .insert({ applicator_id: user.id, name, birth_date: birth || null })
     .select("id")
     .single();
+  if (sErr || !student) {
+    throw new Error(sErr?.message ?? "Falha ao cadastrar o aluno.");
+  }
 
+  redirect(`/tests/${await newTestId(supabase, user.id, student.id)}/run`);
+}
+
+/** Abre uma NOVA aplicação para um aluno já cadastrado (reaplicação). */
+export async function createTestForStudent(formData: FormData) {
+  const { supabase, user } = await requireUser();
+  const studentId = String(formData.get("student_id") ?? "");
+  if (!studentId) return;
+
+  // Confirma que o aluno é deste aplicador antes de criar o teste — não confiar
+  // só no id vindo do formulário.
+  const { data: student } = await supabase
+    .from("students")
+    .select("id")
+    .eq("id", studentId)
+    .eq("applicator_id", user.id)
+    .maybeSingle();
+  if (!student) throw new Error("Aluno não encontrado.");
+
+  redirect(`/tests/${await newTestId(supabase, user.id, studentId)}/run`);
+}
+
+/** Insere um teste e devolve o id (usado pelos dois fluxos de criação). */
+async function newTestId(
+  supabase: Awaited<ReturnType<typeof createClient>>,
+  applicatorId: string,
+  studentId: string
+): Promise<string> {
+  const { data, error } = await supabase
+    .from("tests")
+    .insert({ applicator_id: applicatorId, student_id: studentId })
+    .select("id")
+    .single();
   if (error || !data) throw new Error(error?.message ?? "Falha ao criar teste.");
-  redirect(`/tests/${data.id}/run`);
+  return data.id as string;
 }
 
 /**

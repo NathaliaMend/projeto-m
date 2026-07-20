@@ -9,7 +9,7 @@ import {
   type Step,
 } from "@/lib/assessment";
 import { STAGES, stageIdOf } from "@/lib/stages";
-import type { Test } from "@/lib/types";
+import type { TestWithStudent } from "@/lib/types";
 
 /**
  * Menu do aplicador: as 9 ETAPAS de aplicação, na ordem, com o que já foi
@@ -30,11 +30,11 @@ export default async function TestMenuPage({
 
   const { data: test } = await supabase
     .from("tests")
-    .select("*")
+    .select("*, student:students(name, birth_date)")
     .eq("id", id)
     .single();
   if (!test) notFound();
-  const t = test as Test;
+  const t = test as TestWithStudent;
 
   const [byBank, { data: answerData }] = await Promise.all([
     getBanks(supabase),
@@ -65,7 +65,9 @@ export default async function TestMenuPage({
             ←
           </Link>
           <div className="min-w-0">
-            <h1 className="font-black text-lg truncate">{t.student_name}</h1>
+            <h1 className="font-black text-lg truncate">
+              {t.student?.name ?? "—"}
+            </h1>
             <p className="text-sm font-semibold text-[var(--muted)]">
               Escolher etapa
             </p>

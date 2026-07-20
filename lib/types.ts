@@ -33,11 +33,19 @@ export interface Question {
   options: QuestionOption[];
 }
 
+export interface Student {
+  id: string;
+  applicator_id: string;
+  name: string;
+  birth_date: string | null;
+  created_at: string;
+}
+
 export interface Test {
   id: string;
   applicator_id: string;
-  student_name: string;
-  student_birth_date: string | null;
+  /** O aluno avaliado. Um aluno pode ter vários testes (reaplicações). */
+  student_id: string;
   status: TestStatus;
   /**
    * Em qual ETAPA o teste parou — um `Stage["id"]` (ver lib/stages.ts).
@@ -48,6 +56,11 @@ export interface Test {
   started_at: string;
   completed_at: string | null;
   created_at: string;
+}
+
+/** Teste com o aluno embutido (join students) — para as telas que mostram o nome. */
+export interface TestWithStudent extends Test {
+  student: { name: string; birth_date: string | null } | null;
 }
 
 /**

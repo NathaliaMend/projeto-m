@@ -1,11 +1,7 @@
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
-import { getBanks } from "@/lib/questions.server";
-import { totalSteps as countSteps } from "@/lib/assessment";
-import { stageById } from "@/lib/stages";
-import { TestActions } from "./tests/TestActions";
-import type { Test } from "@/lib/types";
+import type { TestWithStudent } from "@/lib/types";
 
 function formatDate(iso: string | null) {
   if (!iso) return "—";
@@ -19,22 +15,30 @@ export default async function DashboardPage() {
   } = await supabase.auth.getUser();
   if (!user) redirect("/login");
 
-  const [{ data: tests }, byBank, { data: answerRows }] = await Promise.all([
-    supabase
-      .from("tests")
-      .select("*")
-      .order("created_at", { ascending: false }),
-    getBanks(supabase),
-    supabase.from("answers").select("test_id"),
-  ]);
+  const { data: tests } = await supabase
+    .from("tests")
+    .select("*, student:students(name, birth_date)")
+    .order("created_at", { ascending: false });
 
-  const totalSteps = countSteps(byBank);
-  const answeredByTest = new Map<string, number>();
-  for (const r of answerRows ?? []) {
-    answeredByTest.set(r.test_id, (answeredByTest.get(r.test_id) ?? 0) + 1);
+  const list = (tests ?? []) as TestWithStudent[];
+  const studentsById = new Map<
+    string,
+    { id: string; name: string; birthDate: string | null; tests: TestWithStudent[] }
+  >();
+
+  for (const test of list) {
+    if (!test.student) continue;
+    const student = studentsById.get(test.student_id) ?? {
+      id: test.student_id,
+      name: test.student.name,
+      birthDate: test.student.birth_date,
+      tests: [],
+    };
+    student.tests.push(test);
+    studentsById.set(test.student_id, student);
   }
 
-  const list = (tests ?? []) as Test[];
+  const students = [...studentsById.values()];
 
   return (
     <main className="min-h-screen bg-[#f7f9fc]">
@@ -42,7 +46,7 @@ export default async function DashboardPage() {
         <div className="max-w-4xl mx-auto px-4 py-4 flex items-center justify-between gap-3">
           <div className="flex items-center gap-2">
             <span className="text-2xl">🧠</span>
-            <h1 className="text-lg sm:text-xl font-black">Avaliações</h1>
+            <h1 className="text-lg sm:text-xl font-black">Alunos</h1>
           </div>
           <form action="/auth/signout" method="post">
             <button className="text-sm font-bold text-[var(--muted)] hover:underline">
@@ -68,81 +72,61 @@ export default async function DashboardPage() {
             Perguntas
           </Link>
           <span className="ml-auto text-sm font-bold text-[var(--muted)]">
-            {list.length} teste{list.length === 1 ? "" : "s"}
+            {students.length} aluno{students.length === 1 ? "" : "s"}
           </span>
         </div>
 
         {list.length === 0 ? (
           <div className="bg-white rounded-2xl p-10 text-center text-[var(--muted)] font-semibold">
-            Nenhum teste ainda. Clique em{" "}
+            Nenhum aluno ainda. Clique em{" "}
             <span className="text-[var(--green-dark)]">+ Novo aluno</span> para
             começar.
           </div>
         ) : (
           <ul className="flex flex-col gap-3">
-            {list.map((t) => {
-              const answered = answeredByTest.get(t.id) ?? 0;
-              const pct =
-                totalSteps > 0 ? Math.round((answered / totalSteps) * 100) : 0;
+            {students.map((student) => {
+              const inProgress = student.tests.filter(
+                (test) => test.status === "in_progress"
+              ).length;
+              const latest = student.tests[0];
               return (
                 <li
-                  key={t.id}
-                  className="bg-white rounded-2xl p-4 sm:p-5 flex flex-col gap-3"
+                  key={student.id}
+                  className="bg-white rounded-2xl border-2 border-transparent hover:border-[var(--blue)] transition-colors"
                 >
-                  <div className="flex flex-wrap items-start justify-between gap-3">
-                    <div>
-                      <div className="flex items-center gap-2 flex-wrap">
-                        <span className="font-black text-lg">
-                          {t.student_name}
-                        </span>
-                        <span
-                          className={`text-xs font-bold px-2 py-0.5 rounded-full ${
-                            t.status === "completed"
-                              ? "bg-[var(--green-soft)] text-[var(--green-dark)]"
-                              : "bg-[var(--blue-soft)] text-[var(--blue-dark)]"
-                          }`}
-                        >
-                          {t.status === "completed"
-                            ? "Concluído"
-                            : `Em andamento · ${
-                                stageById(t.current_stage)?.label ??
-                                t.current_stage
-                              }`}
-                        </span>
+                  <Link
+                    href={`/students/${student.id}`}
+                    className="block p-4 sm:p-5"
+                  >
+                    <div className="flex items-center justify-between gap-3">
+                      <div className="min-w-0">
+                        <h2 className="font-black text-lg truncate">
+                          {student.name}
+                        </h2>
+                        <p className="text-sm text-[var(--muted)] font-semibold mt-0.5">
+                          Nasc.: {formatDate(student.birthDate)}
+                        </p>
                       </div>
-                      <p className="text-sm text-[var(--muted)] font-semibold mt-0.5">
-                        Nasc.: {formatDate(t.student_birth_date)} · Criado em{" "}
-                        {formatDate(t.created_at)}
-                      </p>
+                      <span className="text-[var(--blue)] font-black text-2xl shrink-0">
+                        →
+                      </span>
                     </div>
-                    <div className="flex items-center gap-2">
-                      <Link
-                        href={`/tests/${t.id}/run`}
-                        className="btn3d btn3d-green !py-2 !px-4 text-sm"
-                      >
-                        {t.status === "completed" ? "Rever" : "Continuar"}
-                      </Link>
-                      <Link
-                        href={`/tests/${t.id}`}
-                        className="btn3d btn3d-gray !py-2 !px-4 text-sm"
-                      >
-                        Detalhes
-                      </Link>
-                    </div>
-                  </div>
 
-                  <div className="flex items-center gap-3">
-                    <div className="progressbar flex-1">
-                      <div style={{ width: `${pct}%` }} />
+                    <div className="flex flex-wrap items-center gap-x-3 gap-y-1 mt-4 text-sm font-bold text-[var(--muted)]">
+                      <span>
+                        {student.tests.length} avaliação
+                        {student.tests.length === 1 ? "" : "ões"}
+                      </span>
+                      {inProgress > 0 && (
+                        <span className="text-[var(--blue-dark)]">
+                          {inProgress} em andamento
+                        </span>
+                      )}
+                      <span className="ml-auto">
+                        Atualizado em {formatDate(latest?.created_at ?? null)}
+                      </span>
                     </div>
-                    <span className="text-xs font-bold text-[var(--muted)] w-24 text-right">
-                      {answered} / {totalSteps}
-                    </span>
-                  </div>
-
-                  <div className="flex justify-end">
-                    <TestActions testId={t.id} />
-                  </div>
+                  </Link>
                 </li>
               );
             })}
