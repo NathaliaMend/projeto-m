@@ -8,8 +8,19 @@ import {
   type AnsweredKey,
   type Step,
 } from "@/lib/assessment";
-import { STAGES, stageIdOf } from "@/lib/stages";
-import type { TestWithStudent } from "@/lib/types";
+import { stageIdOf } from "@/lib/stages";
+import { PHASES } from "@/lib/phases";
+import type { Phase, TestWithStudent } from "@/lib/types";
+
+/** Mesmos emojis por fase do /preview, para o menu ter a mesma cara. */
+const PHASE_EMOJI: Record<Phase, string> = {
+  A: "🌱",
+  B1: "🚀",
+  AR1: "🌿",
+  B2: "🛸",
+  AR2: "🌳",
+  C: "🏆",
+};
 
 /**
  * Menu do aplicador: as 9 ETAPAS de aplicação, na ordem, com o que já foi
@@ -99,44 +110,90 @@ export default async function TestMenuPage({
           <span className="ml-auto text-[var(--blue)] font-black text-xl">→</span>
         </Link>
 
-        {STAGES.map((stage) => {
-          const stageSteps = byStage.get(stage.id) ?? [];
-          const done = stageSteps.filter((s) =>
-            answered.has(`${s.phase}:${s.question.id}`)
-          ).length;
-          const total = stageSteps.length;
-          const complete = total > 0 && done === total;
-          const isNext = stage.id === currentStage && !complete;
-          const metaphorText = stage.metaphor
-            ? (stageSteps[0]?.question.metaphor ?? "")
-            : "";
+        {PHASES.map((pc) => {
+          const doneOf = (list: Step[]) =>
+            list.filter((s) => answered.has(`${s.phase}:${s.question.id}`)).length;
+          const label = (done: number, total: number) =>
+            total > 0 && done === total
+              ? "Conferir"
+              : done > 0
+                ? "Continuar"
+                : "Aplicar";
 
+          const phaseSteps = steps.filter((s) => s.phase === pc.phase);
+          const total = phaseSteps.length;
+          const done = doneOf(phaseSteps);
+
+          // Fase B (B1/B2): card-cabeçalho com submenu de metáforas — é assim que
+          // ela é aplicada, uma metáfora por vez.
+          if (pc.metaphors) {
+            return (
+              <div
+                key={pc.phase}
+                className="bg-white rounded-2xl border-2 border-[var(--border)] p-4"
+              >
+                <div className="flex items-center gap-4">
+                  <span className="text-3xl">{PHASE_EMOJI[pc.phase]}</span>
+                  <span className="min-w-0">
+                    <span className="block font-black text-lg">{pc.label}</span>
+                    <span className="block text-sm font-semibold text-[var(--muted)]">
+                      {done} / {total} respondidas
+                    </span>
+                  </span>
+                </div>
+
+                <ul className="mt-3 ml-6 flex flex-col gap-1.5">
+                  {pc.metaphors.map((code) => {
+                    const ms = byStage.get(code) ?? [];
+                    const mDone = doneOf(ms);
+                    const isNext = code === currentStage;
+                    return (
+                      <li key={code}>
+                        <Link
+                          href={`/tests/${id}/run?stage=${code}`}
+                          className={`flex items-center gap-3 rounded-xl px-3 py-2 border-2 transition-colors hover:bg-[#f7f9fc] ${
+                            isNext
+                              ? "border-[var(--green)]"
+                              : "border-[var(--border)]"
+                          }`}
+                        >
+                          <span className="font-bold text-sm shrink-0">
+                            {code}
+                          </span>
+                          <span className="text-xs font-semibold text-[var(--muted)] truncate">
+                            {ms[0]?.question.metaphor ?? ""}
+                          </span>
+                          <span className="ml-auto text-xs font-black text-[var(--muted)] shrink-0">
+                            {mDone}/{ms.length} · {label(mDone, ms.length)}
+                          </span>
+                        </Link>
+                      </li>
+                    );
+                  })}
+                </ul>
+              </div>
+            );
+          }
+
+          // A / AR1 / AR2 / C: uma etapa só (stageId = a própria fase).
+          const isNext = pc.phase === currentStage;
           return (
             <Link
-              key={stage.id}
-              href={`/tests/${id}/run?stage=${stage.id}`}
-              className={`flex items-center gap-3 bg-white rounded-2xl border-2 p-4 transition-colors hover:bg-[#f7f9fc] ${
+              key={pc.phase}
+              href={`/tests/${id}/run?stage=${pc.phase}`}
+              className={`flex items-center gap-4 bg-white rounded-2xl border-2 p-4 transition-colors hover:bg-[#f7f9fc] ${
                 isNext ? "border-[var(--green)]" : "border-[var(--border)]"
               }`}
             >
-              <span className="text-xl w-6 text-center shrink-0">
-                {complete ? "✅" : isNext ? "👉" : "⚪️"}
-              </span>
+              <span className="text-3xl">{PHASE_EMOJI[pc.phase]}</span>
               <span className="min-w-0">
-                <span className="block font-black">{stage.label}</span>
+                <span className="block font-black text-lg">{pc.label}</span>
                 <span className="block text-sm font-semibold text-[var(--muted)]">
-                  {metaphorText && `${metaphorText} · `}
-                  {complete
-                    ? `${total} respondidas`
-                    : `faltam ${total - done} de ${total}`}
+                  {done} / {total} respondidas
                 </span>
               </span>
-              <span
-                className={`ml-auto text-sm font-black shrink-0 ${
-                  isNext ? "text-[var(--green-dark)]" : "text-[var(--muted)]"
-                }`}
-              >
-                {complete ? "Conferir" : done > 0 ? "Continuar" : "Aplicar"}
+              <span className="ml-auto text-sm font-black shrink-0 text-[var(--muted)]">
+                {label(done, total)}
               </span>
             </Link>
           );
