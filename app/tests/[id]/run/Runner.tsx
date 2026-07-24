@@ -148,18 +148,81 @@ export function Runner({
   const { play, cancel, ready } = useVoice();
   const router = useRouter();
 
-  // Sair é só pela tecla Esc (não há mais o ✕): a criança não sai com um toque,
-  // e quem aplica encerra pelo teclado. O progresso já está salvo — cada
-  // resposta é gravada na hora (submitAnswer), então basta navegar embora.
+  // Sair (Esc ou toque longo no ✕) não navega direto: abre um popup de
+  // confirmação. O progresso já está salvo — cada resposta é gravada na hora
+  // (submitAnswer) —, então confirmar só navega embora.
+  const [confirmExit, setConfirmExit] = useState(false);
+  const askExit = useCallback(() => {
+    cancel();
+    setConfirmExit(true);
+  }, [cancel]);
+  const doExit = useCallback(() => {
+    cancel();
+    router.push(exitHref);
+  }, [cancel, exitHref, router]);
+
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
       if (e.key !== "Escape") return;
-      cancel();
-      router.push(exitHref);
+      askExit();
     };
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
-  }, [cancel, exitHref, router]);
+  }, [askExit]);
+
+  // Toque longo no ✕ para abrir o popup (evita disparo com um toque solto).
+  const [exitHolding, setExitHolding] = useState(false);
+  const exitHoldTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const clearExitHoldTimer = () => {
+    if (exitHoldTimer.current) {
+      clearTimeout(exitHoldTimer.current);
+      exitHoldTimer.current = null;
+    }
+  };
+  const startExitHold = () => {
+    setExitHolding(true);
+    clearExitHoldTimer();
+    exitHoldTimer.current = setTimeout(askExit, 700);
+  };
+  const cancelExitHold = () => {
+    setExitHolding(false);
+    clearExitHoldTimer();
+  };
+  useEffect(() => clearExitHoldTimer, []);
+
+  const exitModal = confirmExit ? (
+    <div
+      className="fixed inset-0 z-50 flex items-center justify-center p-5 bg-black/40"
+      role="dialog"
+      aria-modal="true"
+      aria-label="Confirmar saída"
+      onClick={() => setConfirmExit(false)}
+    >
+      <div
+        className="bg-white rounded-3xl p-6 max-w-sm w-full text-center shadow-xl"
+        onClick={(e) => e.stopPropagation()}
+      >
+        <h2 className="text-xl font-black mb-2">Deseja sair?</h2>
+        <p className="text-[var(--muted)] font-semibold mb-6">
+          O progresso já está salvo. Você pode continuar depois de onde parou.
+        </p>
+        <div className="flex flex-col gap-3">
+          <button
+            onClick={() => setConfirmExit(false)}
+            className="btn3d btn3d-green w-full"
+          >
+            Continuar aqui
+          </button>
+          <button
+            onClick={doExit}
+            className="font-bold text-[var(--muted)] py-2"
+          >
+            Sair
+          </button>
+        </div>
+      </div>
+    </div>
+  ) : null;
 
   // A história tem que terminar antes de liberar o "Continuar"...
   const ctx = useGatedSpeech(
@@ -384,6 +447,7 @@ export function Runner({
             Começar
           </button>
         </div>
+        {exitModal}
       </div>
     );
   }
@@ -398,6 +462,7 @@ export function Runner({
         <Link href={finalHref} className="btn3d btn3d-green">
           {resultLabel}
         </Link>
+        {exitModal}
       </CenterCard>
     );
   }
@@ -415,6 +480,7 @@ export function Runner({
         <button onClick={goNextPhase} className="btn3d btn3d-green">
           Continuar
         </button>
+        {exitModal}
       </CenterCard>
     );
   }
@@ -433,17 +499,35 @@ export function Runner({
 
   const header = (
     <div className="shrink-0 px-4 pt-4 pb-2 max-w-2xl w-full mx-auto">
-      {/* Sem botão de sair e sem o nome da fase: a criança não deve conseguir
-          sair com um toque, e o rótulo da etapa é ruído para ela. Quem aplica
-          sai pela tecla Esc (ver o efeito de teclado acima). */}
-      <div className="progressbar">
-        <div style={{ width: `${progressPct}%` }} />
+      {/* Botão de sair (✕) à esquerda da barra: discreto (pequeno e apagado) e
+          por TOQUE LONGO (~700ms), que apenas ABRE o popup de confirmação — a
+          criança não sai com um toque solto. Esc também abre o popup. O rótulo
+          da fase segue omitido: é ruído para a criança. */}
+      <div className="flex items-center gap-3">
+        <button
+          type="button"
+          aria-label="Sair (segure para confirmar)"
+          title="Segure para sair"
+          onPointerDown={startExitHold}
+          onPointerUp={cancelExitHold}
+          onPointerLeave={cancelExitHold}
+          onPointerCancel={cancelExitHold}
+          className={`shrink-0 -m-3 p-3 text-sm leading-none select-none touch-none transition-opacity text-[var(--muted)] ${
+            exitHolding ? "opacity-80" : "opacity-10"
+          }`}
+        >
+          ✕
+        </button>
+        <div className="progressbar flex-1">
+          <div style={{ width: `${progressPct}%` }} />
+        </div>
       </div>
       {demoBadge && (
         <p className="text-center text-xs font-bold text-[var(--muted)] mt-1">
           {demoBadge}
         </p>
       )}
+      {exitModal}
     </div>
   );
 
