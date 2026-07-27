@@ -121,6 +121,15 @@ export interface SubmitResult {
   /** A alternativa correta — só depois de a pergunta se encerrar. */
   correctKey: string | null;
   completed: boolean;
+  /**
+   * Mensagem de erro quando o salvamento FALHA. Devolvida como dado (não
+   * lançada) de propósito: em produção o Next.js apaga a mensagem de um erro
+   * LANÇADO num server action (o cliente só recebe "An error occurred..."), mas
+   * o VALOR retornado chega inteiro — então a tela consegue mostrar o motivo
+   * real (ex.: "violates row-level security policy"). O detalhe também vai para
+   * os logs (Vercel) via console.error abaixo.
+   */
+  error?: string;
 }
 
 /**
@@ -145,8 +154,44 @@ export async function submitAnswer(input: {
   /** Aparelho da resposta (tablet/notebook/celular), classificado no cliente. */
   device?: string;
 }): Promise<SubmitResult> {
+  // requireUser fica FORA do try: se não há sessão ele faz redirect(), que
+  // "lança" NEXT_REDIRECT de propósito — não é erro para capturar.
   const { supabase } = await requireUser();
+  try {
+    return await submitAnswerInner(supabase, input);
+  } catch (e) {
+    const msg = e instanceof Error ? e.message : String(e);
+    // Log BEM visível para achar no Vercel (Deployments → Functions → Logs).
+    console.error(
+      `\n🚨🚨🚨 [submitAnswer] FALHA AO SALVAR RESPOSTA 🚨🚨🚨\n` +
+        `mensagem: ${msg}\n` +
+        `test=${input.testId} phase=${input.phase} question=${input.questionId} ` +
+        `selected=${input.selectedKey}\n`,
+      e instanceof Error ? e.stack : e
+    );
+    // Devolve o motivo como DADO para a tela mostrar (em prod o erro lançado
+    // teria a mensagem apagada). Não avança: os campos ficam "vazios".
+    return {
+      isCorrect: false,
+      attempts: 0,
+      canRetry: false,
+      correctKey: null,
+      completed: false,
+      error: msg,
+    };
+  }
+}
 
+async function submitAnswerInner(
+  supabase: Awaited<ReturnType<typeof createClient>>,
+  input: {
+    testId: string;
+    phase: Phase;
+    questionId: string;
+    selectedKey: string;
+    device?: string;
+  }
+): Promise<SubmitResult> {
   // Autoridade do servidor: reconstrói o passo com as MESMAS funções que
   // montaram a tela (run/page.tsx faz buildSteps + shuffleStep). É o que faz a
   // foto gravada bater com o que a criança viu, sem o cliente mandar nada —

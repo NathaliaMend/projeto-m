@@ -103,6 +103,8 @@ export interface SubmitFn {
     canRetry: boolean;
     correctKey: string | null;
     completed: boolean;
+    /** Motivo da falha (devolvido como dado para a tela poder mostrar em prod). */
+    error?: string;
   }>;
 }
 
@@ -371,6 +373,14 @@ export function Runner({
         }),
         SUBMIT_TIMEOUT_MS
       );
+      // O salvamento falhou no servidor (ex.: RLS). O motivo veio como DADO,
+      // então dá para mostrar mesmo em produção. Não avança — deixa tentar de
+      // novo depois de resolvido.
+      if (res.error) {
+        console.error("🚨 [onConfirm] resposta NÃO salva:", res.error);
+        setSubmitError(res.error);
+        return;
+      }
       if (step.feedback) {
         const retryInContext = res.canRetry && hasStoryScreen(step);
         setResult({
