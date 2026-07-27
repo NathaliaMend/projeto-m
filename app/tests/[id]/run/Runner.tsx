@@ -133,6 +133,7 @@ export function Runner({
     emoji: string;
   }>(null);
   const [pending, setPending] = useState(false);
+  const [submitError, setSubmitError] = useState<string | null>(null);
   const [completedPhase, setCompletedPhase] = useState<Phase | null>(null);
 
   const step: RunnerStep | undefined = steps[cur];
@@ -337,6 +338,7 @@ export function Runner({
   async function onConfirm() {
     if (selected == null || pending || !step) return;
     setPending(true);
+    setSubmitError(null);
     try {
       const res = await doSubmit({
         testId,
@@ -377,6 +379,13 @@ export function Runner({
       } else {
         finishQuestion();
       }
+    } catch (e) {
+      // Falha ao gravar a resposta (rede/servidor): NÃO avança — o dado não foi
+      // salvo. Antes isto virava um erro não tratado e a tela ficava "presa" na
+      // mesma pergunta sem explicação. Agora mostra o erro e deixa tentar de
+      // novo (o botão volta a ficar disponível, a escolha é preservada).
+      console.error("Falha ao registrar resposta:", e);
+      setSubmitError(e instanceof Error ? e.message : "Erro desconhecido");
     } finally {
       setPending(false);
     }
@@ -685,13 +694,23 @@ export function Runner({
       </div>
 
       <div className="shrink-0 border-t-2 border-[var(--border)] bg-white">
-        <div className="max-w-2xl w-full mx-auto px-4 py-4 flex items-center justify-end">
+        <div className="max-w-2xl w-full mx-auto px-4 py-4 flex items-center justify-end gap-3">
+          {submitError && (
+            <div className="mr-auto min-w-0">
+              <p className="text-sm font-bold text-[var(--red-dark)]">
+                Não foi possível salvar a resposta. Toque de novo.
+              </p>
+              <p className="text-xs font-semibold text-[var(--muted)] truncate">
+                {submitError}
+              </p>
+            </div>
+          )}
           <button
             onClick={onConfirm}
             disabled={selected == null || locked}
             className="btn3d btn3d-green"
           >
-            {pending ? "..." : "Confirmar"}
+            {pending ? "..." : submitError ? "Tentar de novo" : "Confirmar"}
           </button>
         </div>
       </div>
