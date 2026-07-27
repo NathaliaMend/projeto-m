@@ -60,6 +60,27 @@ const INTRO_SPEECH =
   "Depois: vamos fazer uma pergunta. " +
   "Lembre-se: você pode usar o botão de som para ouvir quantas vezes quiser!";
 
+/**
+ * Teto de espera do salvamento. Sem isto, uma resposta que trava (ex.: um proxy
+ * que segura a resposta do server action) deixava o botão "Confirmar" carregando
+ * para sempre, sem sair da pergunta. Com o teto, vira um erro tratável (mostra
+ * aviso e deixa tentar de novo). Retentar é seguro: `submitAnswer` preserva o
+ * `is_correct`/`selected_key` da primeira vez, então reenviar não corrompe o dado.
+ */
+const SUBMIT_TIMEOUT_MS = 15000;
+
+function withTimeout<T>(promise: Promise<T>, ms: number): Promise<T> {
+  return Promise.race([
+    promise,
+    new Promise<never>((_, reject) =>
+      setTimeout(
+        () => reject(new Error("Tempo esgotado ao salvar (rede lenta ou bloqueada).")),
+        ms
+      )
+    ),
+  ]);
+}
+
 const PHASE_EMOJI: Record<Phase, string> = {
   A: "🌱",
   B1: "🚀",
@@ -340,13 +361,16 @@ export function Runner({
     setPending(true);
     setSubmitError(null);
     try {
-      const res = await doSubmit({
-        testId,
-        phase: step.phase,
-        questionId: step.question.id,
-        selectedKey: selected,
-        device,
-      });
+      const res = await withTimeout(
+        doSubmit({
+          testId,
+          phase: step.phase,
+          questionId: step.question.id,
+          selectedKey: selected,
+          device,
+        }),
+        SUBMIT_TIMEOUT_MS
+      );
       if (step.feedback) {
         const retryInContext = res.canRetry && hasStoryScreen(step);
         setResult({
