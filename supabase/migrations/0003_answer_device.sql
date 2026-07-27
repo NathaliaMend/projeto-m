@@ -1,0 +1,12 @@
+-- Dispositivo da resposta
+-- ============================================================================
+-- Rode no SQL Editor do Supabase (não há CLI). Depende de 0001_init.sql.
+--
+-- Grava em que aparelho a criança respondeu (tablet / notebook / celular), para
+-- o pesquisador saber a origem de cada resposta. A classificação é feita no
+-- CLIENTE (lib/device.ts, via user-agent + toque) e enviada no submitAnswer;
+-- como `presented`, é gravada na PRIMEIRA tentativa e nunca sobrescrita.
+--
+-- Nullable de propósito: respostas antigas (anteriores a esta coluna) e o modo
+-- demonstração ficam sem valor, e não há default para não inventar um aparelho.
+alter table public.answers add column if not exists device text;
