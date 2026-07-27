@@ -6,6 +6,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useVoice, useGatedSpeech, SpeakButton } from "./speech";
 import { submitAnswer } from "@/app/tests/actions";
+import { detectDevice } from "@/lib/device";
 import {
   BLANK_SCREEN_MS,
   FEEDBACK_EMOJIS,
@@ -74,6 +75,7 @@ export interface SubmitFn {
     phase: Phase;
     questionId: string;
     selectedKey: string;
+    device?: string;
   }): Promise<{
     isCorrect: boolean;
     attempts: number;
@@ -112,6 +114,8 @@ export function Runner({
   demoBadge?: string;
 }) {
   const doSubmit: SubmitFn = submit ?? submitAnswer;
+  // O aparelho não muda durante a aplicação; classifica uma vez, no cliente.
+  const device = useMemo(() => detectDevice(), []);
   const finalHref = resultHref ?? `/tests/${testId}`;
   const total = steps.length;
   const beginDone = startIndex >= total;
@@ -339,6 +343,7 @@ export function Runner({
         phase: step.phase,
         questionId: step.question.id,
         selectedKey: selected,
+        device,
       });
       if (step.feedback) {
         const retryInContext = res.canRetry && hasStoryScreen(step);

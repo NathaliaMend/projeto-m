@@ -21,6 +21,9 @@ const MONTHS = [
 // O <input type="date"> nativo obriga a "voltar muito os anos" no calendário;
 // com um seletor de ano isso vira um toque. Anos em ordem decrescente.
 const YEARS_BACK = 20;
+// Não há alunos com menos de 6 anos, então pulamos os 5 anos mais recentes: o
+// ano mais novo da lista é (ano atual − 5).
+const SKIP_RECENT_YEARS = 5;
 
 function daysInMonth(month: number, year: number): number {
   // month é 1..12; o dia 0 do mês seguinte é o último dia deste mês.
@@ -41,7 +44,11 @@ export function BirthDatePicker() {
   const [year, setYear] = useState("");
 
   const years = useMemo(
-    () => Array.from({ length: YEARS_BACK + 1 }, (_, i) => currentYear - i),
+    () =>
+      Array.from(
+        { length: YEARS_BACK + 1 },
+        (_, i) => currentYear - SKIP_RECENT_YEARS - i
+      ),
     [currentYear]
   );
 

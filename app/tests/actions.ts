@@ -142,6 +142,8 @@ export async function submitAnswer(input: {
   phase: Phase;
   questionId: string;
   selectedKey: string;
+  /** Aparelho da resposta (tablet/notebook/celular), classificado no cliente. */
+  device?: string;
 }): Promise<SubmitResult> {
   const { supabase } = await requireUser();
 
@@ -177,7 +179,7 @@ export async function submitAnswer(input: {
   const { data: prev } = await supabase
     .from("answers")
     .select(
-      "id, attempts, is_correct, solved, selected_key, selected_keys, presented"
+      "id, attempts, is_correct, solved, selected_key, selected_keys, presented, device"
     )
     .eq("test_id", input.testId)
     .eq("phase", input.phase)
@@ -210,6 +212,8 @@ export async function submitAnswer(input: {
       // A foto é da PRIMEIRA vez que a pergunta apareceu; a retentativa mostra
       // a mesma tela, então regravar só criaria chance de divergir.
       presented: (prev?.presented as PresentedQuestion | null) ?? presented,
+      // Aparelho da PRIMEIRA resposta — como a foto, não é sobrescrito.
+      device: (prev?.device as string | null) ?? input.device ?? null,
     },
     { onConflict: "test_id,phase,question_id" }
   );

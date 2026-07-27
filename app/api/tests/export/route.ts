@@ -34,6 +34,7 @@ export async function GET() {
     "aluno",
     "data_nascimento",
     "status",
+    "dispositivo",
     "fase",
     "item",
     "metafora",
@@ -46,6 +47,7 @@ export async function GET() {
     "resposta_correta",
     "acertou_de_primeira",
     "tentativas",
+    "erros_antes_de_acertar",
     "chegou_na_correta",
     "todas_as_escolhas",
     "respondido_em",
@@ -63,10 +65,14 @@ export async function GET() {
       const chosen = (a.selected_keys ?? [a.selected_key])
         .map((k) => p.options.find((o) => o.key === k)?.text ?? k)
         .join(" | ");
+      // Quantas vezes errou antes de acertar: se resolveu, foram (tentativas−1)
+      // erros até a correta; se não resolveu, todas as tentativas foram erro.
+      const errosAntes = a.solved ? a.attempts - 1 : a.attempts;
       return [
         t.student?.name ?? "",
         t.student?.birth_date ?? "",
         t.status,
+        a.device ?? "",
         a.phase,
         p.code,
         p.metaphor ?? "",
@@ -80,6 +86,7 @@ export async function GET() {
         correct?.text ?? "",
         a.is_correct ? "sim" : "nao",
         a.attempts,
+        errosAntes,
         a.solved ? "sim" : "nao",
         chosen,
         new Date(a.answered_at).toLocaleString("pt-BR"),

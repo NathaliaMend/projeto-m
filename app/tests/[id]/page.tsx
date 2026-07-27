@@ -42,6 +42,10 @@ export default async function TestDetailsPage({
   ]);
   const answers = (answerData ?? []) as Answer[];
 
+  // Aparelho(s) usado(s) na aplicação — normalmente um só; se houver mais de um
+  // (ex.: Fase C num aparelho diferente), lista todos.
+  const devices = [...new Set(answers.map((a) => a.device).filter(Boolean))];
+
   // Quantos passos cada fase tem. Não é o tamanho do banco: B1/B2 filtram por
   // metáfora, e A/AR1/AR2 compartilham o mesmo banco.
   const phaseTotals = new Map<Phase, number>();
@@ -73,6 +77,11 @@ export default async function TestDetailsPage({
               <p className="text-sm text-[var(--muted)] font-semibold">
                 Nasc.: {formatDate(t.student?.birth_date ?? null)}
               </p>
+              {devices.length > 0 && (
+                <p className="text-sm text-[var(--muted)] font-semibold">
+                  Dispositivo: {devices.join(", ")}
+                </p>
+              )}
             </div>
             <div className="flex items-center gap-2 flex-wrap">
               <Link
@@ -171,7 +180,7 @@ export default async function TestDetailsPage({
                           <p className="text-sm font-semibold text-[var(--muted)] mt-0.5">
                             {a.attempts} tentativas ·{" "}
                             {a.solved
-                              ? "acertou depois"
+                              ? `errou ${a.attempts - 1}× antes de acertar`
                               : "não chegou na correta"}
                           </p>
                         )}

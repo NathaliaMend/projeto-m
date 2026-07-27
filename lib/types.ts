@@ -105,5 +105,6 @@ export interface Answer {
   is_correct: boolean; // acertou na PRIMEIRA tentativa — é esta a medida de compreensão
   solved: boolean; // chegou na correta dentro do limite de tentativas
   attempts: number; // 1..3 (fora da Fase B é sempre 1)
+  device: string | null; // aparelho da resposta: "tablet" | "notebook" | "celular"
   answered_at: string;
 }
