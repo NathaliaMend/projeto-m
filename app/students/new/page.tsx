@@ -2,6 +2,7 @@ import Link from "next/link";
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { createTest } from "@/app/tests/actions";
+import { BirthDatePicker } from "./BirthDatePicker";
 
 export default async function NewStudentPage() {
   const supabase = await createClient();
@@ -41,16 +42,7 @@ export default async function NewStudentPage() {
                 placeholder="Ex.: Maria Silva"
               />
             </label>
-            <label className="flex flex-col gap-1">
-              <span className="text-sm font-bold text-[var(--muted)]">
-                Data de nascimento
-              </span>
-              <input
-                name="student_birth_date"
-                type="date"
-                className="rounded-xl border-2 border-[var(--border)] px-4 py-3 font-semibold outline-none focus:border-[var(--blue)]"
-              />
-            </label>
+            <BirthDatePicker />
 
             <button className="btn3d btn3d-green w-full mt-2">
               Começar avaliação

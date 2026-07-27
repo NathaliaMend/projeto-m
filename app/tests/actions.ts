@@ -49,13 +49,13 @@ export async function createTestForStudent(formData: FormData) {
   const studentId = String(formData.get("student_id") ?? "");
   if (!studentId) return;
 
-  // Confirma que o aluno é deste aplicador antes de criar o teste — não confiar
-  // só no id vindo do formulário.
+  // Confirma que o aluno existe antes de criar o teste — não confiar só no id
+  // vindo do formulário. A visibilidade é compartilhada (qualquer avaliador
+  // pode reaplicar num aluno da equipe); o teste criado fica sob quem o abriu.
   const { data: student } = await supabase
     .from("students")
     .select("id")
     .eq("id", studentId)
-    .eq("applicator_id", user.id)
     .maybeSingle();
   if (!student) throw new Error("Aluno não encontrado.");
 

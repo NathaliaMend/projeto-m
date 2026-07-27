@@ -2,11 +2,12 @@ import Link from "next/link";
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import type { TestWithStudent } from "@/lib/types";
+import { StudentsBoard, type StudentSummary } from "./StudentsBoard";
 
-function formatDate(iso: string | null) {
-  if (!iso) return "—";
-  return new Date(iso).toLocaleDateString("pt-BR");
-}
+/** Teste do dashboard: inclui o dono do aluno, para o filtro "Meus alunos". */
+type DashboardTest = TestWithStudent & {
+  student: { name: string; birth_date: string | null; applicator_id: string } | null;
+};
 
 export default async function DashboardPage() {
   const supabase = await createClient();
@@ -15,15 +16,31 @@ export default async function DashboardPage() {
   } = await supabase.auth.getUser();
   if (!user) redirect("/login");
 
-  const { data: tests } = await supabase
-    .from("tests")
-    .select("*, student:students(name, birth_date)")
-    .order("created_at", { ascending: false });
+  // Visibilidade compartilhada (ver 0002_shared_visibility.sql): a query traz os
+  // testes de TODA a equipe; o filtro "Meus alunos" mora no cliente.
+  const [{ data: tests }, { data: applicators }] = await Promise.all([
+    supabase
+      .from("tests")
+      .select("*, student:students(name, birth_date, applicator_id)")
+      .order("created_at", { ascending: false }),
+    supabase.from("applicators").select("id, name, email"),
+  ]);
 
-  const list = (tests ?? []) as TestWithStudent[];
+  const ownerLabelById = new Map<string, string>();
+  for (const a of applicators ?? []) {
+    ownerLabelById.set(a.id, a.name || a.email || "Avaliador");
+  }
+
+  const list = (tests ?? []) as DashboardTest[];
   const studentsById = new Map<
     string,
-    { id: string; name: string; birthDate: string | null; tests: TestWithStudent[] }
+    {
+      id: string;
+      name: string;
+      birthDate: string | null;
+      ownerId: string;
+      tests: DashboardTest[];
+    }
   >();
 
   for (const test of list) {
@@ -32,13 +49,24 @@ export default async function DashboardPage() {
       id: test.student_id,
       name: test.student.name,
       birthDate: test.student.birth_date,
+      ownerId: test.student.applicator_id,
       tests: [],
     };
     student.tests.push(test);
     studentsById.set(test.student_id, student);
   }
 
-  const students = [...studentsById.values()];
+  // Tests já vêm ordenados por created_at desc, então tests[0] é o mais recente.
+  const students: StudentSummary[] = [...studentsById.values()].map((s) => ({
+    id: s.id,
+    name: s.name,
+    birthDate: s.birthDate,
+    ownerId: s.ownerId,
+    ownerLabel: ownerLabelById.get(s.ownerId) ?? "Avaliador",
+    testsCount: s.tests.length,
+    inProgress: s.tests.filter((t) => t.status === "in_progress").length,
+    updatedAt: s.tests[0]?.created_at ?? null,
+  }));
 
   return (
     <main className="min-h-screen bg-[#f7f9fc]">
@@ -71,67 +99,9 @@ export default async function DashboardPage() {
           <Link href="/questions" className="btn3d btn3d-gray">
             Perguntas
           </Link>
-          <span className="ml-auto text-sm font-bold text-[var(--muted)]">
-            {students.length} aluno{students.length === 1 ? "" : "s"}
-          </span>
         </div>
 
-        {list.length === 0 ? (
-          <div className="bg-white rounded-2xl p-10 text-center text-[var(--muted)] font-semibold">
-            Nenhum aluno ainda. Clique em{" "}
-            <span className="text-[var(--green-dark)]">+ Novo aluno</span> para
-            começar.
-          </div>
-        ) : (
-          <ul className="flex flex-col gap-3">
-            {students.map((student) => {
-              const inProgress = student.tests.filter(
-                (test) => test.status === "in_progress"
-              ).length;
-              const latest = student.tests[0];
-              return (
-                <li
-                  key={student.id}
-                  className="bg-white rounded-2xl border-2 border-transparent hover:border-[var(--blue)] transition-colors"
-                >
-                  <Link
-                    href={`/students/${student.id}`}
-                    className="block p-4 sm:p-5"
-                  >
-                    <div className="flex items-center justify-between gap-3">
-                      <div className="min-w-0">
-                        <h2 className="font-black text-lg truncate">
-                          {student.name}
-                        </h2>
-                        <p className="text-sm text-[var(--muted)] font-semibold mt-0.5">
-                          Nasc.: {formatDate(student.birthDate)}
-                        </p>
-                      </div>
-                      <span className="text-[var(--blue)] font-black text-2xl shrink-0">
-                        →
-                      </span>
-                    </div>
-
-                    <div className="flex flex-wrap items-center gap-x-3 gap-y-1 mt-4 text-sm font-bold text-[var(--muted)]">
-                      <span>
-                        {student.tests.length} avaliação
-                        {student.tests.length === 1 ? "" : "ões"}
-                      </span>
-                      {inProgress > 0 && (
-                        <span className="text-[var(--blue-dark)]">
-                          {inProgress} em andamento
-                        </span>
-                      )}
-                      <span className="ml-auto">
-                        Atualizado em {formatDate(latest?.created_at ?? null)}
-                      </span>
-                    </div>
-                  </Link>
-                </li>
-              );
-            })}
-          </ul>
-        )}
+        <StudentsBoard students={students} currentUserId={user.id} />
       </div>
     </main>
   );
