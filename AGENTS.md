@@ -63,7 +63,7 @@ da tentativa, senão bastaria mentir para ganhar tentativas extras.
 ```
 *.xlsx  →  npm run build-questions  →  data/questions.json  →  npm run seed  →  Supabase
                     ↑                          ↓
-    data/gabarito-a1-a2.json          npm run gen-audio:openai → public/audio/*.mp3
+    data/gabarito-a1-a2.json          npm run gen-audio:openai → Storage question-media/audio/*.mp3
     data/correcoes.json
 ```
 
@@ -92,27 +92,42 @@ Consequências:
 - Editar só altera as aplicações **futuras**. Respostas já registradas guardam a
   foto `answers.presented` e não mudam — `submitAnswer` re-deriva a correção da
   tabela viva, então perguntas ainda-não-respondidas passam a valer a versão nova.
-- `npm run gen-audio:openai` lê do **banco** quando há credenciais do Supabase
-  (cai para o JSON sem elas). Rode-o depois de editar para gerar o mp3 do texto
-  novo; até lá, aquela pergunta toca na voz do navegador.
+- Depois de editar o texto de uma pergunta, gere o áudio novo pelo botão
+  **"Regerar áudio"** na tela `/questions` (`regenerateQuestionAudio` em
+  `app/questions/actions.ts`): ele sintetiza na OpenAI e sobe para o Storage
+  (`question-media/audio/<id>.mp3`, `upsert`). **Exige `OPENAI_API_KEY` no
+  servidor** — o navegador não pode guardar a chave secreta. Até gerar, aquela
+  pergunta toca na voz do navegador (o texto novo aponta para um mp3 que ainda
+  não existe → fallback do `speech.tsx`).
+- Para gerar/subir tudo de uma vez, use o script `npm run gen-audio:openai`
+  (lê os textos do **banco**; sobe os mp3 locais de `public/audio/` e gera pela
+  OpenAI só os que faltam; `FORCE=1` regenera tudo).
 - O `/preview` continua lendo `data/questions.json` estático — **não** reflete
   edições do banco.
 
 # Armadilhas que já custaram caro
 
 ## Áudio é endereçado pelo CONTEÚDO
-`audioId(text)` = slug(50 chars) + hash. **Mudar o texto de uma pergunta aponta
-para um mp3 que não existe** e o app cai calado no TTS do navegador — sem erro
-de build. Depois de mexer em `data/questions.json`, rode `npm run gen-audio:openai`.
+`audioId(text)` = slug(50 chars) + hash. Os mp3 vivem no **Storage** (bucket
+`question-media`, sob `audio/<id>.mp3`); `audioSrc(text)` (em `lib/audio.ts`)
+monta a URL pública a partir de `NEXT_PUBLIC_SUPABASE_URL` (sem a variável — ex.:
+`/preview` sem Supabase — cai para o estático `/public/audio`). **Mudar o texto
+de uma pergunta aponta para um mp3 que não existe** e o app cai calado no TTS do
+navegador — sem erro de build. Depois de editar, gere o áudio novo (botão
+"Regerar áudio" ou `npm run gen-audio:openai`).
 
 - `audioId` está **duplicado** em `lib/audio.ts` e `scripts/gen-audio-openai.mjs`
-  (e o `INTRO_SPEECH`, em `Runner.tsx` + o script). Divergir = áudio órfão
-  silencioso. Para conferir de verdade, transpile o `.ts` e compare a **saída**
+  (e o `INTRO_SPEECH`, em `Runner.tsx` + o script; a voz/modelo/instruções do TTS,
+  em `lib/tts.ts` + o script). Divergir = áudio órfão silencioso ou voz diferente.
+  Para conferir o `audioId` de verdade, transpile o `.ts` e compare a **saída**
   nos textos reais — comparar o código-fonte dá falso negativo por causa dos tipos.
 - O hash é de **8 dígitos hex**. Era 4, mas com ~340 textos a chance de colisão
   passava de 50% (aniversário) — e colisão faz duas perguntas dividirem o mesmo
   áudio, em silêncio. Se aumentar de novo, **renomeie** os arquivos existentes
   em vez de regerar (economiza a API da OpenAI).
+- O bucket `question-media` guarda **imagens e áudios** (imagens na raiz, áudios
+  em `audio/`). Leitura pública (a criança não faz login), escrita só para
+  autenticados. Ver `supabase/migrations/0004_question_media_bucket.sql`.
 
 ## Replicar `audioId` em Python dá errado
 Em JS, `a ^ b` devolve **int32 com sinal**, então `h.toString(16)` pode gerar
@@ -150,7 +165,7 @@ dados. Não volte para delete+insert.
 ```bash
 npm run build-questions    # .xlsx -> data/questions.json (valida e falha alto)
 npm run seed               # data/questions.json -> Supabase (upsert por code)
-npm run gen-audio:openai   # gera os mp3 que faltam (pula os existentes; FORCE=1 regera)
+npm run gen-audio:openai   # publica os mp3 no Storage: sobe os locais + gera os que faltam (FORCE=1 regera tudo)
 npm run dev                # http://localhost:3000
 npm run lint               # ver nota abaixo
 ```
@@ -192,4 +207,10 @@ menu do aplicador (pular para uma fase ou metáfora).
   balancear o sorteio entre metáforas treinadas (ímpares) e controle (pares).
   **Perguntar antes de mexer** — é decisão de desenho experimental, não técnica.
 - `npm run seed` e `npm run gen-audio:openai` ainda não foram rodados após a
-  reestruturação (exigem credenciais da usuária). Faltam 64 áudios.
+  reestruturação (exigem credenciais da usuária). O `gen-audio:openai` agora
+  publica no Storage (`question-media/audio/`), subindo os mp3 que já existem em
+  `public/audio/` e gerando só os que faltam.
+- **Migração `0004_question_media_bucket.sql` pendente** de rodar no Supabase
+  (renomeia o bucket para `question-media`). Se já houver imagens customizadas
+  enviadas pelo painel, mover os objetos do bucket antigo — ver o comentário na
+  migração.

@@ -5,13 +5,14 @@ import type { Bank, Question, QuestionOption } from "@/lib/types";
 import { validateOptions } from "@/lib/questions";
 import { imageSrc } from "@/lib/images";
 import { createClient } from "@/lib/supabase/client";
-import { updateQuestion } from "./actions";
+import { updateQuestion, regenerateQuestionAudio } from "./actions";
 import { resizeImage } from "./resizeImage";
 
 /** Cliente de browser do Supabase, só para o upload de imagem (Storage). */
 let _sb: ReturnType<typeof createClient> | null = null;
 const supabase = () => (_sb ??= createClient());
-const IMAGE_BUCKET = "question-images";
+/** Bucket único de mídia (imagens + áudios). */
+const MEDIA_BUCKET = "question-media";
 
 /** As 3 fases visíveis mapeiam para os 3 bancos (a mesma pergunta A1 serve A/AR1/AR2). */
 const FASES: { bank: Bank; label: string }[] = [
@@ -209,6 +210,7 @@ function QuestionRow({
   const [options, setOptions] = useState<QuestionOption[]>(question.options);
   const [saving, setSaving] = useState(false);
   const [uploading, setUploading] = useState(false);
+  const [regenerating, setRegenerating] = useState(false);
   const [msg, setMsg] = useState<{ ok: boolean; text: string } | null>(null);
 
   // Etapa 2 da Fase B tem `phrases`; outros itens podem ter só uma história
@@ -267,10 +269,10 @@ function QuestionRow({
       const blob = await resizeImage(file);
       const path = `${question.code}-${Date.now()}.jpg`;
       const { error } = await supabase()
-        .storage.from(IMAGE_BUCKET)
+        .storage.from(MEDIA_BUCKET)
         .upload(path, blob, { contentType: "image/jpeg", upsert: true });
       if (error) throw error;
-      const { data } = supabase().storage.from(IMAGE_BUCKET).getPublicUrl(path);
+      const { data } = supabase().storage.from(MEDIA_BUCKET).getPublicUrl(path);
       setImageKey(data.publicUrl);
       setMsg({ ok: true, text: "Imagem enviada — clique em Salvar para aplicar." });
     } catch (err) {
@@ -328,6 +330,27 @@ function QuestionRow({
       setMsg({ ok: true, text: "Salvo." });
     } else {
       setMsg({ ok: false, text: res.error ?? "Erro ao salvar." });
+    }
+  }
+
+  // (Re)gera os áudios da pergunta no Storage. Opera sobre o texto SALVO (o
+  // botão fica desabilitado enquanto há edição pendente), então gera exatamente
+  // o que a criança vai ouvir. Exige OPENAI_API_KEY no servidor.
+  async function regen() {
+    if (regenerating || dirty) return;
+    setRegenerating(true);
+    setMsg({ ok: true, text: "Gerando áudio..." });
+    const res = await regenerateQuestionAudio(question.id);
+    setRegenerating(false);
+    if (res.ok) {
+      setMsg({ ok: true, text: `Áudio gerado (${res.generated} faixa(s)).` });
+    } else if (res.generated > 0) {
+      setMsg({
+        ok: false,
+        text: `Áudio parcial: ${res.generated} ok, ${res.failed} falhou. ${res.error ?? ""}`,
+      });
+    } else {
+      setMsg({ ok: false, text: `Falha ao gerar áudio: ${res.error ?? "erro"}` });
     }
   }
 
@@ -517,6 +540,19 @@ function QuestionRow({
               className="btn3d btn3d-green"
             >
               {saving ? "Salvando..." : "Salvar"}
+            </button>
+            <button
+              type="button"
+              onClick={regen}
+              disabled={regenerating || dirty}
+              title={
+                dirty
+                  ? "Salve a edição antes de gerar o áudio."
+                  : "Gera o áudio da pergunta no Storage (voz neural)."
+              }
+              className="btn3d btn3d-blue"
+            >
+              {regenerating ? "Gerando áudio..." : "Regerar áudio"}
             </button>
             {invalid && dirty && (
               <span className="text-sm font-bold text-[var(--red-dark)]">

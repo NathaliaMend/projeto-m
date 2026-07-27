@@ -4,7 +4,11 @@ import { redirect } from "next/navigation";
 import { revalidatePath } from "next/cache";
 import { createClient } from "@/lib/supabase/server";
 import { validateOptions } from "@/lib/questions";
+import { audioObjectPath } from "@/lib/audio";
+import { ttsToMp3 } from "@/lib/tts";
 import type { QuestionOption } from "@/lib/types";
+
+const MEDIA_BUCKET = "question-media";
 
 async function requireUser() {
   const supabase = await createClient();
@@ -104,4 +108,68 @@ export async function updateQuestion(
 
   revalidatePath("/questions");
   return { ok: true };
+}
+
+export interface RegenerateAudioResult {
+  ok: boolean;
+  /** Quantos textos tiveram o mp3 (re)gerado e enviado. */
+  generated: number;
+  /** Quantos falharam (geração ou upload). */
+  failed: number;
+  error?: string;
+}
+
+/**
+ * (Re)gera os áudios de uma pergunta e os sobe para o Storage (question-media),
+ * sobrescrevendo (`upsert`). Lê os textos do BANCO — o estado salvo, não o do
+ * formulário —, então salve a edição antes de chamar.
+ *
+ * O nome do objeto vem do CONTEÚDO (audioObjectPath = audio/<audioId>.mp3): um
+ * texto editado gera um arquivo novo; o antigo fica órfão (inofensivo), igual ao
+ * resto do pipeline. Exige OPENAI_API_KEY no servidor — o navegador não pode
+ * guardar a chave. É best-effort: uma falha num texto não derruba os outros.
+ */
+export async function regenerateQuestionAudio(
+  questionId: string
+): Promise<RegenerateAudioResult> {
+  const { supabase } = await requireUser();
+
+  const { data: q, error: readErr } = await supabase
+    .from("questions")
+    .select("context, question_text, options")
+    .eq("id", questionId)
+    .single();
+  if (readErr || !q) {
+    return { ok: false, generated: 0, failed: 0, error: "Pergunta não encontrada." };
+  }
+
+  // Mesmos textos que viram fala na aplicação: história/frases (context),
+  // enunciado e cada alternativa. Set remove repetições (ex.: a opção fixa).
+  const texts = new Set<string>();
+  if (typeof q.context === "string" && q.context.trim()) texts.add(q.context);
+  texts.add(q.question_text);
+  for (const o of (q.options as QuestionOption[]) ?? []) texts.add(o.text);
+
+  let generated = 0;
+  let failed = 0;
+  let firstError: string | undefined;
+
+  for (const text of texts) {
+    try {
+      const buf = await ttsToMp3(text);
+      const { error } = await supabase.storage
+        .from(MEDIA_BUCKET)
+        .upload(audioObjectPath(text), buf, {
+          upsert: true,
+          contentType: "audio/mpeg",
+        });
+      if (error) throw error;
+      generated++;
+    } catch (e) {
+      failed++;
+      if (!firstError) firstError = e instanceof Error ? e.message : "erro";
+    }
+  }
+
+  return { ok: failed === 0, generated, failed, error: firstError };
 }

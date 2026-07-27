@@ -42,6 +42,20 @@ export function audioId(text: string): string {
   return `${slugify(text)}-${h.toString(16).padStart(8, "0")}`;
 }
 
+/** Nome do OBJETO no Storage: `audio/<id>.mp3`, dentro do bucket question-media. */
+export function audioObjectPath(text: string): string {
+  return `audio/${audioId(text)}.mp3`;
+}
+
+/**
+ * URL do mp3 pré-gerado. Os áudios vivem no Storage público (bucket
+ * question-media), então a URL é montada a partir de NEXT_PUBLIC_SUPABASE_URL.
+ * Sem essa variável (ex.: /preview e dev local sem Supabase), cai para o arquivo
+ * estático em /public/audio — o playback em speech.tsx já cai no TTS do
+ * navegador se a URL não resolver.
+ */
 export function audioSrc(text: string): string {
-  return `/audio/${audioId(text)}.mp3`;
+  const base = process.env.NEXT_PUBLIC_SUPABASE_URL;
+  if (!base) return `/audio/${audioId(text)}.mp3`;
+  return `${base}/storage/v1/object/public/question-media/${audioObjectPath(text)}`;
 }
