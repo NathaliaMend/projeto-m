@@ -10,9 +10,6 @@ export const BLANK_SCREEN_MS = 1000;
  */
 export const FEEDBACK_SCREEN_MS = 2500;
 
-/** Tentativas por pergunta na Fase B (nas demais fases é sempre 1). */
-export const MAX_ATTEMPTS_B = 3;
-
 /**
  * Emojis sorteados na tela de "Parabéns" da Fase B.
  * Provisório: quando o banco de imagens chegar, troque esta lista pelos

@@ -39,7 +39,8 @@ C    A2  10  Generalização/manutenção — aplicada 2 SEMANAS depois (banco A
 - O sorteio é **determinístico por teste** (semente derivada do `testId`), nunca
   `Math.random()` — senão "continuar de onde parou" quebra e não dá para
   reproduzir o que a criança viu.
-- Fase B: até **3 tentativas** por pergunta, com feedback em tela separada.
+- Fase B: a pergunta **se repete até a criança acertar** (sem teto), com feedback
+  em tela separada. `attempts` guarda o **total de tentativas até o acerto**.
 - `"Não tenho certeza da resposta correta."` é sempre a **última** alternativa e
   **conta como erro**.
 
@@ -48,7 +49,7 @@ C    A2  10  Generalização/manutenção — aplicada 2 SEMANAS depois (banco A
 | coluna | significado |
 |---|---|
 | `is_correct` | acertou na **primeira** tentativa — **é esta a medida**; nunca sobrescrita |
-| `attempts` | tentativas usadas (1..3) |
+| `attempts` | tentativas usadas (Fase B: total até acertar; demais: 1) |
 | `solved` | chegou na correta dentro do limite |
 | `selected_key` | a **primeira** escolha |
 | `selected_keys` | todas as escolhas, em ordem |

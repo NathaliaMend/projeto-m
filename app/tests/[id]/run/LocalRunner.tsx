@@ -2,7 +2,6 @@
 
 import { useRef } from "react";
 import { Runner, type RunnerStep, type SubmitFn } from "./Runner";
-import { MAX_ATTEMPTS_B } from "@/lib/config";
 import { phaseConfig } from "@/lib/phases";
 
 /**
@@ -49,13 +48,11 @@ export function LocalRunner({
     const isCorrect = correctKey === selectedKey;
     const retriable = phaseConfig(phase).feedbackPerQuestion;
 
-    const attempts = Math.min(
-      (attemptsRef.current[questionId] ?? 0) + 1,
-      retriable ? MAX_ATTEMPTS_B : 1
-    );
+    // Fase B repete até acertar (sem teto); demais fases, 1 tentativa.
+    const attempts = retriable ? (attemptsRef.current[questionId] ?? 0) + 1 : 1;
     attemptsRef.current[questionId] = attempts;
 
-    const canRetry = retriable && !isCorrect && attempts < MAX_ATTEMPTS_B;
+    const canRetry = retriable && !isCorrect;
     return {
       isCorrect,
       attempts,

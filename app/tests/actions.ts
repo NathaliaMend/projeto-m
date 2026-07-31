@@ -12,7 +12,6 @@ import {
   type Step,
 } from "@/lib/assessment";
 import { phaseConfig } from "@/lib/phases";
-import { MAX_ATTEMPTS_B } from "@/lib/config";
 import type { Phase, PresentedQuestion } from "@/lib/types";
 
 async function requireUser() {
@@ -114,7 +113,7 @@ async function recomputeProgress(
 export interface SubmitResult {
   /** Se a escolha desta vez foi a correta. */
   isCorrect: boolean;
-  /** Tentativas usadas até agora (1..MAX_ATTEMPTS_B). */
+  /** Tentativas usadas até agora (Fase B: total até acertar; demais: 1). */
   attempts: number;
   /** Ainda pode tentar de novo? (só na Fase B, se errou e sobrou tentativa) */
   canRetry: boolean;
@@ -135,9 +134,9 @@ export interface SubmitResult {
 /**
  * Registra a resposta de uma pergunta.
  *
- * Na Fase B a criança tenta até MAX_ATTEMPTS_B vezes. A contagem de tentativas
- * é feita **no servidor**, a partir da linha já gravada — o cliente não manda o
- * número da tentativa, senão bastaria mentir para ganhar tentativas extras.
+ * Na Fase B a pergunta se repete até a criança acertar (sem teto). A contagem de
+ * tentativas é feita **no servidor**, a partir da linha já gravada — o cliente
+ * não manda o número da tentativa, senão bastaria mentir para contar diferente.
  *
  * O que fica gravado:
  *   is_correct    acertou na PRIMEIRA tentativa — nunca é sobrescrito
@@ -232,10 +231,9 @@ async function submitAnswerInner(
     .maybeSingle();
 
   const retriable = phaseConfig(input.phase).feedbackPerQuestion;
-  const attempts = Math.min(
-    (prev?.attempts ?? 0) + 1,
-    retriable ? MAX_ATTEMPTS_B : 1
-  );
+  // Fase B repete até acertar, sem teto: attempts guarda o TOTAL de tentativas
+  // até o acerto. Fases sem feedback (A/AR/C) são sempre 1 tentativa.
+  const attempts = retriable ? (prev?.attempts ?? 0) + 1 : 1;
   const keys = [...((prev?.selected_keys as string[] | null) ?? []), input.selectedKey];
 
   if (prev && prev.solved) {
@@ -264,7 +262,8 @@ async function submitAnswerInner(
   );
   if (upErr) throw new Error(upErr.message);
 
-  const canRetry = retriable && !isCorrect && attempts < MAX_ATTEMPTS_B;
+  // Repete enquanto não acertou (Fase B). Sem teto: a pergunta volta até o acerto.
+  const canRetry = retriable && !isCorrect;
   const { completed } = await recomputeProgress(supabase, input.testId, steps);
   revalidatePath("/");
   revalidatePath(`/tests/${input.testId}`);
