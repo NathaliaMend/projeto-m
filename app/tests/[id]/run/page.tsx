@@ -46,7 +46,11 @@ export default async function RunPage({
     getBanks(supabase),
     // Só (fase, pergunta): aqui as respostas servem para achar onde retomar, e
     // `select("*")` traria junto a foto `presented` de cada uma.
-    supabase.from("answers").select("phase, question_id").eq("test_id", id),
+    supabase
+      .from("answers")
+      .select("phase, question_id")
+      .eq("test_id", id)
+      .eq("history", false),
   ]);
 
   const allSteps = buildSteps(byBank, id);

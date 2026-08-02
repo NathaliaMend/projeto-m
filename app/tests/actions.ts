@@ -92,7 +92,8 @@ async function recomputeProgress(
   const { data: answers } = await supabase
     .from("answers")
     .select("phase, question_id")
-    .eq("test_id", testId);
+    .eq("test_id", testId)
+    .eq("history", false);
 
   const { completed, currentStage } = progressFromAnswers(
     steps,
@@ -143,6 +144,7 @@ export interface SubmitResult {
  *   is_correct    acertou na PRIMEIRA tentativa — nunca é sobrescrito
  *   solved        chegou na correta dentro do limite
  *   attempts      quantas tentativas usou
+ *   durations_ms  tempo de cada tentativa, em ordem
  *   selected_key  a primeira escolha; selected_keys, todas em ordem
  *   presented     a pergunta como a criança viu — a foto do momento
  */
@@ -153,6 +155,8 @@ export async function submitAnswer(input: {
   selectedKey: string;
   /** Aparelho da resposta (tablet/notebook/celular), classificado no cliente. */
   device?: string;
+  /** Tempo desde a abertura da historia/pergunta ate a confirmacao. */
+  elapsedMs: number;
 }): Promise<SubmitResult> {
   // requireUser fica FORA do try: se não há sessão ele faz redirect(), que
   // "lança" NEXT_REDIRECT de propósito — não é erro para capturar.
@@ -190,6 +194,7 @@ async function submitAnswerInner(
     questionId: string;
     selectedKey: string;
     device?: string;
+    elapsedMs: number;
   }
 ): Promise<SubmitResult> {
   // Autoridade do servidor: reconstrói o passo com as MESMAS funções que
@@ -221,47 +226,82 @@ async function submitAnswerInner(
     hide_context: step.hideContext,
   };
 
-  const { data: prev } = await supabase
+  const stageId = stageIdOf(step);
+  const stageQuestionIds = steps
+    .filter((s) => stageIdOf(s) === stageId)
+    .map((s) => s.question.id);
+  const { data: rows, error: prevErr } = await supabase
     .from("answers")
     .select(
-      "id, attempts, is_correct, solved, selected_key, selected_keys, presented, device"
+      "id, question_id, attempts, is_correct, solved, selected_key, selected_keys, durations_ms, presented, device, history, attempt_round"
     )
     .eq("test_id", input.testId)
     .eq("phase", input.phase)
-    .eq("question_id", input.questionId)
-    .maybeSingle();
+    .in("question_id", stageQuestionIds);
+  if (prevErr) throw new Error(prevErr.message);
+
+  const allRows = rows ?? [];
+  const questionRows = allRows.filter(
+    (row) => row.question_id === input.questionId
+  );
+  const prev = questionRows.find((row) => !row.history);
+  const maxRound = Math.max(
+    0,
+    ...allRows.map((row) => Number(row.attempt_round) || 1)
+  );
+  const activeRound = allRows.find((row) => !row.history)?.attempt_round;
+  const elapsedMs = Number.isFinite(input.elapsedMs)
+    ? Math.max(0, Math.round(input.elapsedMs))
+    : 0;
 
   const retriable = phaseConfig(input.phase).feedbackPerQuestion;
   // Fase B repete até acertar, sem teto: attempts guarda o TOTAL de tentativas
   // até o acerto. Fases sem feedback (A/AR/C) são sempre 1 tentativa.
   const attempts = retriable ? (prev?.attempts ?? 0) + 1 : 1;
   const keys = [...((prev?.selected_keys as string[] | null) ?? []), input.selectedKey];
+  const durations = [
+    ...((prev?.durations_ms as number[] | null) ?? []),
+    elapsedMs,
+  ];
 
   if (prev && prev.solved) {
     // Já resolvida: nada a gravar (só chega aqui em corrida de duplo clique).
     return { isCorrect: true, attempts: prev.attempts, canRetry: false, correctKey, completed: false };
   }
 
-  const { error: upErr } = await supabase.from("answers").upsert(
-    {
+  if (prev) {
+    // O indice ativo e parcial nao pode ser usado como onConflict. Atualizamos
+    // explicitamente a linha ativa e preservamos a foto/medida da primeira.
+    const { error: updateErr } = await supabase
+      .from("answers")
+      .update({
+        selected_keys: keys,
+        durations_ms: durations,
+        solved: isCorrect,
+        attempts,
+      })
+      .eq("id", prev.id)
+      .eq("history", false);
+    if (updateErr) throw new Error(updateErr.message);
+  } else {
+    const { error: insertErr } = await supabase.from("answers").insert({
       test_id: input.testId,
       phase: input.phase,
       question_id: input.questionId,
-      // A primeira escolha e o acerto de primeira são a medida — preservados.
-      selected_key: prev?.selected_key ?? input.selectedKey,
-      is_correct: prev ? prev.is_correct : isCorrect,
-      selected_keys: keys,
+      selected_key: input.selectedKey,
+      is_correct: isCorrect,
+      selected_keys: [input.selectedKey],
+      durations_ms: [elapsedMs],
       solved: isCorrect,
-      attempts,
-      // A foto é da PRIMEIRA vez que a pergunta apareceu; a retentativa mostra
-      // a mesma tela, então regravar só criaria chance de divergir.
-      presented: (prev?.presented as PresentedQuestion | null) ?? presented,
-      // Aparelho da PRIMEIRA resposta — como a foto, não é sobrescrito.
-      device: (prev?.device as string | null) ?? input.device ?? null,
-    },
-    { onConflict: "test_id,phase,question_id" }
-  );
-  if (upErr) throw new Error(upErr.message);
+      attempts: 1,
+      history: false,
+      attempt_round: Number(activeRound) || maxRound + 1,
+      // A foto e o aparelho sao da primeira resposta desta aplicacao.
+      presented,
+      device: input.device ?? null,
+    });
+    if (insertErr) throw new Error(insertErr.message);
+  }
 
   // Repete enquanto não acertou (Fase B). Sem teto: a pergunta volta até o acerto.
   const canRetry = retriable && !isCorrect;
@@ -280,10 +320,10 @@ async function submitAnswerInner(
 }
 
 /**
- * Recomeça UMA etapa do zero: apaga só as respostas daquela etapa (na Fase B,
+ * Recomeça UMA etapa do zero: arquiva só as respostas daquela etapa (na Fase B,
  * uma sub-etapa de uma metáfora — ex.: "A1B01-E2"), deixando o resto do teste
- * intacto. Diferente do "Conferir": aqui os dados gravados são REMOVIDOS, então
- * a etapa volta a poder ser aplicada e medida de novo. As perguntas da etapa são
+ * intacto. Diferente do "Conferir": aqui as respostas atuais deixam de contar,
+ * mas permanecem no historico para comparar aplicacoes. As perguntas da etapa sao
  * derivadas no servidor (mesmo buildSteps do /run) — o cliente só manda o id da
  * etapa, que é validado contra STAGES.
  */
@@ -296,16 +336,17 @@ export async function restartStage(testId: string, stageId: string) {
   const stageSteps = steps.filter((s) => stageIdOf(s) === stageId);
   if (stageSteps.length === 0) return;
 
-  // Toda etapa vive numa única fase, então dá para apagar por (test, fase,
-  // perguntas) — a mesma chave (test_id, phase, question_id) que grava a resposta.
+  // Toda etapa vive numa unica fase, entao da para arquivar por (test, fase,
+  // perguntas). So a linha ativa e arquivada; historicos anteriores permanecem.
   const phase = stageSteps[0].phase;
   const questionIds = stageSteps.map((s) => s.question.id);
   const { error } = await supabase
     .from("answers")
-    .delete()
+    .update({ history: true })
     .eq("test_id", testId)
     .eq("phase", phase)
-    .in("question_id", questionIds);
+    .in("question_id", questionIds)
+    .eq("history", false);
   if (error) throw new Error(error.message);
 
   await recomputeProgress(supabase, testId, steps);

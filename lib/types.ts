@@ -105,6 +105,9 @@ export interface Answer {
   is_correct: boolean; // acertou na PRIMEIRA tentativa — é esta a medida de compreensão
   solved: boolean; // chegou na correta dentro do limite de tentativas
   attempts: number; // 1..3 (fora da Fase B é sempre 1)
+  durations_ms: number[]; // tempo de cada tentativa, na mesma ordem de selected_keys
+  history: boolean; // resposta arquivada por um recomeço de sub-etapa
+  attempt_round: number; // numero da aplicacao desta pergunta dentro do teste
   device: string | null; // aparelho da resposta: "tablet" | "notebook" | "celular"
   answered_at: string;
 }

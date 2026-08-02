@@ -4,6 +4,7 @@ import { createClient } from "@/lib/supabase/server";
 import { getBanks } from "@/lib/questions.server";
 import { PHASES, phaseConfig } from "@/lib/phases";
 import { buildSteps } from "@/lib/assessment";
+import { formatDuration } from "@/lib/duration";
 import { createTestForStudent } from "@/app/tests/actions";
 import type { Answer, Phase, TestWithStudent } from "@/lib/types";
 
@@ -38,9 +39,16 @@ export default async function TestDetailsPage({
       .from("answers")
       .select("*")
       .eq("test_id", id)
+      .eq("history", false)
       .order("answered_at", { ascending: true }),
   ]);
   const answers = (answerData ?? []) as Answer[];
+  const durationOf = (a: Answer) =>
+    (a.durations_ms ?? []).reduce((sum, duration) => sum + duration, 0);
+  const totalDuration = answers.reduce(
+    (sum, answer) => sum + durationOf(answer),
+    0
+  );
 
   // Aparelho(s) usado(s) na aplicação — normalmente um só; se houver mais de um
   // (ex.: Fase C num aparelho diferente), lista todos.
@@ -135,6 +143,9 @@ export default async function TestDetailsPage({
               );
             })}
           </div>
+          <p className="text-sm font-bold text-[var(--muted)] mt-4 text-center">
+            Tempo total: {formatDuration(totalDuration)}
+          </p>
         </div>
 
         {/* Respostas detalhadas */}
@@ -169,6 +180,11 @@ export default async function TestDetailsPage({
                         </p>
                         <p className="text-sm font-semibold text-[var(--muted)] mt-1">
                           1ª resposta: {selected?.text ?? a.selected_key}
+                        </p>
+                        <p className="text-sm font-semibold text-[var(--muted)] mt-0.5">
+                          Tempo: {formatDuration(durationOf(a))} · 1ª resposta: {formatDuration(
+                            a.durations_ms?.[0] ?? 0
+                          )}
                         </p>
                         {!a.is_correct && correctOpt && (
                           <p className="text-sm font-semibold text-[var(--green-dark)] mt-0.5">

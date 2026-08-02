@@ -52,7 +52,11 @@ export default async function TestMenuPage({
     getBanks(supabase),
     // Só (fase, pergunta): o menu conta progresso, não exibe respostas —
     // `select("*")` traria a foto `presented` das 100.
-    supabase.from("answers").select("phase, question_id").eq("test_id", id),
+    supabase
+      .from("answers")
+      .select("phase, question_id")
+      .eq("test_id", id)
+      .eq("history", false),
   ]);
 
   const steps = buildSteps(byBank, id);

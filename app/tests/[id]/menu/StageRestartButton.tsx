@@ -5,9 +5,9 @@ import { useRouter } from "next/navigation";
 import { restartStage } from "@/app/tests/actions";
 
 /**
- * "Recomeçar do 0" de UMA sub-etapa da Fase B: apaga as respostas daquela
- * sub-etapa para que ela possa ser aplicada de novo. Pede confirmação porque
- * é destrutivo — o dado gravado (inclusive o acerto de primeira) é removido.
+ * "Recomeçar do 0" de UMA sub-etapa da Fase B: arquiva as respostas atuais para
+ * que ela possa ser aplicada de novo. Pede confirmação porque a aplicacao atual
+ * deixa de contar no progresso e na pontuacao.
  */
 export function StageRestartButton({
   testId,
@@ -32,7 +32,7 @@ export function StageRestartButton({
     return (
       <span className="flex items-center gap-1.5 text-xs font-bold shrink-0">
         <span className="text-[var(--red-dark)]">
-          ⚠️ Isso apaga as respostas desta etapa. Apagar?
+          ⚠️ As respostas atuais vao para o historico e nao contam mais. Continuar?
         </span>
         <button
           type="button"
@@ -40,7 +40,7 @@ export function StageRestartButton({
           disabled={pending}
           className="px-2 py-0.5 rounded-md bg-[var(--red)] text-white"
         >
-          Apagar
+           Continuar
         </button>
         <button
           type="button"

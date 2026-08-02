@@ -39,7 +39,7 @@ export default async function StudentPage({
       .eq("student_id", id)
       .order("created_at", { ascending: false }),
     getBanks(supabase),
-    supabase.from("answers").select("test_id"),
+    supabase.from("answers").select("test_id").eq("history", false),
   ]);
 
   const student = studentData as Student;

@@ -97,6 +97,7 @@ export interface SubmitFn {
     questionId: string;
     selectedKey: string;
     device?: string;
+    elapsedMs: number;
   }): Promise<{
     isCorrect: boolean;
     attempts: number;
@@ -158,6 +159,13 @@ export function Runner({
   const [pending, setPending] = useState(false);
   const [submitError, setSubmitError] = useState<string | null>(null);
   const [completedPhase, setCompletedPhase] = useState<Phase | null>(null);
+  const attemptStartRef = useRef<number | null>(null);
+  const attemptElapsedRef = useRef<number | null>(null);
+
+  const startAttempt = useCallback(() => {
+    attemptStartRef.current = performance.now();
+    attemptElapsedRef.current = null;
+  }, []);
 
   const step: RunnerStep | undefined = steps[cur];
   // A tela de contexto só serve para a HISTÓRIA. Na Etapa 2 da Fase B o contexto
@@ -172,6 +180,14 @@ export function Runner({
   const [screen, setScreen] = useState<Screen>(
     beginDone ? "done" : showIntro ? "intro" : firstScreen(steps[startIndex])
   );
+
+  // Ao retomar uma aplicacao sem a tela de instrucoes, o primeiro passo ja
+  // nasce em context/question e nao passa por openStep.
+  useEffect(() => {
+    if (!beginDone && !showIntro && attemptStartRef.current === null) {
+      startAttempt();
+    }
+  }, [beginDone, showIntro, startAttempt]);
 
   const { play, cancel, ready } = useVoice();
   const router = useRouter();
@@ -324,6 +340,7 @@ export function Runner({
     (idx: number) => {
       const s = steps[idx];
       if (!s) return;
+      startAttempt();
       setCur(idx);
       setSelected(null);
       setResult(null);
@@ -335,7 +352,7 @@ export function Runner({
         speakQuestion(s);
       }
     },
-    [steps, ctx, speakQuestion]
+    [steps, ctx, speakQuestion, startAttempt]
   );
 
   /** Fim da pergunta atual: encerra a fase, ou passa pela tela em branco. */
@@ -360,6 +377,14 @@ export function Runner({
 
   async function onConfirm() {
     if (selected == null || pending || !step) return;
+    if (attemptElapsedRef.current === null) {
+      const started = attemptStartRef.current ?? performance.now();
+      attemptElapsedRef.current = Math.max(
+        0,
+        Math.round(performance.now() - started)
+      );
+    }
+    const elapsedMs = attemptElapsedRef.current ?? 0;
     setPending(true);
     setSubmitError(null);
     try {
@@ -370,6 +395,7 @@ export function Runner({
           questionId: step.question.id,
           selectedKey: selected,
           device,
+          elapsedMs,
         }),
         SUBMIT_TIMEOUT_MS
       );
@@ -399,9 +425,11 @@ export function Runner({
             setSelected(null);
             setResult(null);
             if (retryInContext) {
+              startAttempt();
               setScreen("context");
               ctx.speakNow(step.question.context!);
             } else {
+              startAttempt();
               setScreen("question");
               speakQuestion(step);
             }

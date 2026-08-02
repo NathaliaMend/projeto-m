@@ -8,6 +8,10 @@ function csvCell(value: string | number | null | undefined): string {
   return s;
 }
 
+function durationSeconds(ms: number): number {
+  return Math.round(Math.max(0, ms)) / 1000;
+}
+
 export async function GET() {
   const supabase = await createClient();
   const {
@@ -36,6 +40,8 @@ export async function GET() {
     "status",
     "dispositivo",
     "fase",
+    "historico",
+    "aplicacao",
     "item",
     "metafora",
     "metafora_treinada",
@@ -47,6 +53,8 @@ export async function GET() {
     "resposta_correta",
     "acertou_de_primeira",
     "tentativas",
+    "tempo_total_seg",
+    "tempo_1a_resposta_seg",
     "erros_antes_de_acertar",
     "chegou_na_correta",
     "todas_as_escolhas",
@@ -68,12 +76,18 @@ export async function GET() {
       // Quantas vezes errou antes de acertar: se resolveu, foram (tentativas−1)
       // erros até a correta; se não resolveu, todas as tentativas foram erro.
       const errosAntes = a.solved ? a.attempts - 1 : a.attempts;
+      const totalDuration = (a.durations_ms ?? []).reduce(
+        (sum, duration) => sum + duration,
+        0
+      );
       return [
         t.student?.name ?? "",
         t.student?.birth_date ?? "",
         t.status,
         a.device ?? "",
         a.phase,
+        a.history ? "sim" : "nao",
+        a.attempt_round,
         p.code,
         p.metaphor ?? "",
         p.parent_metaphor_code ?? "",
@@ -86,6 +100,8 @@ export async function GET() {
         correct?.text ?? "",
         a.is_correct ? "sim" : "nao",
         a.attempts,
+        durationSeconds(totalDuration),
+        durationSeconds(a.durations_ms?.[0] ?? 0),
         errosAntes,
         a.solved ? "sim" : "nao",
         chosen,
