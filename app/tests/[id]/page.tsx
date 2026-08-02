@@ -86,7 +86,7 @@ export default async function TestDetailsPage({
             <div className="flex items-center gap-2 flex-wrap">
               <Link
                 href={`/tests/${t.id}/menu`}
-                className="btn3d !py-2 !px-4 text-sm"
+                className="btn3d btn3d-gray !py-2 !px-4 text-sm"
               >
                 Escolher etapa
               </Link>
