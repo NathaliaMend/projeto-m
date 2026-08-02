@@ -21,6 +21,14 @@ function formatDate(iso: string | null) {
 
 type Filter = "all" | "mine";
 
+/** Normaliza para busca: minúsculo e sem acento ("José" casa com "jose"). */
+function normalize(s: string) {
+  return s
+    .toLowerCase()
+    .normalize("NFD")
+    .replace(/\p{Diacritic}/gu, "");
+}
+
 export function StudentsBoard({
   students,
   currentUserId,
@@ -29,12 +37,18 @@ export function StudentsBoard({
   currentUserId: string;
 }) {
   const [filter, setFilter] = useState<Filter>("all");
+  const [query, setQuery] = useState("");
 
   const mineCount = students.filter((s) => s.ownerId === currentUserId).length;
-  const visible =
+  const byFilter =
     filter === "mine"
       ? students.filter((s) => s.ownerId === currentUserId)
       : students;
+
+  const q = normalize(query.trim());
+  const visible = q
+    ? byFilter.filter((s) => normalize(s.name).includes(q))
+    : byFilter;
 
   const tabClass = (active: boolean) =>
     `px-4 py-2 rounded-full text-sm font-bold transition-colors ${
@@ -62,11 +76,27 @@ export function StudentsBoard({
         </button>
       </div>
 
+      <div className="relative mb-4">
+        <span className="absolute left-3 top-1/2 -translate-y-1/2 text-[var(--muted)]">
+          🔍
+        </span>
+        <input
+          type="search"
+          value={query}
+          onChange={(e) => setQuery(e.target.value)}
+          placeholder="Buscar aluno pelo nome…"
+          aria-label="Buscar aluno pelo nome"
+          className="w-full rounded-full border-2 border-[var(--border)] bg-white pl-10 pr-4 py-2.5 text-sm font-semibold focus:border-[var(--blue)] focus:outline-none"
+        />
+      </div>
+
       {visible.length === 0 ? (
         <div className="bg-white rounded-2xl p-10 text-center text-[var(--muted)] font-semibold">
-          {filter === "mine"
-            ? "Você ainda não cadastrou nenhum aluno."
-            : "Nenhum aluno ainda."}
+          {q
+            ? `Nenhum aluno encontrado para “${query.trim()}”.`
+            : filter === "mine"
+              ? "Você ainda não cadastrou nenhum aluno."
+              : "Nenhum aluno ainda."}
         </div>
       ) : (
         <ul className="flex flex-col gap-3">

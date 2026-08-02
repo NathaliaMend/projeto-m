@@ -31,14 +31,16 @@ export function StageRestartButton({
   if (confirming) {
     return (
       <span className="flex items-center gap-1.5 text-xs font-bold shrink-0">
-        <span className="text-[var(--muted)]">Apagar respostas?</span>
+        <span className="text-[var(--red-dark)]">
+          ⚠️ Isso apaga as respostas desta etapa. Apagar?
+        </span>
         <button
           type="button"
           onClick={restart}
           disabled={pending}
           className="px-2 py-0.5 rounded-md bg-[var(--red)] text-white"
         >
-          Sim
+          Apagar
         </button>
         <button
           type="button"
@@ -46,7 +48,7 @@ export function StageRestartButton({
           disabled={pending}
           className="px-2 py-0.5 rounded-md bg-[var(--border)] text-[var(--muted)]"
         >
-          Não
+          Cancelar
         </button>
       </span>
     );
