@@ -12,6 +12,7 @@ import {
   type Step,
 } from "@/lib/assessment";
 import { phaseConfig } from "@/lib/phases";
+import { stageById, stageIdOf } from "@/lib/stages";
 import type { Phase, PresentedQuestion } from "@/lib/types";
 
 async function requireUser() {
@@ -276,6 +277,41 @@ async function submitAnswerInner(
     correctKey: canRetry ? null : correctKey,
     completed,
   };
+}
+
+/**
+ * Recomeça UMA etapa do zero: apaga só as respostas daquela etapa (na Fase B,
+ * uma sub-etapa de uma metáfora — ex.: "A1B01-E2"), deixando o resto do teste
+ * intacto. Diferente do "Conferir": aqui os dados gravados são REMOVIDOS, então
+ * a etapa volta a poder ser aplicada e medida de novo. As perguntas da etapa são
+ * derivadas no servidor (mesmo buildSteps do /run) — o cliente só manda o id da
+ * etapa, que é validado contra STAGES.
+ */
+export async function restartStage(testId: string, stageId: string) {
+  const { supabase } = await requireUser();
+  if (!stageById(stageId)) throw new Error("Etapa desconhecida.");
+
+  const byBank = await getBanks(supabase);
+  const steps = buildSteps(byBank, testId);
+  const stageSteps = steps.filter((s) => stageIdOf(s) === stageId);
+  if (stageSteps.length === 0) return;
+
+  // Toda etapa vive numa única fase, então dá para apagar por (test, fase,
+  // perguntas) — a mesma chave (test_id, phase, question_id) que grava a resposta.
+  const phase = stageSteps[0].phase;
+  const questionIds = stageSteps.map((s) => s.question.id);
+  const { error } = await supabase
+    .from("answers")
+    .delete()
+    .eq("test_id", testId)
+    .eq("phase", phase)
+    .in("question_id", questionIds);
+  if (error) throw new Error(error.message);
+
+  await recomputeProgress(supabase, testId, steps);
+  revalidatePath("/");
+  revalidatePath(`/tests/${testId}`);
+  revalidatePath(`/tests/${testId}/menu`);
 }
 
 /** Recomeça o teste do zero (apaga todas as respostas). */

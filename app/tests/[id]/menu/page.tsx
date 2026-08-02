@@ -8,9 +8,10 @@ import {
   type AnsweredKey,
   type Step,
 } from "@/lib/assessment";
-import { stageIdOf } from "@/lib/stages";
+import { FASE_B_ETAPAS, faseBStageId, stageIdOf } from "@/lib/stages";
 import { PHASES } from "@/lib/phases";
 import type { Phase, TestWithStudent } from "@/lib/types";
+import { StageRestartButton } from "./StageRestartButton";
 
 /** Mesmos emojis por fase do /preview, para o menu ter a mesma cara. */
 const PHASE_EMOJI: Record<Phase, string> = {
@@ -124,8 +125,9 @@ export default async function TestMenuPage({
           const total = phaseSteps.length;
           const done = doneOf(phaseSteps);
 
-          // Fase B (B1/B2): card-cabeçalho com submenu de metáforas — é assim que
-          // ela é aplicada, uma metáfora por vez.
+          // Fase B (B1/B2): card-cabeçalho com submenu de metáforas; dentro de
+          // cada metáfora, as 3 sub-etapas (Causalidade/Semelhança/Compreensão) —
+          // é a unidade de aplicação, uma sub-etapa por vez.
           if (pc.metaphors) {
             return (
               <div
@@ -142,31 +144,54 @@ export default async function TestMenuPage({
                   </span>
                 </div>
 
-                <ul className="mt-3 ml-6 flex flex-col gap-1.5">
+                <ul className="mt-3 ml-6 flex flex-col gap-3">
                   {pc.metaphors.map((code) => {
-                    const ms = byStage.get(code) ?? [];
-                    const mDone = doneOf(ms);
-                    const isNext = code === currentStage;
+                    const metaphorText =
+                      (byStage.get(faseBStageId(code, 1)) ?? [])[0]?.question
+                        .metaphor ?? "";
                     return (
                       <li key={code}>
-                        <Link
-                          href={`/tests/${id}/run?stage=${code}`}
-                          className={`flex items-center gap-3 rounded-xl px-3 py-2 border-2 transition-colors hover:bg-[#f7f9fc] ${
-                            isNext
-                              ? "border-[var(--green)]"
-                              : "border-[var(--border)]"
-                          }`}
-                        >
+                        <div className="flex items-baseline gap-2 mb-1">
                           <span className="font-bold text-sm shrink-0">
                             {code}
                           </span>
                           <span className="text-xs font-semibold text-[var(--muted)] truncate">
-                            {ms[0]?.question.metaphor ?? ""}
+                            {metaphorText}
                           </span>
-                          <span className="ml-auto text-xs font-black text-[var(--muted)] shrink-0">
-                            {mDone}/{ms.length} · {label(mDone, ms.length)}
-                          </span>
-                        </Link>
+                        </div>
+                        <ul className="flex flex-col gap-1.5">
+                          {FASE_B_ETAPAS.map((e) => {
+                            const sid = faseBStageId(code, e.etapa);
+                            const ss = byStage.get(sid) ?? [];
+                            const sDone = doneOf(ss);
+                            const isNext = sid === currentStage;
+                            return (
+                              <li
+                                key={e.etapa}
+                                className={`flex items-center gap-2 rounded-xl border-2 pr-3 transition-colors ${
+                                  isNext
+                                    ? "border-[var(--green)]"
+                                    : "border-[var(--border)]"
+                                }`}
+                              >
+                                <Link
+                                  href={`/tests/${id}/run?stage=${sid}`}
+                                  className="flex items-center gap-3 flex-1 min-w-0 px-3 py-2 rounded-l-xl hover:bg-[#f7f9fc] transition-colors"
+                                >
+                                  <span className="text-xs font-bold shrink-0">
+                                    {e.etapa}. {e.label}
+                                  </span>
+                                  <span className="ml-auto text-xs font-black text-[var(--muted)] shrink-0">
+                                    {sDone}/{ss.length} · {label(sDone, ss.length)}
+                                  </span>
+                                </Link>
+                                {sDone > 0 && (
+                                  <StageRestartButton testId={id} stageId={sid} />
+                                )}
+                              </li>
+                            );
+                          })}
+                        </ul>
                       </li>
                     );
                   })}
