@@ -7,6 +7,7 @@ import { buildSteps } from "@/lib/assessment";
 import { formatDuration } from "@/lib/duration";
 import { createTestForStudent } from "@/app/tests/actions";
 import type { Answer, Phase, TestWithStudent } from "@/lib/types";
+import { HistorySidebar } from "./HistorySidebar";
 
 function formatDate(iso: string | null) {
   if (!iso) return "—";
@@ -39,10 +40,34 @@ export default async function TestDetailsPage({
       .from("answers")
       .select("*")
       .eq("test_id", id)
-      .eq("history", false)
       .order("answered_at", { ascending: true }),
   ]);
-  const answers = (answerData ?? []) as Answer[];
+  const allAnswers = (answerData ?? []) as Answer[];
+  const answers = allAnswers.filter((answer) => !answer.history);
+  const historiesByQuestion = new Map<string, Answer[]>();
+  for (const answer of allAnswers) {
+    if (!answer.history) continue;
+    const key = `${answer.phase}:${answer.question_id}`;
+    const list = historiesByQuestion.get(key) ?? [];
+    list.push(answer);
+    historiesByQuestion.set(key, list);
+  }
+  const displayAnswersByPhase = new Map<Phase, Answer[]>();
+  for (const answer of answers) {
+    const list = displayAnswersByPhase.get(answer.phase) ?? [];
+    list.push(answer);
+    displayAnswersByPhase.set(answer.phase, list);
+  }
+  for (const [key, history] of historiesByQuestion) {
+    const [phase, questionId] = key.split(":") as [Phase, string];
+    const hasActive = answers.some(
+      (answer) => answer.phase === phase && answer.question_id === questionId
+    );
+    if (hasActive) continue;
+    const list = displayAnswersByPhase.get(phase) ?? [];
+    list.push(history[history.length - 1]);
+    displayAnswersByPhase.set(phase, list);
+  }
   const durationOf = (a: Answer) =>
     (a.durations_ms ?? []).reduce((sum, duration) => sum + duration, 0);
   const totalDuration = answers.reduce(
@@ -119,8 +144,10 @@ export default async function TestDetailsPage({
             {PHASES.map((pc) => {
               const cfg = phaseConfig(pc.phase);
               const total = phaseTotals.get(pc.phase) ?? 0;
-              const phaseAnswers = answersByPhase.get(pc.phase) ?? [];
-              const correct = phaseAnswers.filter((a) => a.is_correct).length;
+              const activePhaseAnswers = answersByPhase.get(pc.phase) ?? [];
+              const correct = activePhaseAnswers.filter(
+                (a) => a.is_correct
+              ).length;
               return (
                 <div
                   key={pc.phase}
@@ -136,8 +163,8 @@ export default async function TestDetailsPage({
                     </span>
                   </div>
                   <div className="text-xs font-semibold text-[var(--muted)]">
-                    {phaseAnswers.length} respondida
-                    {phaseAnswers.length === 1 ? "" : "s"}
+                    {activePhaseAnswers.length} respondida
+                    {activePhaseAnswers.length === 1 ? "" : "s"}
                   </div>
                 </div>
               );
@@ -150,7 +177,7 @@ export default async function TestDetailsPage({
 
         {/* Respostas detalhadas */}
         {PHASES.map((pc) => {
-          const phaseAnswers = answersByPhase.get(pc.phase) ?? [];
+          const phaseAnswers = displayAnswersByPhase.get(pc.phase) ?? [];
           if (phaseAnswers.length === 0) return null;
           return (
             <section key={pc.phase} className="mt-6">
@@ -162,19 +189,29 @@ export default async function TestDetailsPage({
                   // A pergunta como a criança viu, não como ela está hoje no
                   // banco: re-semear as planilhas não pode mudar um registro.
                   const p = a.presented;
+                  const isHistorical = a.history;
                   const selected = p.options.find(
                     (o) => o.key === a.selected_key
                   );
                   const correctOpt = p.options.find((o) => o.is_correct);
+                  const history =
+                    historiesByQuestion.get(`${a.phase}:${a.question_id}`) ?? [];
                   return (
                     <li
                       key={a.id}
-                      className="bg-white rounded-2xl p-4 flex gap-3"
+                      className={`bg-white rounded-2xl p-4 flex gap-3 ${
+                        isHistorical ? "border-2 border-[#f0d58a]" : ""
+                      }`}
                     >
                       <span className="text-xl">
-                        {a.is_correct ? "✅" : "❌"}
+                        {isHistorical ? "🗃️" : a.is_correct ? "✅" : "❌"}
                       </span>
-                      <div className="min-w-0">
+                      <div className="min-w-0 flex-1">
+                        {isHistorical && (
+                          <p className="text-xs font-black uppercase text-[#9a7312] mb-1">
+                            Registro histórico · aplicação {a.attempt_round}
+                          </p>
+                        )}
                         <p className="font-bold leading-snug">
                           {p.question_text}
                         </p>
@@ -201,6 +238,9 @@ export default async function TestDetailsPage({
                           </p>
                         )}
                       </div>
+                      {history.length > 0 && (
+                        <HistorySidebar history={history} questionText={p.question_text} />
+                      )}
                     </li>
                   );
                 })}

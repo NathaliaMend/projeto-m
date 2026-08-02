@@ -32,7 +32,7 @@ export function StageRestartButton({
     return (
       <span className="flex items-center gap-1.5 text-xs font-bold shrink-0">
         <span className="text-[var(--red-dark)]">
-          ⚠️ As respostas atuais vao para o historico e nao contam mais. Continuar?
+          ⚠️ As respostas atuais vão para o histórico e não contam mais. Continuar?
         </span>
         <button
           type="button"
